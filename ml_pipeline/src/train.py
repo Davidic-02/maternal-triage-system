@@ -5,8 +5,6 @@ Model training pipeline: normalisation, stacking ensemble, hyperparameter
 tuning, and model persistence.
 """
 
-from __future__ import annotations
-
 import json
 import os
 from typing import Any
@@ -26,39 +24,33 @@ from xgboost import XGBClassifier
 # ---------------------------------------------------------------------------
 
 def normalize_features(
-    X_train: pd.DataFrame | np.ndarray,
-    X_test: pd.DataFrame | np.ndarray,
+    X_train,
+    X_test,
     params_path: str = "models/scaler_params.json",
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple:
     """Min-Max normalise features.
 
-    Fits on *X_train* and applies the same transformation to *X_test*.
-    Scaler parameters are serialised to *params_path* as JSON.
-
-    Parameters
-    ----------
-    X_train : array-like
-    X_test : array-like
-    params_path : str
+    Fits on X_train and applies the same transformation to X_test.
+    Scaler parameters are serialised to params_path as JSON.
 
     Returns
     -------
-    tuple[np.ndarray, np.ndarray]
-        (X_train_norm, X_test_norm)
+    (X_train_norm, X_test_norm) as numpy arrays
     """
     X_train = np.asarray(X_train, dtype=float)
-    X_test = np.asarray(X_test, dtype=float)
+    X_test  = np.asarray(X_test,  dtype=float)
 
     min_vals = X_train.min(axis=0)
     max_vals = X_train.max(axis=0)
-    scale = np.where(max_vals - min_vals == 0, 1.0, max_vals - min_vals)
+    scale    = np.where(max_vals - min_vals == 0, 1.0, max_vals - min_vals)
 
     X_train_norm = (X_train - min_vals) / scale
-    X_test_norm = (X_test - min_vals) / scale
+    X_test_norm  = (X_test  - min_vals) / scale
 
     os.makedirs(os.path.dirname(params_path) or ".", exist_ok=True)
     with open(params_path, "w") as fh:
         json.dump({"min": min_vals.tolist(), "max": max_vals.tolist()}, fh)
+    print(f"  [normalize_features] Scaler params saved -> {params_path}")
 
     return X_train_norm, X_test_norm
 
@@ -70,27 +62,12 @@ def normalize_features(
 def build_stacking_ensemble() -> StackingClassifier:
     """Build a stacking ensemble classifier.
 
-    Base learners
-    -------------
-    * RandomForestClassifier
-    * XGBClassifier
-    * SVC(probability=True, kernel='rbf')
-
-    Meta-learner
-    ------------
-    * LogisticRegression(penalty='l2')
-
-    Returns
-    -------
-    StackingClassifier
+    Base learners : RandomForest, XGBoost, SVM(rbf)
+    Meta-learner  : LogisticRegression(L2)
     """
     base_learners = [
-        ("rf", RandomForestClassifier(n_estimators=100, random_state=42)),
-        ("xgb", XGBClassifier(
-            use_label_encoder=False,
-            eval_metric="mlogloss",
-            random_state=42,
-        )),
+        ("rf",  RandomForestClassifier(n_estimators=100, random_state=42)),
+        ("xgb", XGBClassifier(eval_metric="mlogloss", random_state=42)),
         ("svm", SVC(probability=True, kernel="rbf", random_state=42)),
     ]
     meta_learner = LogisticRegression(penalty="l2", max_iter=1000, random_state=42)
@@ -106,12 +83,12 @@ def build_stacking_ensemble() -> StackingClassifier:
 # Hyperparameter tuning
 # ---------------------------------------------------------------------------
 
-_PARAM_GRID: dict[str, list[Any]] = {
-    "rf__n_estimators": [100, 200],
-    "rf__max_depth": [None, 10, 20],
+_PARAM_GRID = {
+    "rf__n_estimators":  [100, 200],
+    "rf__max_depth":     [None, 10, 20],
     "xgb__n_estimators": [100, 200],
-    "xgb__max_depth": [3, 6],
-    "svm__C": [0.1, 1.0, 10.0],
+    "xgb__max_depth":    [3, 6],
+    "svm__C":            [0.1, 1.0, 10.0],
 }
 
 
@@ -122,21 +99,7 @@ def tune_hyperparameters(
     cv: int = 5,
     scoring: str = "f1_macro",
 ) -> StackingClassifier:
-    """GridSearchCV hyperparameter tuning with *cv*-fold cross-validation.
-
-    Parameters
-    ----------
-    model : StackingClassifier
-    X_train : np.ndarray
-    y_train : np.ndarray
-    cv : int
-    scoring : str
-
-    Returns
-    -------
-    StackingClassifier
-        Best estimator found by grid search.
-    """
+    """GridSearchCV hyperparameter tuning."""
     grid = GridSearchCV(
         model,
         param_grid=_PARAM_GRID,
@@ -146,7 +109,7 @@ def tune_hyperparameters(
         verbose=1,
     )
     grid.fit(X_train, y_train)
-    print(f"Best params: {grid.best_params_}")
+    print(f"  Best params: {grid.best_params_}")
     return grid.best_estimator_
 
 
@@ -159,20 +122,7 @@ def train_model(
     y_train: np.ndarray,
     tune: bool = False,
 ) -> StackingClassifier:
-    """Build (and optionally tune) the stacking ensemble, then fit it.
-
-    Parameters
-    ----------
-    X_train : np.ndarray
-    y_train : np.ndarray
-    tune : bool
-        When ``True``, runs :func:`tune_hyperparameters` before fitting.
-
-    Returns
-    -------
-    StackingClassifier
-        Fitted model.
-    """
+    """Build (and optionally tune) the stacking ensemble, then fit it."""
     model = build_stacking_ensemble()
     if tune:
         model = tune_hyperparameters(model, X_train, y_train)
@@ -186,15 +136,41 @@ def train_model(
 # ---------------------------------------------------------------------------
 
 def save_model(model: Any, path: str) -> None:
-    """Serialise *model* to *path* using joblib.
-
-    Parameters
-    ----------
-    model : Any
-        Fitted scikit-learn–compatible model.
-    path : str
-        Destination file path (e.g. ``'models/stacking_model.pkl'``).
-    """
+    """Serialise model to path using joblib."""
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     joblib.dump(model, path)
-    print(f"Model saved to {path}")
+    print(f"  Model saved -> {path}")
+
+
+# ---------------------------------------------------------------------------
+# Smoke-test:  python3 -m src.train
+# ---------------------------------------------------------------------------
+if __name__ == "__main__":
+    from src.feature_engineering import run_feature_engineering
+    from src.balancing import apply_smote
+
+    print("-- Running feature engineering ---")
+    X_train, X_test, y_train, y_test = run_feature_engineering()
+
+    print("\n-- Applying SMOTE ---")
+    X_res, y_res = apply_smote(X_train, y_train)
+    print(f"  Balanced train set: {X_res.shape}  classes: {dict(pd.Series(y_res).value_counts().sort_index())}")
+
+    print("\n-- Normalising features ---")
+    X_train_norm, X_test_norm = normalize_features(X_res, X_test)
+
+    print("\n-- Training stacking ensemble (this may take ~2 min) ---")
+    model = train_model(X_train_norm, y_res)
+    print("  Training complete!")
+
+    print("\n-- Saving model ---")
+    save_model(model, "models/stacking_model.pkl")
+
+    print("\n-- Quick accuracy check ---")
+    train_acc = (model.predict(X_train_norm) == y_res).mean()
+    print(f"  Train accuracy : {train_acc:.4f}")
+
+    test_acc = (model.predict(X_test_norm) == np.asarray(y_test)).mean()
+    print(f"  Test  accuracy : {test_acc:.4f}")
+
+    print("\n-- Done! ---")
