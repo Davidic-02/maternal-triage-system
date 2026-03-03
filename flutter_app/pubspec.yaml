@@ -1,0 +1,31 @@
+name: maternal_triage
+description: Explainable AI-Based Maternal Triage Decision-Support System
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
+  cloud_firestore: ^4.13.6
+  tflite_flutter: ^0.10.4
+  fl_chart: ^0.66.2
+  provider: ^6.1.1
+  go_router: ^13.0.1
+  connectivity_plus: ^5.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/models/
+    - assets/shap/
