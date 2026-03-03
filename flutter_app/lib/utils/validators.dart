@@ -47,12 +47,12 @@ class Validators {
     return null;
   }
 
-  /// Heart rate: 7–90 bpm.
+  /// Heart rate: 40–120 bpm (maternal health range).
   static String? validateHeartRate(String? value) {
     if (value == null || value.isEmpty) return 'Heart rate is required';
     final v = double.tryParse(value);
     if (v == null) return 'Enter a valid number';
-    if (v < 7 || v > 90) return 'Heart rate must be between 7 and 90 bpm';
+    if (v < 40 || v > 120) return 'Heart rate must be between 40 and 120 bpm';
     return null;
   }
 

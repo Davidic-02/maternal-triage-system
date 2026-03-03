@@ -14,7 +14,7 @@ class FeatureNorm {
     40.0,  // DiastolicBP
     6.0,   // BloodSugar
     95.0,  // BodyTemp (Fahrenheit)
-    7.0,   // HeartRate
+    40.0,  // HeartRate
     30.0,  // Weight (kg)
     1.30,  // Height (m)
     0.0,   // PreviousComplications
@@ -30,7 +30,7 @@ class FeatureNorm {
     110.0,  // DiastolicBP
     19.0,   // BloodSugar
     103.0,  // BodyTemp (Fahrenheit)
-    90.0,   // HeartRate
+    120.0,  // HeartRate
     130.0,  // Weight (kg)
     1.90,   // Height (m)
     1.0,    // PreviousComplications
