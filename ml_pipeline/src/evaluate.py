@@ -118,6 +118,7 @@ def plot_confusion_matrix(
     plt.close(fig)
     print(f"  Confusion matrix saved -> {out_path}")
 
+
 def plot_roc_curves(
     model,
     X_test: np.ndarray,
@@ -210,4 +211,4 @@ if __name__ == "__main__":
 
     youden_threshold_optimization(model, X_test_norm, np.asarray(y_test))
 
-    print("\n-- Done! ---"}
+    print("\n-- Done! ---"
