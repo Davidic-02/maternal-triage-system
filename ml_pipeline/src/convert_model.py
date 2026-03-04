@@ -77,3 +77,31 @@ def convert_to_tflite(model, output_path: str, n_features: int = 13) -> None:
     with open(output_path, "wb") as fh:
         fh.write(tflite_model)
     print(f"TFLite model saved to {output_path} ({len(tflite_model) / 1024:.1f} KB)")
+
+
+# ---------------------------------------------------------------------------
+# Smoke-test:  python3 -m src.convert_model
+# ---------------------------------------------------------------------------
+if __name__ == "__main__":
+    import joblib
+    from src.feature_engineering import run_feature_engineering
+    from src.balancing import apply_smote
+    from src.train import normalize_features
+
+    print("-- Loading pipeline data ---")
+    X_train, X_test, y_train, y_test = run_feature_engineering()
+    X_res, y_res = apply_smote(X_train, y_train)
+    X_train_norm, X_test_norm = normalize_features(X_res, X_test)
+
+    print("-- Loading trained model ---")
+    model = joblib.load("models/stacking_model.pkl")
+    print("  Model loaded from models/stacking_model.pkl")
+
+    print("\n-- Converting to TFLite ---")
+    convert_to_tflite(
+        model,
+        output_path="models/maternal_triage_model.tflite",
+        n_features=X_test_norm.shape[1],
+    )
+
+    print("\n-- Done! ---")

@@ -108,46 +108,32 @@ def plot_shap_summary(
 # ---------------------------------------------------------------------------
 
 def get_local_shap_explanation(
-    shap_values: list[np.ndarray] | np.ndarray,
+    shap_values,
     index: int,
-    feature_names: list[str] | None = None,
+    feature_names: list = None,
     top_n: int = 5,
-) -> list[dict[str, Any]]:
-    """Return the top *top_n* features with SHAP direction for one prediction.
-
-    When *shap_values* is a list (multi-class), the class with the highest
-    mean absolute SHAP for the given index is used.
-
-    Parameters
-    ----------
-    shap_values : list[np.ndarray] | np.ndarray
-    index : int
-        Row index in the test set to explain.
-    feature_names : list[str] | None
-    top_n : int
-
-    Returns
-    -------
-    list[dict]
-        Sorted list (descending |SHAP|) of
-        ``{'feature': str, 'shap_value': float, 'direction': str}``.
+) -> list:
+    """Return the top top_n features with SHAP direction for one prediction.
+    Handles KernelExplainer output shape (n_samples, n_features, n_classes).
     """
-    if isinstance(shap_values, list):
-        # Pick the class with the largest absolute SHAP for this sample
-        abs_per_class = [np.abs(sv[index]).sum() for sv in shap_values]
-        class_idx = int(np.argmax(abs_per_class))
-        values = shap_values[class_idx][index]
+    import numpy as np
+    sv = np.array(shap_values)
+    # squeeze leading size-1 dims e.g. (1,50,14,3) -> (50,14,3)
+    while sv.ndim > 1 and sv.shape[0] == 1:
+        sv = sv[0]
+    # sv now: (n_samples, n_features, n_classes) or (n_samples, n_features)
+    if sv.ndim == 3:
+        sample = sv[index]                               # (n_features, n_classes)
+        class_idx = int(np.argmax(np.abs(sample).sum(axis=0)))
+        values = sample[:, class_idx].flatten()          # (n_features,)
     else:
-        values = shap_values[index]
+        values = sv[index].flatten()                     # (n_features,)
 
     n_features = len(values)
-    names = (
-        feature_names
-        if feature_names is not None
-        else [f"feature_{i}" for i in range(n_features)]
-    )
+    names = feature_names if feature_names is not None else [f"feature_{i}" for i in range(n_features)]
 
-    pairs = sorted(zip(names, values), key=lambda x: abs(x[1]), reverse=True)
+    float_vals = [float(v) for v in values]
+    pairs = sorted(zip(names, float_vals), key=lambda x: abs(x[1]), reverse=True)
     return [
         {
             "feature": name,
@@ -200,3 +186,89 @@ def save_shap_values(
     with open(path, "w") as fh:
         json.dump(payload, fh)
     print(f"SHAP values saved to {path}")
+
+# ---------------------------------------------------------------------------
+# Smoke-test:  python3 -m src.explainability
+# ---------------------------------------------------------------------------
+if __name__ == "__main__":
+    import joblib
+    from src.feature_engineering import run_feature_engineering
+    from src.balancing import apply_smote
+    from src.train import normalize_features
+
+    FEATURE_NAMES = [
+        "Age", "SystolicBP", "DiastolicBP", "BloodSugar", "BodyTemp",
+        "BMI", "HeartRate", "Weight", "Height",
+        "PreviousComplications", "PreexistingDiabetes", "GestationalDiabetes",
+        "MentalHealthStatus", "PulsePressure",
+    ]
+
+    print("-- Loading pipeline data ---")
+    X_train, X_test, y_train, y_test = run_feature_engineering()
+    X_res, y_res = apply_smote(X_train, y_train)
+    X_train_norm, X_test_norm = normalize_features(X_res, X_test)
+
+    print("-- Loading trained model ---")
+    model = joblib.load("models/stacking_model.pkl")
+    print("  Model loaded from models/stacking_model.pkl")
+
+    N = 50
+    X_explain = X_test_norm[:N]
+    print(f"\n-- Computing SHAP values on first {N} test samples ---")
+    shap_values = compute_shap_values(model, X_train_norm, X_explain, background_samples=50)
+
+    print("\n-- Saving SHAP summary plot ---")
+    plot_shap_summary(shap_values, X_explain, feature_names=FEATURE_NAMES)
+
+    print("\n-- Saving SHAP values JSON ---")
+    save_shap_values(shap_values, "models/shap_values.json", feature_names=FEATURE_NAMES)
+
+    print("\n-- Local explanation for sample 0 ---")
+    explanation = get_local_shap_explanation(shap_values, index=0, feature_names=FEATURE_NAMES)
+    for e in explanation:
+        print(f"  {e['feature']:25s}  SHAP={e['shap_value']:+.4f}  ({e['direction']})")
+
+    print("\n-- Done! ---")
+
+# ---------------------------------------------------------------------------
+# Smoke-test:  python3 -m src.explainability
+# ---------------------------------------------------------------------------
+if __name__ == "__main__":
+    import joblib
+    from src.feature_engineering import run_feature_engineering
+    from src.balancing import apply_smote
+    from src.train import normalize_features
+
+    FEATURE_NAMES = [
+        "Age", "SystolicBP", "DiastolicBP", "BloodSugar", "BodyTemp",
+        "BMI", "HeartRate", "Weight", "Height",
+        "PreviousComplications", "PreexistingDiabetes", "GestationalDiabetes",
+        "MentalHealthStatus", "PulsePressure",
+    ]
+
+    print("-- Loading pipeline data ---")
+    X_train, X_test, y_train, y_test = run_feature_engineering()
+    X_res, y_res = apply_smote(X_train, y_train)
+    X_train_norm, X_test_norm = normalize_features(X_res, X_test)
+
+    print("-- Loading trained model ---")
+    model = joblib.load("models/stacking_model.pkl")
+    print("  Model loaded from models/stacking_model.pkl")
+
+    N = 50
+    X_explain = X_test_norm[:N]
+    print(f"\n-- Computing SHAP values on first {N} test samples ---")
+    shap_values = compute_shap_values(model, X_train_norm, X_explain, background_samples=50)
+
+    print("\n-- Saving SHAP summary plot ---")
+    plot_shap_summary(shap_values, X_explain, feature_names=FEATURE_NAMES)
+
+    print("\n-- Saving SHAP values JSON ---")
+    save_shap_values(shap_values, "models/shap_values.json", feature_names=FEATURE_NAMES)
+
+    print("\n-- Local explanation for sample 0 ---")
+    explanation = get_local_shap_explanation(shap_values, index=0, feature_names=FEATURE_NAMES)
+    for e in explanation:
+        print(f"  {e['feature']:25s}  SHAP={e['shap_value']:+.4f}  ({e['direction']})")
+
+    print("\n-- Done! ---")
