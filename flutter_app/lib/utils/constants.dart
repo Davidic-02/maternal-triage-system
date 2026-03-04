@@ -1,12 +1,17 @@
-/// Normalisation constants (Min-Max) for the 13 input features.
+/// Asset paths for the ONNX model, scaler params, and SHAP values.
+const String kModelAsset = 'assets/models/maternal_triage_model.onnx';
+const String kScalerAsset = 'assets/scaler/scaler_params.json';
+const String kShapAsset = 'assets/shap/shap_values.json';
+
+/// Normalisation constants (Min-Max) for the 14 input features.
 ///
 /// Order must match the feature vector built in [InferenceService]:
-/// Age, SystolicBP, DiastolicBP, BloodSugar, BodyTemp, HeartRate,
+/// Age, SystolicBP, DiastolicBP, BloodSugar, BodyTemp, BMI, HeartRate,
 /// Weight, Height, PreviousComplications, PreexistingDiabetes,
 /// GestationalDiabetes, MentalHealthStatus, PulsePressure.
 ///
-/// Update these values from the JSON produced by ml_pipeline/src/train.py
-/// after training (models/scaler_params.json).
+/// These are fallback values — real values are loaded at runtime from
+/// [kScalerAsset] (assets/scaler/scaler_params.json).
 class FeatureNorm {
   static const List<double> min = [
     10.0,  // Age
@@ -14,6 +19,7 @@ class FeatureNorm {
     40.0,  // DiastolicBP
     6.0,   // BloodSugar
     95.0,  // BodyTemp (Fahrenheit)
+    0.0,   // BMI
     40.0,  // HeartRate
     30.0,  // Weight (kg)
     1.30,  // Height (m)
@@ -30,6 +36,7 @@ class FeatureNorm {
     110.0,  // DiastolicBP
     19.0,   // BloodSugar
     103.0,  // BodyTemp (Fahrenheit)
+    37.0,   // BMI
     120.0,  // HeartRate
     130.0,  // Weight (kg)
     1.90,   // Height (m)
