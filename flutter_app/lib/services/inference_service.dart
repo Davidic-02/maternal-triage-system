@@ -48,8 +48,7 @@ class InferenceService {
     }
 
     final input = _buildInputTensor(record);
-    final inputOrt =
-        OrtValueTensor.createTensorWithDataList(input, [1, 14]);
+    final inputOrt = OrtValueTensor.createTensorWithDataList(input, [1, 14]);
     final runOptions = OrtRunOptions();
     final outputs = _session!.run(runOptions, {'float_input': inputOrt});
 
@@ -69,9 +68,8 @@ class InferenceService {
     final probaVal = outputs[1]?.value;
     List<double> probs = [0.0, 0.0, 0.0];
     if (probaVal is List) {
-      final flat =
-          probaVal is List<List> ? (probaVal[0] as List) : probaVal;
-      probs = flat.map((v) => (v as num).toDouble()).toList();
+      final flat = (probaVal.first is List) ? (probaVal[0] as List) : probaVal;
+      probs = flat.map<double>((v) => (v as num).toDouble()).toList();
     }
 
     for (final o in outputs) {
@@ -107,9 +105,8 @@ class InferenceService {
     final normalised = Float32List(14);
     for (int i = 0; i < 14; i++) {
       final scale = _maxVals[i] - _minVals[i];
-      normalised[i] = scale == 0
-          ? 0.0
-          : ((raw[i] - _minVals[i]) / scale).clamp(0.0, 1.0);
+      normalised[i] =
+          scale == 0 ? 0.0 : ((raw[i] - _minVals[i]) / scale).clamp(0.0, 1.0);
     }
     return normalised;
   }
