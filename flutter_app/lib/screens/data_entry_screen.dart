@@ -106,7 +106,7 @@ class _DataEntryScreenState extends State<DataEntryScreen> {
                   (v) => setState(() => _gestDiab = v)),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: _mentalHealth,
+                initialValue: _mentalHealth,
                 decoration: const InputDecoration(
                   labelText: 'Mental Health Status',
                   border: OutlineInputBorder(),
@@ -167,7 +167,7 @@ class _DataEntryScreenState extends State<DataEntryScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label),
-            Switch(value: value, onChanged: onChanged, activeColor: Colors.teal),
+            Switch(value: value, onChanged: onChanged, activeThumbColor: Colors.teal),
           ],
         ),
       );
