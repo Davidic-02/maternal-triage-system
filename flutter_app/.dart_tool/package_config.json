@@ -272,6 +272,12 @@
       "languageVersion": "3.8"
     },
     {
+      "name": "formz",
+      "rootUri": "file:///Users/mac/.pub-cache/hosted/pub.dev/formz-0.8.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "freezed",
       "rootUri": "file:///Users/mac/.pub-cache/hosted/pub.dev/freezed-3.2.5",
       "packageUri": "lib/",
