@@ -9,6 +9,9 @@ abstract class AuthState with _$AuthState {
     @Default(EmailFormz.pure()) EmailFormz email,
     @Default(PasswordFormz.pure()) PasswordFormz password,
     @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
+    @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus loginStatus,
+    @Default(FormzSubmissionStatus.initial)
+    FormzSubmissionStatus forgotPasswordStatus,
     String? errorMessage,
   }) = _AuthState;
 
@@ -25,6 +28,22 @@ class EmailFormz extends FormzInput<String, ValidationError> {
 
     if (!EmailValidator.validate(value.trim())) {
       return ValidationError.invalid;
+    }
+
+    return null;
+  }
+}
+
+class PasswordFormz extends FormzInput<String, ValidationError> {
+  const PasswordFormz.pure([super.value = '']) : super.pure();
+  const PasswordFormz.dirty([super.value = '']) : super.dirty();
+
+  @override
+  ValidationError? validator(String? value) {
+    if (value == null || value.isEmpty) return ValidationError.empty;
+
+    if (value.length < 6) {
+      return ValidationError.short;
     }
 
     return null;
