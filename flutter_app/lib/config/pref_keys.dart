@@ -6,5 +6,6 @@ class PrefKeys {
   static const String userName = 'user_name';
   static const String userUuid = 'user_uuid';
   static const String themeMode = 'theme_mode';
-  static const String hasShownLocationRationale = 'has_shown_location_rationale';
+  static const String hasShownLocationRationale =
+      'has_shown_location_rationale';
 }
