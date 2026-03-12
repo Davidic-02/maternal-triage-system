@@ -51,12 +51,12 @@ class ShapChart extends StatelessWidget {
               const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           topTitles:
               const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(
-            axisNameWidget: const Text(
+          bottomTitles: const AxisTitles(
+            axisNameWidget: Text(
               'SHAP value',
               style: TextStyle(fontSize: 12),
             ),
-            sideTitles: const SideTitles(showTitles: true, reservedSize: 20),
+            sideTitles: SideTitles(showTitles: true, reservedSize: 20),
           ),
         ),
         borderData: FlBorderData(show: false),
