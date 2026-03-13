@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:formz/formz.dart';
 import 'package:maternal_triage/models/patient_record.dart';
 import 'package:maternal_triage/models/risk_result.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -17,7 +18,7 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
   final FirebaseService _firebaseService;
 
   AssessmentBloc({
-    InferenceService? inferenceService,
+    InferenceService? infergitenceService,
     ShapService? shapService,
     FirebaseService? firebaseService,
   })  : _inferenceService = inferenceService ?? InferenceService(),
@@ -26,10 +27,21 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
         super(const AssessmentState()) {
     on<_RunAssessment>(_onRunAssessment);
     on<_ClearAssessment>(_onClearAssessment);
+  }
 
-    Future<void> initialise() async {
-      await _inferenceService.loadModel();
-      await _shapService.loadShapValues();
+  Future<void> initialise() async {
+    await _inferenceService.loadModel();
+    await _shapService.loadShapValues();
+  }
+
+  Future<void> _onRunAssessment(
+      _RunAssessment event, Emitter<AssessmentState> emit) async {
+    if (state.status == FormzSubmissionStatus.inProgress) return;
+
+    if (!event.patientRecord.isValid) {
+      emit(state.copyWith(
+          status: FormzSubmissionStatus.failure,
+          errorMessage: "Patient Record is invalid"));
     }
   }
 }

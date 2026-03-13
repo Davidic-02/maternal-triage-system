@@ -1,6 +1,9 @@
-/// Data model for a triage prediction result, including SHAP explanations.
+import 'package:json_annotation/json_annotation.dart';
+
+part 'risk_result.g.dart';
+
+@JsonSerializable()
 class RiskResult {
-  /// 0 = low, 1 = mid, 2 = high
   final int riskClass;
   final List<double> probabilities;
   final List<ShapFeature> shapFeatures;
@@ -24,7 +27,7 @@ class RiskResult {
     }
   }
 
-  String get recommendedAction {
+  String get recommendation {
     switch (riskClass) {
       case 0:
         return 'Routine monitoring. Schedule standard antenatal follow-up.';
@@ -36,14 +39,27 @@ class RiskResult {
         return 'Consult a healthcare provider.';
     }
   }
+
+  factory RiskResult.fromJson(Map<String, dynamic> json) =>
+      _$RiskResultFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RiskResultToJson(this);
 }
 
-/// A single SHAP feature contribution.
+@JsonSerializable()
 class ShapFeature {
   final String featureName;
   final double shapValue;
 
-  const ShapFeature({required this.featureName, required this.shapValue});
+  const ShapFeature({
+    required this.featureName,
+    required this.shapValue,
+  });
 
   bool get isPositive => shapValue >= 0;
+
+  factory ShapFeature.fromJson(Map<String, dynamic> json) =>
+      _$ShapFeatureFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ShapFeatureToJson(this);
 }

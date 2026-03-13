@@ -355,14 +355,14 @@ mixin _$AssessmentState {
             other is AssessmentState &&
             (identical(other.record, record) || other.record == record) &&
             (identical(other.result, result) || other.result == result) &&
-            const DeepCollectionEquality().equals(other.status, status) &&
+            (identical(other.status, status) || other.status == status) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, record, result,
-      const DeepCollectionEquality().hash(status), errorMessage);
+  int get hashCode =>
+      Object.hash(runtimeType, record, result, status, errorMessage);
 
   @override
   String toString() {
@@ -398,7 +398,7 @@ class _$AssessmentStateCopyWithImpl<$Res>
   $Res call({
     Object? record = freezed,
     Object? result = freezed,
-    Object? status = freezed,
+    Object? status = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_self.copyWith(
@@ -410,7 +410,7 @@ class _$AssessmentStateCopyWithImpl<$Res>
           ? _self.result
           : result // ignore: cast_nullable_to_non_nullable
               as RiskResult?,
-      status: freezed == status
+      status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as FormzSubmissionStatus,
@@ -623,14 +623,14 @@ class _AssessmentState extends AssessmentState {
             other is _AssessmentState &&
             (identical(other.record, record) || other.record == record) &&
             (identical(other.result, result) || other.result == result) &&
-            const DeepCollectionEquality().equals(other.status, status) &&
+            (identical(other.status, status) || other.status == status) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, record, result,
-      const DeepCollectionEquality().hash(status), errorMessage);
+  int get hashCode =>
+      Object.hash(runtimeType, record, result, status, errorMessage);
 
   @override
   String toString() {
@@ -668,7 +668,7 @@ class __$AssessmentStateCopyWithImpl<$Res>
   $Res call({
     Object? record = freezed,
     Object? result = freezed,
-    Object? status = freezed,
+    Object? status = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_AssessmentState(
@@ -680,7 +680,7 @@ class __$AssessmentStateCopyWithImpl<$Res>
           ? _self.result
           : result // ignore: cast_nullable_to_non_nullable
               as RiskResult?,
-      status: freezed == status
+      status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as FormzSubmissionStatus,
