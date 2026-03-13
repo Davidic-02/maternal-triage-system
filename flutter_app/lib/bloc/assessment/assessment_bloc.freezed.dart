@@ -288,6 +288,8 @@ abstract mixin class _$RunAssessmentCopyWith<$Res>
       __$RunAssessmentCopyWithImpl;
   @useResult
   $Res call({PatientRecord patientRecord});
+
+  $PatientRecordCopyWith<$Res> get patientRecord;
 }
 
 /// @nodoc
@@ -310,6 +312,16 @@ class __$RunAssessmentCopyWithImpl<$Res>
           : patientRecord // ignore: cast_nullable_to_non_nullable
               as PatientRecord,
     ));
+  }
+
+  /// Create a copy of AssessmentEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PatientRecordCopyWith<$Res> get patientRecord {
+    return $PatientRecordCopyWith<$Res>(_self.patientRecord, (value) {
+      return _then(_self.copyWith(patientRecord: value));
+    });
   }
 }
 
@@ -381,6 +393,8 @@ abstract mixin class $AssessmentStateCopyWith<$Res> {
       RiskResult? result,
       FormzSubmissionStatus status,
       String? errorMessage});
+
+  $PatientRecordCopyWith<$Res>? get record;
 }
 
 /// @nodoc
@@ -419,6 +433,20 @@ class _$AssessmentStateCopyWithImpl<$Res>
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
+  }
+
+  /// Create a copy of AssessmentState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PatientRecordCopyWith<$Res>? get record {
+    if (_self.record == null) {
+      return null;
+    }
+
+    return $PatientRecordCopyWith<$Res>(_self.record!, (value) {
+      return _then(_self.copyWith(record: value));
+    });
   }
 }
 
@@ -651,6 +679,9 @@ abstract mixin class _$AssessmentStateCopyWith<$Res>
       RiskResult? result,
       FormzSubmissionStatus status,
       String? errorMessage});
+
+  @override
+  $PatientRecordCopyWith<$Res>? get record;
 }
 
 /// @nodoc
@@ -689,6 +720,20 @@ class __$AssessmentStateCopyWithImpl<$Res>
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
+  }
+
+  /// Create a copy of AssessmentState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PatientRecordCopyWith<$Res>? get record {
+    if (_self.record == null) {
+      return null;
+    }
+
+    return $PatientRecordCopyWith<$Res>(_self.record!, (value) {
+      return _then(_self.copyWith(record: value));
+    });
   }
 }
 

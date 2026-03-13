@@ -18,7 +18,7 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
   final FirebaseService _firebaseService;
 
   AssessmentBloc({
-    InferenceService? infergitenceService,
+    InferenceService? inferenceService,
     ShapService? shapService,
     FirebaseService? firebaseService,
   })  : _inferenceService = inferenceService ?? InferenceService(),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'patient_record.freezed.dart';
 part 'patient_record.g.dart';
 
 class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
@@ -13,50 +14,25 @@ class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
   Timestamp toJson(DateTime date) => Timestamp.fromDate(date);
 }
 
-@JsonSerializable()
-class PatientRecord {
-  final String? id;
-  final double age;
-  final double systolicBP;
-  final double diastolicBP;
-  final double bloodSugar;
-  final double bodyTemp;
-  final double heartRate;
-  final double? weight;
-  final double? height;
-
-  @JsonKey(defaultValue: false)
-  final bool previousComplications;
-
-  @JsonKey(defaultValue: false)
-  final bool preexistingDiabetes;
-
-  @JsonKey(defaultValue: false)
-  final bool gestationalDiabetes;
-
-  @JsonKey(defaultValue: 'none')
-  final String mentalHealthStatus;
-
-  @TimestampConverter()
-  final DateTime createdAt;
-
-  const PatientRecord({
-    this.id,
-    required this.age,
-    required this.systolicBP,
-    required this.diastolicBP,
-    required this.bloodSugar,
-    required this.bodyTemp,
-    required this.heartRate,
-    this.weight,
-    this.height,
-    required this.previousComplications,
-    required this.preexistingDiabetes,
-    required this.gestationalDiabetes,
-    required this.mentalHealthStatus,
-    required this.createdAt,
-  });
-
+@freezed
+abstract class PatientRecord with _$PatientRecord {
+  const PatientRecord._();
+  const factory PatientRecord({
+    String? id,
+    required double age,
+    required double systolicBP,
+    required double diastolicBP,
+    required double bloodSugar,
+    required double bodyTemp,
+    required double heartRate,
+    double? weight,
+    double? height,
+    @Default(false) bool previousComplications,
+    @Default(false) bool preexistingDiabetes,
+    @Default(false) bool gestationalDiabetes,
+    @Default('none') String mentalHealthStatus,
+    @TimestampConverter() required DateTime createdAt,
+  }) = _PatientRecord;
   bool get isValid {
     if (age <= 0) return false;
     if (systolicBP <= 0 || diastolicBP <= 0) return false;
@@ -71,5 +47,6 @@ class PatientRecord {
   factory PatientRecord.fromJson(Map<String, dynamic> json) =>
       _$PatientRecordFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PatientRecordToJson(this);
+  factory PatientRecord.fromFirestore(Map<String, dynamic> json, String id) =>
+      PatientRecord.fromJson(json).copyWith(id: id);
 }

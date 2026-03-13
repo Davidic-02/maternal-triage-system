@@ -6,8 +6,8 @@ part of 'patient_record.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
-    PatientRecord(
+_PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
+    _PatientRecord(
       id: json['id'] as String?,
       age: (json['age'] as num).toDouble(),
       systolicBP: (json['systolicBP'] as num).toDouble(),
@@ -25,7 +25,7 @@ PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
           const TimestampConverter().fromJson(json['createdAt'] as Timestamp),
     );
 
-Map<String, dynamic> _$PatientRecordToJson(PatientRecord instance) =>
+Map<String, dynamic> _$PatientRecordToJson(_PatientRecord instance) =>
     <String, dynamic>{
       'id': instance.id,
       'age': instance.age,
