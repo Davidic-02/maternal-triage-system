@@ -212,3 +212,4 @@ ml_pipeline/data/raw/*.csv
 ml_pipeline/models/*.pkl
 *.pkl
 *.csv
+.dart_tool/
