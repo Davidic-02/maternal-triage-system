@@ -42,6 +42,49 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
       emit(state.copyWith(
           status: FormzSubmissionStatus.failure,
           errorMessage: "Patient Record is invalid"));
+      return;
     }
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+
+    try {
+      final inferenceResult = _inferenceService.predict(event.patientRecord);
+      final riskClass = inferenceResult['riskClass'] as int;
+      final probs = inferenceResult['probabilities'] as List<double>;
+
+      List<ShapFeature> shapFeatures = [];
+      if (_shapService.isLoaded) {
+        shapFeatures = _shapService.getLocalExplanation(
+            index: 0, predictedClass: riskClass);
+      }
+
+      final riskResult = RiskResult(
+          riskClass: riskClass,
+          probabilities: probs,
+          shapFeatures: shapFeatures);
+      await _firebaseService.saveRecord(event.patientRecord);
+      emit(state.copyWith(
+          status: FormzSubmissionStatus.success,
+          result: riskResult,
+          record: event.patientRecord,
+          errorMessage: null));
+    } catch (e) {
+      emit(state.copyWith(
+        status: FormzSubmissionStatus.failure,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  void _onClearAssessment(
+    _ClearAssessment event,
+    Emitter<AssessmentState> emit,
+  ) {
+    emit(const AssessmentState());
+  }
+
+  @override
+  Future<void> close() {
+    _inferenceService.dispose();
+    return super.close();
   }
 }
