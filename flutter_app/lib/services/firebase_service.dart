@@ -16,7 +16,7 @@ class FirebaseService {
 
   /// Saves a new [record] and returns the generated document ID.
   Future<String> saveRecord(PatientRecord record) async {
-    final ref = await _db.collection(_collection).add(record.toMap());
+    final ref = await _db.collection(_collection).add(record.toJson());
     return ref.id;
   }
 
@@ -27,7 +27,7 @@ class FirebaseService {
         .orderBy('createdAt', descending: true)
         .get();
     return snapshot.docs
-        .map((doc) => PatientRecord.fromMap(doc.data(), id: doc.id))
+        .map((doc) => PatientRecord.fromJson(doc.data()))
         .toList();
   }
 
@@ -38,7 +38,9 @@ class FirebaseService {
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snap) => snap.docs
-            .map((doc) => PatientRecord.fromMap(doc.data(), id: doc.id))
+            .map((doc) => PatientRecord.fromJson(
+                  doc.data(),
+                ))
             .toList());
   }
 
@@ -52,6 +54,6 @@ class FirebaseService {
     if (record.id == null) {
       throw ArgumentError('Record must have an ID to be updated.');
     }
-    await _db.collection(_collection).doc(record.id).update(record.toMap());
+    await _db.collection(_collection).doc(record.id).update(record.toJson());
   }
 }

@@ -1,14 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-
+import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'providers/assessment_provider.dart';
-import 'screens/data_entry_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/onboarding/login_screen.dart';
-import 'screens/result_screen.dart';
-import 'screens/onboarding/splash_screen.dart';
+import 'presentation/screens/data_entry_screen.dart';
+import 'presentation/screens/home_screen.dart';
+import 'presentation/screens/onboarding/login_screen.dart';
+import 'presentation/screens/result_screen.dart';
+import 'presentation/screens/onboarding/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,9 +38,9 @@ class MaternalTriageApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AssessmentProvider()),
+        BlocProvider(create: (context) => AssessmentBloc()),
       ],
       child: MaterialApp.router(
         title: 'Maternal Triage',

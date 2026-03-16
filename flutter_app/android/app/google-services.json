@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "101813985035",
+    "project_id": "maternal-care-dce44",
+    "storage_bucket": "maternal-care-dce44.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101813985035:android:fe7fc548e089a0092ccc0e",
+        "android_client_info": {
+          "package_name": "com.maternaltriage.maternal_triage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "101813985035-u9achsiu9adqhh9k40050d5jsh5k8pql.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.maternaltriage.maternal_triage",
+            "certificate_hash": "b4e2e05a04738f1950a19cbd08f0c9d3c89b5b6a"
+          }
+        },
+        {
+          "client_id": "101813985035-f49m1ictancopj1h5foiqtaj077r9pr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF1yp_upiy3h8EfVeCe4U5mRs5KXO8hKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101813985035-f49m1ictancopj1h5foiqtaj077r9pr1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "101813985035-gamun9b9tau29lc5mcg4junrtrip8d33.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.maternaltriage.maternalTriage"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
