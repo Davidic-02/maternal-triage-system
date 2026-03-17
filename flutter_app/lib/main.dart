@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
-import 'providers/assessment_provider.dart';
+import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
+import 'package:maternal_triage/firebase_options.dart';
+import 'package:maternal_triage/router/app_routes.dart';
+import 'package:maternal_triage/services/persistence_services.dart';
 import 'presentation/screens/data_entry_screen.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/onboarding/login_screen.dart';
@@ -12,44 +16,44 @@ import 'presentation/screens/onboarding/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MaternalTriageApp());
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  final assessmentBloc = AssessmentBloc();
+  await assessmentBloc.initialise();
+
+  runApp(MaternalTriageApp(assessmentBloc: assessmentBloc));
 }
 
-final _router = GoRouter(
-  initialLocation: '/',
-  routes: [
-    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
-    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-    GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
-    GoRoute(
-      path: '/assessment',
-      builder: (context, state) => const DataEntryScreen(),
-    ),
-    GoRoute(
-      path: '/result',
-      builder: (context, state) => const ResultScreen(),
-    ),
-  ],
-);
-
 class MaternalTriageApp extends StatelessWidget {
-  const MaternalTriageApp({super.key});
+  final AssessmentBloc assessmentBloc;
+
+  const MaternalTriageApp({
+    super.key,
+    required this.assessmentBloc,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => AssessmentBloc()),
-      ],
-      child: MaterialApp.router(
-        title: 'Maternal Triage',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-          useMaterial3: true,
-        ),
-        routerConfig: _router,
-      ),
-    );
+        providers: [
+          BlocProvider<AuthBloc>(
+            create: (_) =>
+                AuthBloc(FirebaseAuth.instance, PersistenceService()),
+          ),
+          BlocProvider<AssessmentBloc>.value(value: assessmentBloc),
+        ],
+        child: Builder(
+          builder: (context) {
+            final appRouter = AppRouter(
+              authBloc: context.read<AuthBloc>(),
+              assessmentBloc: context.read<AssessmentBloc>(),
+            );
+
+            return MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              routerConfig: appRouter.router,
+            );
+          },
+        ));
   }
 }
