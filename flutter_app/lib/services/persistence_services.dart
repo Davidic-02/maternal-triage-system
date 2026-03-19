@@ -9,6 +9,18 @@ class PersistenceService {
     return _manager;
   }
 
+  static const _themeKey = 'app_theme_mode';
+  Future<void> saveThemeMode(String theme) async {
+  await _ensurePreferenceLoaded();
+  _preferences!.setString(_themeKey, theme);
+}
+
+Future<String> getThemeMode() async {
+  await _ensurePreferenceLoaded();
+  return _preferences!.getString(_themeKey) ?? 'system';
+}
+
+
   Future<void> _ensurePreferenceLoaded() async {
     _manager._preferences ??= await SharedPreferences.getInstance();
   }
@@ -44,6 +56,10 @@ class PersistenceService {
     await _manager._ensurePreferenceLoaded();
     return _manager._preferences!.getBool(PrefKeys.onboardingComplete) ?? false;
   }
+
+
+
+
 
   // ─────────────────────────────────────────────────────────
 
