@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:formz/formz.dart';
+import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
 import 'package:maternal_triage/models/patient_record.dart';
 import 'package:maternal_triage/models/risk_result.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -16,12 +17,15 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
   final InferenceService _inferenceService;
   final ShapService _shapService;
   final FirebaseService _firebaseService;
+  final AuthBloc _authBloc;
 
   AssessmentBloc({
+    required AuthBloc authBloc,
     InferenceService? inferenceService,
     ShapService? shapService,
     FirebaseService? firebaseService,
-  })  : _inferenceService = inferenceService ?? InferenceService(),
+  })  : _authBloc = authBloc,
+        _inferenceService = inferenceService ?? InferenceService(),
         _shapService = shapService ?? ShapService(),
         _firebaseService = firebaseService ?? FirebaseService(),
         super(const AssessmentState()) {
@@ -47,7 +51,12 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
 
     try {
-      final inferenceResult = _inferenceService.predict(event.patientRecord);
+      final auditedRecord = event.patientRecord.copyWith(
+        assessedBy: _authBloc.state.userEmail,
+        createdAt: DateTime.now(),
+      );
+
+      final inferenceResult = _inferenceService.predict(auditedRecord);
       final riskClass = inferenceResult['riskClass'] as int;
       final probs = inferenceResult['probabilities'] as List<double>;
 
@@ -61,11 +70,12 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
           riskClass: riskClass,
           probabilities: probs,
           shapFeatures: shapFeatures);
-      await _firebaseService.saveRecord(event.patientRecord);
+      await _firebaseService.saveRecord(auditedRecord);
+
       emit(state.copyWith(
           status: FormzSubmissionStatus.success,
           result: riskResult,
-          record: event.patientRecord,
+          record: auditedRecord,
           errorMessage: null));
     } catch (e) {
       emit(state.copyWith(

@@ -27,7 +27,7 @@ class FirebaseService {
         .orderBy('createdAt', descending: true)
         .get();
     return snapshot.docs
-        .map((doc) => PatientRecord.fromJson(doc.data()))
+        .map((doc) => PatientRecord.fromFirestore(doc.data(), doc.id))
         .toList();
   }
 
@@ -38,9 +38,7 @@ class FirebaseService {
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snap) => snap.docs
-            .map((doc) => PatientRecord.fromJson(
-                  doc.data(),
-                ))
+            .map((doc) => PatientRecord.fromFirestore(doc.data(), doc.id))
             .toList());
   }
 

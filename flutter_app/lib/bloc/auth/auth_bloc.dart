@@ -43,10 +43,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       add(const AuthEvent.userChanged());
     });
   }
-  void _onInit(
+  Future<void> _onInit(
     _AuthEvent event,
     Emitter<AuthState> emit,
-  ) {
+  ) async {
+    final isSignedIn = await _persistenceService.getSignInStatus();
+    final onboardingComplete =
+        await _persistenceService.getOnboardingComplete();
+    if (isSignedIn) {
+      final email = await _persistenceService.getUserEmail();
+      emit(state.copyWith(
+        status: FormzSubmissionStatus.success,
+        userEmail: email,
+        onboardingComplete: onboardingComplete,
+      ));
+    } else {
+      emit(state.copyWith(
+        onboardingComplete: onboardingComplete,
+        status: FormzSubmissionStatus.initial,
+      ));
+    }
     emit(const AuthState());
   }
 

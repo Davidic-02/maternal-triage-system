@@ -23,6 +23,8 @@ _PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
       mentalHealthStatus: json['mentalHealthStatus'] as String? ?? 'none',
       createdAt:
           const TimestampConverter().fromJson(json['createdAt'] as Timestamp),
+      assessedBy: json['assessedBy'] as String?,
+      hospitalId: json['hospitalId'] as String?,
     );
 
 Map<String, dynamic> _$PatientRecordToJson(_PatientRecord instance) =>
@@ -41,4 +43,6 @@ Map<String, dynamic> _$PatientRecordToJson(_PatientRecord instance) =>
       'gestationalDiabetes': instance.gestationalDiabetes,
       'mentalHealthStatus': instance.mentalHealthStatus,
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
+      'assessedBy': instance.assessedBy,
+      'hospitalId': instance.hospitalId,
     };

@@ -29,6 +29,8 @@ mixin _$PatientRecord {
   String get mentalHealthStatus;
   @TimestampConverter()
   DateTime get createdAt;
+  String? get assessedBy;
+  String? get hospitalId;
 
   /// Create a copy of PatientRecord
   /// with the given fields replaced by the non-null parameter values.
@@ -69,7 +71,11 @@ mixin _$PatientRecord {
             (identical(other.mentalHealthStatus, mentalHealthStatus) ||
                 other.mentalHealthStatus == mentalHealthStatus) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.assessedBy, assessedBy) ||
+                other.assessedBy == assessedBy) &&
+            (identical(other.hospitalId, hospitalId) ||
+                other.hospitalId == hospitalId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -89,11 +95,13 @@ mixin _$PatientRecord {
       preexistingDiabetes,
       gestationalDiabetes,
       mentalHealthStatus,
-      createdAt);
+      createdAt,
+      assessedBy,
+      hospitalId);
 
   @override
   String toString() {
-    return 'PatientRecord(id: $id, age: $age, systolicBP: $systolicBP, diastolicBP: $diastolicBP, bloodSugar: $bloodSugar, bodyTemp: $bodyTemp, heartRate: $heartRate, weight: $weight, height: $height, previousComplications: $previousComplications, preexistingDiabetes: $preexistingDiabetes, gestationalDiabetes: $gestationalDiabetes, mentalHealthStatus: $mentalHealthStatus, createdAt: $createdAt)';
+    return 'PatientRecord(id: $id, age: $age, systolicBP: $systolicBP, diastolicBP: $diastolicBP, bloodSugar: $bloodSugar, bodyTemp: $bodyTemp, heartRate: $heartRate, weight: $weight, height: $height, previousComplications: $previousComplications, preexistingDiabetes: $preexistingDiabetes, gestationalDiabetes: $gestationalDiabetes, mentalHealthStatus: $mentalHealthStatus, createdAt: $createdAt, assessedBy: $assessedBy, hospitalId: $hospitalId)';
   }
 }
 
@@ -117,7 +125,9 @@ abstract mixin class $PatientRecordCopyWith<$Res> {
       bool preexistingDiabetes,
       bool gestationalDiabetes,
       String mentalHealthStatus,
-      @TimestampConverter() DateTime createdAt});
+      @TimestampConverter() DateTime createdAt,
+      String? assessedBy,
+      String? hospitalId});
 }
 
 /// @nodoc
@@ -147,6 +157,8 @@ class _$PatientRecordCopyWithImpl<$Res>
     Object? gestationalDiabetes = null,
     Object? mentalHealthStatus = null,
     Object? createdAt = null,
+    Object? assessedBy = freezed,
+    Object? hospitalId = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -205,6 +217,14 @@ class _$PatientRecordCopyWithImpl<$Res>
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      assessedBy: freezed == assessedBy
+          ? _self.assessedBy
+          : assessedBy // ignore: cast_nullable_to_non_nullable
+              as String?,
+      hospitalId: freezed == hospitalId
+          ? _self.hospitalId
+          : hospitalId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -316,7 +336,9 @@ extension PatientRecordPatterns on PatientRecord {
             bool preexistingDiabetes,
             bool gestationalDiabetes,
             String mentalHealthStatus,
-            @TimestampConverter() DateTime createdAt)?
+            @TimestampConverter() DateTime createdAt,
+            String? assessedBy,
+            String? hospitalId)?
         $default, {
     required TResult orElse(),
   }) {
@@ -337,7 +359,9 @@ extension PatientRecordPatterns on PatientRecord {
             _that.preexistingDiabetes,
             _that.gestationalDiabetes,
             _that.mentalHealthStatus,
-            _that.createdAt);
+            _that.createdAt,
+            _that.assessedBy,
+            _that.hospitalId);
       case _:
         return orElse();
     }
@@ -372,7 +396,9 @@ extension PatientRecordPatterns on PatientRecord {
             bool preexistingDiabetes,
             bool gestationalDiabetes,
             String mentalHealthStatus,
-            @TimestampConverter() DateTime createdAt)
+            @TimestampConverter() DateTime createdAt,
+            String? assessedBy,
+            String? hospitalId)
         $default,
   ) {
     final _that = this;
@@ -392,7 +418,9 @@ extension PatientRecordPatterns on PatientRecord {
             _that.preexistingDiabetes,
             _that.gestationalDiabetes,
             _that.mentalHealthStatus,
-            _that.createdAt);
+            _that.createdAt,
+            _that.assessedBy,
+            _that.hospitalId);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -426,7 +454,9 @@ extension PatientRecordPatterns on PatientRecord {
             bool preexistingDiabetes,
             bool gestationalDiabetes,
             String mentalHealthStatus,
-            @TimestampConverter() DateTime createdAt)?
+            @TimestampConverter() DateTime createdAt,
+            String? assessedBy,
+            String? hospitalId)?
         $default,
   ) {
     final _that = this;
@@ -446,7 +476,9 @@ extension PatientRecordPatterns on PatientRecord {
             _that.preexistingDiabetes,
             _that.gestationalDiabetes,
             _that.mentalHealthStatus,
-            _that.createdAt);
+            _that.createdAt,
+            _that.assessedBy,
+            _that.hospitalId);
       case _:
         return null;
     }
@@ -470,7 +502,9 @@ class _PatientRecord extends PatientRecord {
       this.preexistingDiabetes = false,
       this.gestationalDiabetes = false,
       this.mentalHealthStatus = 'none',
-      @TimestampConverter() required this.createdAt})
+      @TimestampConverter() required this.createdAt,
+      this.assessedBy,
+      this.hospitalId})
       : super._();
   factory _PatientRecord.fromJson(Map<String, dynamic> json) =>
       _$PatientRecordFromJson(json);
@@ -508,6 +542,10 @@ class _PatientRecord extends PatientRecord {
   @override
   @TimestampConverter()
   final DateTime createdAt;
+  @override
+  final String? assessedBy;
+  @override
+  final String? hospitalId;
 
   /// Create a copy of PatientRecord
   /// with the given fields replaced by the non-null parameter values.
@@ -552,7 +590,11 @@ class _PatientRecord extends PatientRecord {
             (identical(other.mentalHealthStatus, mentalHealthStatus) ||
                 other.mentalHealthStatus == mentalHealthStatus) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.assessedBy, assessedBy) ||
+                other.assessedBy == assessedBy) &&
+            (identical(other.hospitalId, hospitalId) ||
+                other.hospitalId == hospitalId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -572,11 +614,13 @@ class _PatientRecord extends PatientRecord {
       preexistingDiabetes,
       gestationalDiabetes,
       mentalHealthStatus,
-      createdAt);
+      createdAt,
+      assessedBy,
+      hospitalId);
 
   @override
   String toString() {
-    return 'PatientRecord(id: $id, age: $age, systolicBP: $systolicBP, diastolicBP: $diastolicBP, bloodSugar: $bloodSugar, bodyTemp: $bodyTemp, heartRate: $heartRate, weight: $weight, height: $height, previousComplications: $previousComplications, preexistingDiabetes: $preexistingDiabetes, gestationalDiabetes: $gestationalDiabetes, mentalHealthStatus: $mentalHealthStatus, createdAt: $createdAt)';
+    return 'PatientRecord(id: $id, age: $age, systolicBP: $systolicBP, diastolicBP: $diastolicBP, bloodSugar: $bloodSugar, bodyTemp: $bodyTemp, heartRate: $heartRate, weight: $weight, height: $height, previousComplications: $previousComplications, preexistingDiabetes: $preexistingDiabetes, gestationalDiabetes: $gestationalDiabetes, mentalHealthStatus: $mentalHealthStatus, createdAt: $createdAt, assessedBy: $assessedBy, hospitalId: $hospitalId)';
   }
 }
 
@@ -602,7 +646,9 @@ abstract mixin class _$PatientRecordCopyWith<$Res>
       bool preexistingDiabetes,
       bool gestationalDiabetes,
       String mentalHealthStatus,
-      @TimestampConverter() DateTime createdAt});
+      @TimestampConverter() DateTime createdAt,
+      String? assessedBy,
+      String? hospitalId});
 }
 
 /// @nodoc
@@ -632,6 +678,8 @@ class __$PatientRecordCopyWithImpl<$Res>
     Object? gestationalDiabetes = null,
     Object? mentalHealthStatus = null,
     Object? createdAt = null,
+    Object? assessedBy = freezed,
+    Object? hospitalId = freezed,
   }) {
     return _then(_PatientRecord(
       id: freezed == id
@@ -690,6 +738,14 @@ class __$PatientRecordCopyWithImpl<$Res>
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      assessedBy: freezed == assessedBy
+          ? _self.assessedBy
+          : assessedBy // ignore: cast_nullable_to_non_nullable
+              as String?,
+      hospitalId: freezed == hospitalId
+          ? _self.hospitalId
+          : hospitalId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }

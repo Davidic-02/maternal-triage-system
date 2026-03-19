@@ -6,6 +6,7 @@ abstract class AuthState with _$AuthState {
 
   const factory AuthState({
     String? userEmail,
+    bool? onboardingComplete,
     @Default(EmailFormz.pure()) EmailFormz email,
     @Default(PasswordFormz.pure()) PasswordFormz password,
     @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
