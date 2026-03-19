@@ -39,8 +39,14 @@ class _DataEntryScreenState extends State<DataEntryScreen> {
   @override
   void dispose() {
     for (final c in [
-      _ageCtrl, _sysCtrl, _diasCtrl, _bsCtrl,
-      _tempCtrl, _hrCtrl, _weightCtrl, _heightCtrl,
+      _ageCtrl,
+      _sysCtrl,
+      _diasCtrl,
+      _bsCtrl,
+      _tempCtrl,
+      _hrCtrl,
+      _weightCtrl,
+      _heightCtrl,
     ]) {
       c.dispose();
     }
@@ -57,8 +63,12 @@ class _DataEntryScreenState extends State<DataEntryScreen> {
       bloodSugar: double.parse(_bsCtrl.text),
       bodyTemp: double.parse(_tempCtrl.text),
       heartRate: double.parse(_hrCtrl.text),
-      weight: _weightCtrl.text.isNotEmpty ? double.tryParse(_weightCtrl.text) : null,
-      height: _heightCtrl.text.isNotEmpty ? double.tryParse(_heightCtrl.text) : null,
+      weight: _weightCtrl.text.isNotEmpty
+          ? double.tryParse(_weightCtrl.text)
+          : null,
+      height: _heightCtrl.text.isNotEmpty
+          ? double.tryParse(_heightCtrl.text)
+          : null,
       previousComplications: _prevComp,
       preexistingDiabetes: _preDiab,
       gestationalDiabetes: _gestDiab,
@@ -89,14 +99,21 @@ class _DataEntryScreenState extends State<DataEntryScreen> {
             children: [
               _sectionTitle('Vital Signs'),
               _numericField('Age (years)', _ageCtrl, Validators.validateAge),
-              _numericField('Systolic BP (mmHg)', _sysCtrl, Validators.validateSystolicBP),
-              _numericField('Diastolic BP (mmHg)', _diasCtrl, Validators.validateDiastolicBP),
-              _numericField('Blood Sugar (mmol/L)', _bsCtrl, Validators.validateBloodSugar),
-              _numericField('Body Temperature (°F)', _tempCtrl, Validators.validateBodyTemp),
-              _numericField('Heart Rate (bpm)', _hrCtrl, Validators.validateHeartRate),
+              _numericField('Systolic BP (mmHg)', _sysCtrl,
+                  Validators.validateSystolicBP),
+              _numericField('Diastolic BP (mmHg)', _diasCtrl,
+                  Validators.validateDiastolicBP),
+              _numericField('Blood Sugar (mmol/L)', _bsCtrl,
+                  Validators.validateBloodSugar),
+              _numericField('Body Temperature (°F)', _tempCtrl,
+                  Validators.validateBodyTemp),
+              _numericField(
+                  'Heart Rate (bpm)', _hrCtrl, Validators.validateHeartRate),
               _sectionTitle('Anthropometrics (optional)'),
-              _numericField('Weight (kg)', _weightCtrl, Validators.validateWeight),
-              _numericField('Height (m)', _heightCtrl, Validators.validateHeight),
+              _numericField(
+                  'Weight (kg)', _weightCtrl, Validators.validateWeight),
+              _numericField(
+                  'Height (m)', _heightCtrl, Validators.validateHeight),
               _sectionTitle('Clinical History'),
               _toggleRow('Previous Complications', _prevComp,
                   (v) => setState(() => _prevComp = v)),
@@ -167,7 +184,10 @@ class _DataEntryScreenState extends State<DataEntryScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label),
-            Switch(value: value, onChanged: onChanged, activeThumbColor: Colors.teal),
+            Switch(
+                value: value,
+                onChanged: onChanged,
+                activeThumbColor: Colors.teal),
           ],
         ),
       );

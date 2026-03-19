@@ -5,7 +5,7 @@ class ThemeService {
   static final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(
     ThemeMode.system,
   );
-  static final PersistenceService _persistenceService = _persistenceService;
+  static final PersistenceService _persistenceService = PersistenceService();
 
   static Future<void> initializeTheme() async {
     final savedTheme = await _persistenceService.getThemeMode();

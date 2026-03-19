@@ -1,5 +1,5 @@
-import '../config/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/pref_keys.dart';
 
 class PersistenceService {
   static final PersistenceService _manager = PersistenceService._internal();
@@ -9,16 +9,13 @@ class PersistenceService {
     return _manager;
   }
 
-  //This makes sure preference is loaded.
   Future<void> _ensurePreferenceLoaded() async {
     _manager._preferences ??= await SharedPreferences.getInstance();
   }
 
   Future<bool> getSignInStatus() async {
     await _manager._ensurePreferenceLoaded();
-    return Future.value(
-      _manager._preferences!.getBool(PrefKeys.signInStatusKey) ?? false,
-    );
+    return _manager._preferences!.getBool(PrefKeys.signInStatusKey) ?? false;
   }
 
   Future<void> saveSignInStatus(bool signInStatus) async {
@@ -36,43 +33,26 @@ class PersistenceService {
     return _manager._preferences!.getString(PrefKeys.userEmail);
   }
 
-  Future<void> saveUserName(String userName) async {
+  // ─── add these two methods ───────────────────────────────
+
+  Future<void> saveOnboardingComplete() async {
     await _manager._ensurePreferenceLoaded();
-    _manager._preferences!.setString(PrefKeys.userName, userName);
+    _manager._preferences!.setBool(PrefKeys.onboardingComplete, true);
   }
 
-  Future<String?> getUserName() async {
+  Future<bool> getOnboardingComplete() async {
     await _manager._ensurePreferenceLoaded();
-    return _manager._preferences!.getString(PrefKeys.userName);
+    return _manager._preferences!.getBool(PrefKeys.onboardingComplete) ?? false;
   }
 
-  Future<void> saveThemeMode(String themeMode) async {
-    await _manager._ensurePreferenceLoaded();
-    _manager._preferences!.setString(PrefKeys.themeMode, themeMode);
-  }
-
-  Future<String?> getThemeMode() async {
-    await _manager._ensurePreferenceLoaded();
-    return _manager._preferences!.getString(PrefKeys.themeMode);
-  }
-
-  Future<void> saveHasShownLocationRationale(bool value) async {
-    await _manager._ensurePreferenceLoaded();
-    _manager._preferences!.setBool(PrefKeys.hasShownLocationRationale, value);
-  }
-
-  Future<bool> getHasShownLocationRationale() async {
-    await _manager._ensurePreferenceLoaded();
-    return _manager._preferences!.getBool(PrefKeys.hasShownLocationRationale) ??
-        false;
-  }
+  // ─────────────────────────────────────────────────────────
 
   Future<void> signOut() async {
     await _manager._ensurePreferenceLoaded();
     await _manager._preferences!.remove(PrefKeys.userEmail);
-    await _manager._preferences!.remove(PrefKeys.userUuid);
-    await _manager._preferences!.remove(PrefKeys.userName);
     await _manager._preferences!.remove(PrefKeys.signInStatusKey);
+    // note: we do NOT remove onboardingComplete on signout
+    // onboarding should only show once ever, not on every login
   }
 
   PersistenceService._internal();

@@ -894,6 +894,7 @@ class _SessionExpired implements AuthEvent {
 /// @nodoc
 mixin _$AuthState {
   String? get userEmail;
+  bool? get onboardingComplete;
   EmailFormz get email;
   PasswordFormz get password;
   FormzSubmissionStatus get status;
@@ -915,6 +916,8 @@ mixin _$AuthState {
             other is AuthState &&
             (identical(other.userEmail, userEmail) ||
                 other.userEmail == userEmail) &&
+            (identical(other.onboardingComplete, onboardingComplete) ||
+                other.onboardingComplete == onboardingComplete) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
                 other.password == password) &&
@@ -928,12 +931,12 @@ mixin _$AuthState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, userEmail, email, password,
-      status, loginStatus, forgotPasswordStatus, errorMessage);
+  int get hashCode => Object.hash(runtimeType, userEmail, onboardingComplete,
+      email, password, status, loginStatus, forgotPasswordStatus, errorMessage);
 
   @override
   String toString() {
-    return 'AuthState(userEmail: $userEmail, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
+    return 'AuthState(userEmail: $userEmail, onboardingComplete: $onboardingComplete, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
   }
 }
 
@@ -944,6 +947,7 @@ abstract mixin class $AuthStateCopyWith<$Res> {
   @useResult
   $Res call(
       {String? userEmail,
+      bool? onboardingComplete,
       EmailFormz email,
       PasswordFormz password,
       FormzSubmissionStatus status,
@@ -965,6 +969,7 @@ class _$AuthStateCopyWithImpl<$Res> implements $AuthStateCopyWith<$Res> {
   @override
   $Res call({
     Object? userEmail = freezed,
+    Object? onboardingComplete = freezed,
     Object? email = null,
     Object? password = null,
     Object? status = null,
@@ -977,6 +982,10 @@ class _$AuthStateCopyWithImpl<$Res> implements $AuthStateCopyWith<$Res> {
           ? _self.userEmail
           : userEmail // ignore: cast_nullable_to_non_nullable
               as String?,
+      onboardingComplete: freezed == onboardingComplete
+          ? _self.onboardingComplete
+          : onboardingComplete // ignore: cast_nullable_to_non_nullable
+              as bool?,
       email: null == email
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -1100,6 +1109,7 @@ extension AuthStatePatterns on AuthState {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             String? userEmail,
+            bool? onboardingComplete,
             EmailFormz email,
             PasswordFormz password,
             FormzSubmissionStatus status,
@@ -1114,6 +1124,7 @@ extension AuthStatePatterns on AuthState {
       case _AuthState() when $default != null:
         return $default(
             _that.userEmail,
+            _that.onboardingComplete,
             _that.email,
             _that.password,
             _that.status,
@@ -1142,6 +1153,7 @@ extension AuthStatePatterns on AuthState {
   TResult when<TResult extends Object?>(
     TResult Function(
             String? userEmail,
+            bool? onboardingComplete,
             EmailFormz email,
             PasswordFormz password,
             FormzSubmissionStatus status,
@@ -1155,6 +1167,7 @@ extension AuthStatePatterns on AuthState {
       case _AuthState():
         return $default(
             _that.userEmail,
+            _that.onboardingComplete,
             _that.email,
             _that.password,
             _that.status,
@@ -1182,6 +1195,7 @@ extension AuthStatePatterns on AuthState {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
             String? userEmail,
+            bool? onboardingComplete,
             EmailFormz email,
             PasswordFormz password,
             FormzSubmissionStatus status,
@@ -1195,6 +1209,7 @@ extension AuthStatePatterns on AuthState {
       case _AuthState() when $default != null:
         return $default(
             _that.userEmail,
+            _that.onboardingComplete,
             _that.email,
             _that.password,
             _that.status,
@@ -1212,6 +1227,7 @@ extension AuthStatePatterns on AuthState {
 class _AuthState extends AuthState {
   const _AuthState(
       {this.userEmail,
+      this.onboardingComplete,
       this.email = const EmailFormz.pure(),
       this.password = const PasswordFormz.pure(),
       this.status = FormzSubmissionStatus.initial,
@@ -1222,6 +1238,8 @@ class _AuthState extends AuthState {
 
   @override
   final String? userEmail;
+  @override
+  final bool? onboardingComplete;
   @override
   @JsonKey()
   final EmailFormz email;
@@ -1255,6 +1273,8 @@ class _AuthState extends AuthState {
             other is _AuthState &&
             (identical(other.userEmail, userEmail) ||
                 other.userEmail == userEmail) &&
+            (identical(other.onboardingComplete, onboardingComplete) ||
+                other.onboardingComplete == onboardingComplete) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
                 other.password == password) &&
@@ -1268,12 +1288,12 @@ class _AuthState extends AuthState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, userEmail, email, password,
-      status, loginStatus, forgotPasswordStatus, errorMessage);
+  int get hashCode => Object.hash(runtimeType, userEmail, onboardingComplete,
+      email, password, status, loginStatus, forgotPasswordStatus, errorMessage);
 
   @override
   String toString() {
-    return 'AuthState(userEmail: $userEmail, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
+    return 'AuthState(userEmail: $userEmail, onboardingComplete: $onboardingComplete, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
   }
 }
 
@@ -1287,6 +1307,7 @@ abstract mixin class _$AuthStateCopyWith<$Res>
   @useResult
   $Res call(
       {String? userEmail,
+      bool? onboardingComplete,
       EmailFormz email,
       PasswordFormz password,
       FormzSubmissionStatus status,
@@ -1308,6 +1329,7 @@ class __$AuthStateCopyWithImpl<$Res> implements _$AuthStateCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? userEmail = freezed,
+    Object? onboardingComplete = freezed,
     Object? email = null,
     Object? password = null,
     Object? status = null,
@@ -1320,6 +1342,10 @@ class __$AuthStateCopyWithImpl<$Res> implements _$AuthStateCopyWith<$Res> {
           ? _self.userEmail
           : userEmail // ignore: cast_nullable_to_non_nullable
               as String?,
+      onboardingComplete: freezed == onboardingComplete
+          ? _self.onboardingComplete
+          : onboardingComplete // ignore: cast_nullable_to_non_nullable
+              as bool?,
       email: null == email
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable

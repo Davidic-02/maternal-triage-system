@@ -32,6 +32,8 @@ abstract class PatientRecord with _$PatientRecord {
     @Default(false) bool gestationalDiabetes,
     @Default('none') String mentalHealthStatus,
     @TimestampConverter() required DateTime createdAt,
+    String? assessedBy,
+    String? hospitalId,
   }) = _PatientRecord;
   bool get isValid {
     if (age <= 0) return false;
