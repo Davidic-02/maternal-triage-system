@@ -71,7 +71,6 @@ class AppRouter {
     final isLoggedIn = (authStatus == FormzSubmissionStatus.success &&
             authBloc.state.userEmail != null) ||
         persistedSignIn;
-    ;
     final location = state.matchedLocation;
     final onSplash = location == '/';
     final onOnboarding = location == '/onboarding';

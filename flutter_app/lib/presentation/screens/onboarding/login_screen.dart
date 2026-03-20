@@ -71,8 +71,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.emailAddress,
-                  validator: (v) =>
-                      (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
+                  validator: (v) => (v == null || !v.contains('@'))
+                      ? 'Enter a valid email'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -100,7 +101,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           backgroundColor: Colors.teal,
                           foregroundColor: Colors.white,
                         ),
-                        child: const Text('Sign In', style: TextStyle(fontSize: 16)),
+                        child: const Text('Sign In',
+                            style: TextStyle(fontSize: 16)),
                       ),
               ],
             ),

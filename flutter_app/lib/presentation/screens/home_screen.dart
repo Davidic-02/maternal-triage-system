@@ -87,7 +87,8 @@ class _RecordTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: const Icon(Icons.person, color: Colors.teal),
-        title: Text('Age ${record.age.toStringAsFixed(0)} · BP ${record.systolicBP.toStringAsFixed(0)}/${record.diastolicBP.toStringAsFixed(0)}'),
+        title: Text(
+            'Age ${record.age.toStringAsFixed(0)} · BP ${record.systolicBP.toStringAsFixed(0)}/${record.diastolicBP.toStringAsFixed(0)}'),
         subtitle: Text(
           record.createdAt.toLocal().toString().split('.').first,
         ),

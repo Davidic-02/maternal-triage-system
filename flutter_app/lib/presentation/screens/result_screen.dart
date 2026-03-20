@@ -49,7 +49,8 @@ class ResultScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                     ...['Low', 'Mid', 'High'].asMap().entries.map((e) {
                       final pct = result.probabilities.length > e.key
-                          ? (result.probabilities[e.key] * 100).toStringAsFixed(1)
+                          ? (result.probabilities[e.key] * 100)
+                              .toStringAsFixed(1)
                           : '—';
                       return Text('${e.value}: $pct%');
                     }),
@@ -61,15 +62,15 @@ class ResultScreen extends StatelessWidget {
             // Recommended action
             Card(
               color: Colors.teal.shade50,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
+              child: const Padding(
+                padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Recommended Action',
+                    Text('Recommended Action',
                         style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    Text(result.recommendedAction),
+                    SizedBox(height: 8),
+                    //   Text(result.recommendedAction),
                   ],
                 ),
               ),

@@ -30,6 +30,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     Emitter<OnboardingState> emit,
   ) async {
     await _persistenceService.saveOnboardingComplete();
-    // navigation is handled by BlocListener in the screen
+    emit(state.copyWith(isCompleted: true));
   }
 }
