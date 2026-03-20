@@ -380,6 +380,7 @@ class _Completed implements OnboardingEvent {
 mixin _$OnboardingState {
   int get currentPage;
   bool get hasAcceptedTerms;
+  bool get isCompleted;
 
   /// Create a copy of OnboardingState
   /// with the given fields replaced by the non-null parameter values.
@@ -397,15 +398,18 @@ mixin _$OnboardingState {
             (identical(other.currentPage, currentPage) ||
                 other.currentPage == currentPage) &&
             (identical(other.hasAcceptedTerms, hasAcceptedTerms) ||
-                other.hasAcceptedTerms == hasAcceptedTerms));
+                other.hasAcceptedTerms == hasAcceptedTerms) &&
+            (identical(other.isCompleted, isCompleted) ||
+                other.isCompleted == isCompleted));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, currentPage, hasAcceptedTerms);
+  int get hashCode =>
+      Object.hash(runtimeType, currentPage, hasAcceptedTerms, isCompleted);
 
   @override
   String toString() {
-    return 'OnboardingState(currentPage: $currentPage, hasAcceptedTerms: $hasAcceptedTerms)';
+    return 'OnboardingState(currentPage: $currentPage, hasAcceptedTerms: $hasAcceptedTerms, isCompleted: $isCompleted)';
   }
 }
 
@@ -415,7 +419,7 @@ abstract mixin class $OnboardingStateCopyWith<$Res> {
           OnboardingState value, $Res Function(OnboardingState) _then) =
       _$OnboardingStateCopyWithImpl;
   @useResult
-  $Res call({int currentPage, bool hasAcceptedTerms});
+  $Res call({int currentPage, bool hasAcceptedTerms, bool isCompleted});
 }
 
 /// @nodoc
@@ -433,6 +437,7 @@ class _$OnboardingStateCopyWithImpl<$Res>
   $Res call({
     Object? currentPage = null,
     Object? hasAcceptedTerms = null,
+    Object? isCompleted = null,
   }) {
     return _then(_self.copyWith(
       currentPage: null == currentPage
@@ -442,6 +447,10 @@ class _$OnboardingStateCopyWithImpl<$Res>
       hasAcceptedTerms: null == hasAcceptedTerms
           ? _self.hasAcceptedTerms
           : hasAcceptedTerms // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isCompleted: null == isCompleted
+          ? _self.isCompleted
+          : isCompleted // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -540,13 +549,15 @@ extension OnboardingStatePatterns on OnboardingState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(int currentPage, bool hasAcceptedTerms)? $default, {
+    TResult Function(int currentPage, bool hasAcceptedTerms, bool isCompleted)?
+        $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _OnboardingState() when $default != null:
-        return $default(_that.currentPage, _that.hasAcceptedTerms);
+        return $default(
+            _that.currentPage, _that.hasAcceptedTerms, _that.isCompleted);
       case _:
         return orElse();
     }
@@ -567,12 +578,14 @@ extension OnboardingStatePatterns on OnboardingState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(int currentPage, bool hasAcceptedTerms) $default,
+    TResult Function(int currentPage, bool hasAcceptedTerms, bool isCompleted)
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _OnboardingState():
-        return $default(_that.currentPage, _that.hasAcceptedTerms);
+        return $default(
+            _that.currentPage, _that.hasAcceptedTerms, _that.isCompleted);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -592,12 +605,14 @@ extension OnboardingStatePatterns on OnboardingState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(int currentPage, bool hasAcceptedTerms)? $default,
+    TResult? Function(int currentPage, bool hasAcceptedTerms, bool isCompleted)?
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _OnboardingState() when $default != null:
-        return $default(_that.currentPage, _that.hasAcceptedTerms);
+        return $default(
+            _that.currentPage, _that.hasAcceptedTerms, _that.isCompleted);
       case _:
         return null;
     }
@@ -607,7 +622,10 @@ extension OnboardingStatePatterns on OnboardingState {
 /// @nodoc
 
 class _OnboardingState implements OnboardingState {
-  const _OnboardingState({this.currentPage = 0, this.hasAcceptedTerms = false});
+  const _OnboardingState(
+      {this.currentPage = 0,
+      this.hasAcceptedTerms = false,
+      this.isCompleted = false});
 
   @override
   @JsonKey()
@@ -615,6 +633,9 @@ class _OnboardingState implements OnboardingState {
   @override
   @JsonKey()
   final bool hasAcceptedTerms;
+  @override
+  @JsonKey()
+  final bool isCompleted;
 
   /// Create a copy of OnboardingState
   /// with the given fields replaced by the non-null parameter values.
@@ -632,15 +653,18 @@ class _OnboardingState implements OnboardingState {
             (identical(other.currentPage, currentPage) ||
                 other.currentPage == currentPage) &&
             (identical(other.hasAcceptedTerms, hasAcceptedTerms) ||
-                other.hasAcceptedTerms == hasAcceptedTerms));
+                other.hasAcceptedTerms == hasAcceptedTerms) &&
+            (identical(other.isCompleted, isCompleted) ||
+                other.isCompleted == isCompleted));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, currentPage, hasAcceptedTerms);
+  int get hashCode =>
+      Object.hash(runtimeType, currentPage, hasAcceptedTerms, isCompleted);
 
   @override
   String toString() {
-    return 'OnboardingState(currentPage: $currentPage, hasAcceptedTerms: $hasAcceptedTerms)';
+    return 'OnboardingState(currentPage: $currentPage, hasAcceptedTerms: $hasAcceptedTerms, isCompleted: $isCompleted)';
   }
 }
 
@@ -652,7 +676,7 @@ abstract mixin class _$OnboardingStateCopyWith<$Res>
       __$OnboardingStateCopyWithImpl;
   @override
   @useResult
-  $Res call({int currentPage, bool hasAcceptedTerms});
+  $Res call({int currentPage, bool hasAcceptedTerms, bool isCompleted});
 }
 
 /// @nodoc
@@ -670,6 +694,7 @@ class __$OnboardingStateCopyWithImpl<$Res>
   $Res call({
     Object? currentPage = null,
     Object? hasAcceptedTerms = null,
+    Object? isCompleted = null,
   }) {
     return _then(_OnboardingState(
       currentPage: null == currentPage
@@ -679,6 +704,10 @@ class __$OnboardingStateCopyWithImpl<$Res>
       hasAcceptedTerms: null == hasAcceptedTerms
           ? _self.hasAcceptedTerms
           : hasAcceptedTerms // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isCompleted: null == isCompleted
+          ? _self.isCompleted
+          : isCompleted // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
