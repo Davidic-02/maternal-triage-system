@@ -22,24 +22,21 @@ class OnboardingPage extends StatelessWidget {
         children: [
           LottieBuilder.asset(
             animationPath,
-            width: 200,
-            height: 200,
+            width: 280,
+            height: 280,
             repeat: true,
             animate: true,
           ),
           const SizedBox(height: 32),
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           Text(
             description,
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
+            style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
         ],

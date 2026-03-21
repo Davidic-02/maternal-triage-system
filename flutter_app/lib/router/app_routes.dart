@@ -1,16 +1,18 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
-import 'package:maternal_triage/presentation/screens/data_entry_screen.dart';
 import 'package:maternal_triage/presentation/screens/onboarding/forgot_password_screen.dart';
 import 'package:maternal_triage/presentation/screens/onboarding/login_screen.dart';
 import 'package:maternal_triage/presentation/screens/onboarding/onboarding_screen.dart';
+import 'package:maternal_triage/presentation/screens/onboarding/splash_screen.dart';
+import 'package:maternal_triage/presentation/screens/triadge_screen.dart';
+import 'package:maternal_triage/presentation/screens/data_entry_screen.dart';
+import 'package:maternal_triage/presentation/screens/resources_screen.dart';
 import 'package:maternal_triage/presentation/screens/result_screen.dart';
-import 'package:maternal_triage/screens/onboarding/splash_screen.dart';
+import 'package:maternal_triage/presentation/widget/main_screen.dart';
 import 'package:maternal_triage/services/persistence_services.dart';
 
 class AppRouter {
@@ -25,52 +27,95 @@ class AppRouter {
   }) : _persistenceService = persistenceService ?? PersistenceService();
 
   late final router = GoRouter(
-      initialLocation: '/login',
-      refreshListenable: GoRouterRefreshStream(authBloc.stream),
-      redirect: _guard,
-      routes: [
-        GoRoute(
-          path: '/',
-          name: 'splash',
-          builder: (context, state) => const SplashScreen(),
-        ),
-        GoRoute(
-          path: '/onboarding',
-          name: 'onboarding',
-          builder: (context, state) => const OnboardingScreen(),
-        ),
-        GoRoute(
-          path: '/login',
-          name: 'login',
-          builder: (context, state) => const LoginScreen(),
-          routes: [
-            GoRoute(
-              path: 'forgot-password', // becomes /login/forgot-password
-              name: 'forgot-password',
-              builder: (context, state) => const ForgotPasswordScreen(),
-            ),
-          ],
-        ),
-        GoRoute(
-          path: '/assessment',
-          name: 'assessment',
-          builder: (context, state) => const DataEntryScreen(),
-        ),
-        GoRoute(
-          path: '/results',
-          name: 'results',
-          builder: (context, state) => const ResultScreen(),
-        ),
-      ]);
+    initialLocation: '/',
+    refreshListenable: GoRouterRefreshStream(authBloc.stream),
+    redirect: _guard,
+    routes: [
+      // ── outside shell ──────────────────────────
+      GoRoute(
+        path: '/',
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        name: 'onboarding',
+        builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/login',
+        name: 'login',
+        builder: (context, state) => const LoginScreen(),
+        routes: [
+          GoRoute(
+            path: 'forgot-password',
+            name: 'forgot-password',
+            builder: (context, state) => const ForgotPasswordScreen(),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/results',
+        name: 'results',
+        builder: (context, state) => const ResultScreen(),
+      ),
+
+      // ── shell ──────────────────────────────────
+      ShellRoute(
+        builder: (context, state, child) => MainScreen(child: child),
+        routes: [
+          GoRoute(
+            path: '/triage',
+            name: 'triage',
+            builder: (context, state) => const TriadgeScreen(),
+            routes: [
+              GoRoute(
+                path: ':id',
+                name: 'patient-detail',
+                builder: (context, state) => PatientDetailScreen(
+                  patientId: state.pathParameters['id']!,
+                ),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/assessment',
+            name: 'assessment',
+            builder: (context, state) => const DataEntryScreen(),
+          ),
+          GoRoute(
+            path: '/resources',
+            name: 'resources',
+            builder: (context, state) => const ResourcesScreen(),
+          ),
+          GoRoute(
+            path: '/history',
+            name: 'history',
+            builder: (context, state) => const HistoryScreen(),
+            routes: [
+              GoRoute(
+                path: ':id',
+                name: 'history-detail',
+                builder: (context, state) => PatientDetailScreen(
+                  patientId: state.pathParameters['id']!,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  );
 
   Future<String?> _guard(BuildContext context, GoRouterState state) async {
     final onboardingComplete =
         await _persistenceService.getOnboardingComplete();
     final persistedSignIn = await _persistenceService.getSignInStatus();
-    final authStatus = authBloc.state.status;
-    final isLoggedIn = (authStatus == FormzSubmissionStatus.success &&
-            authBloc.state.userEmail != null) ||
-        persistedSignIn;
+    final isLoggedIn =
+        (authBloc.state.status == FormzSubmissionStatus.success &&
+                authBloc.state.userEmail != null) ||
+            persistedSignIn;
+
     final location = state.matchedLocation;
     final onSplash = location == '/';
     final onOnboarding = location == '/onboarding';
@@ -80,13 +125,14 @@ class AppRouter {
     if (onSplash) return null;
     if (!onboardingComplete && !onOnboarding) return '/onboarding';
     if (onboardingComplete && !isLoggedIn && !onAuthPages) return '/login';
-    if (isLoggedIn && onAuthPages) return '/assessment';
+    if (isLoggedIn && onAuthPages) return '/triage'; // ✅ triage is home base
     return null;
   }
 }
 
 class GoRouterRefreshStream extends ChangeNotifier {
   late final StreamSubscription _subscription;
+
   GoRouterRefreshStream(Stream<dynamic> stream) {
     _subscription = stream.listen((_) => notifyListeners());
   }

@@ -11,9 +11,9 @@ dependencies:
     sdk: flutter
 
   # Firebase
-  firebase_core: ^2.24.2
-  firebase_auth: ^4.15.3
-  cloud_firestore: ^4.13.6
+  firebase_core: ^4.4.0
+  firebase_auth: ^6.2.0
+  cloud_firestore: ^6.1.0
 
   # AI / Data
   onnxruntime: ^1.4.1
@@ -39,6 +39,7 @@ dependencies:
   dio: ^5.9.2
   google_fonts: ^8.0.2
   lottie: ^3.3.2
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   flutter_test:
@@ -53,10 +54,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    # AI Models
     - assets/models/
     - assets/shap/
     - assets/scaler/
     - assets/animations/
-
-  

@@ -41,15 +41,16 @@ class OnboardingScreen extends HookWidget {
                       OnboardingPage(
                         title: 'Maternal Triage Assistant',
                         description:
-                            'flutter_app/assets/animations/Hero animation for health care.json',
-                        animationPath: 'assets/animations/intro.json',
+                            'Your intelligent maternal health companion for fast, accurate triage decisions.',
+                        animationPath:
+                            'assets/animations/Hero animation for health care.json', // ← path goes here
                       ),
                       OnboardingPage(
                         title: 'How It Works',
                         description:
                             'Fill the patient form, run the AI model, review SHAP explanation, save the record.',
                         animationPath:
-                            'flutter_app/assets/animations/Medical Icon Prescription.json',
+                            'assets/animations/Medical Icon Prescription.json',
                       ),
                     ],
                   ),
