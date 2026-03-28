@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maternal_triage/bloc/onboarding/onboarding_bloc.dart';
+import 'package:maternal_triage/presentation/widget/button.dart';
 import 'package:maternal_triage/presentation/widget/onboarding_page.dart';
 import 'package:maternal_triage/presentation/widget/terms_page.dart';
+import 'package:maternal_triage/router/app_routes.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends HookWidget {
@@ -18,87 +20,87 @@ class OnboardingScreen extends HookWidget {
     return BlocProvider(
       create: (_) => OnboardingBloc(),
       child: BlocConsumer<OnboardingBloc, OnboardingState>(
-          builder: (context, state) {
-        final isLastPage = state.currentPage == 2;
-
-        return Scaffold(
+        listener: (context, state) {
+          if (state.isCompleted == true) {
+            context.go(AppRoutes.login);
+          }
+        },
+        builder: (context, state) {
+          final isLastPage = state.currentPage == 2;
+          return Scaffold(
             body: SafeArea(
-                child: Column(children: [
-          Expanded(
-            child: isLastPage
-                ? TermsPage(
-                    accepted: state.hasAcceptedTerms,
-                    onAccepted: (val) => context
-                        .read<OnboardingBloc>()
-                        .add(OnboardingEvent.termsAccepted(val)),
-                  )
-                : PageView(
-                    controller: pageController,
-                    onPageChanged: (index) => context
-                        .read<OnboardingBloc>()
-                        .add(OnboardingEvent.pageChanged(index)),
-                    children: const [
-                      OnboardingPage(
-                        title: 'Maternal Triage Assistant',
-                        description:
-                            'flutter_app/assets/animations/Hero animation for health care.json',
-                        animationPath: 'assets/animations/intro.json',
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 34),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: PageView(
+                        controller: pageController,
+                        onPageChanged: (index) => context
+                            .read<OnboardingBloc>()
+                            .add(OnboardingEvent.pageChanged(index)),
+                        children: [
+                          const OnboardingPage(
+                            title: 'Maternal Triage Assistant',
+                            description:
+                                'Your intelligent maternal health companion for fast, accurate triage decisions.',
+                            animationPath:
+                                'assets/animations/Hero animation for health care.json',
+                          ),
+                          const OnboardingPage(
+                            title: 'How It Works',
+                            description:
+                                'Fill the patient form, run the AI model, review SHAP explanation, save the record.',
+                            animationPath:
+                                'assets/animations/Medical Icon Prescription.json',
+                          ),
+                          TermsPage(
+                            accepted: state.hasAcceptedTerms,
+                            onAccepted: (val) => context
+                                .read<OnboardingBloc>()
+                                .add(OnboardingEvent.termsAccepted(val)),
+                          )
+                        ],
                       ),
-                      OnboardingPage(
-                        title: 'How It Works',
-                        description:
-                            'Fill the patient form, run the AI model, review SHAP explanation, save the record.',
-                        animationPath:
-                            'flutter_app/assets/animations/Medical Icon Prescription.json',
+                    ),
+                    if (!isLastPage)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: SmoothPageIndicator(
+                          controller: pageController,
+                          count: 3,
+                          effect: const ExpandingDotsEffect(
+                            activeDotColor: Colors.green,
+                            dotColor: Colors.grey,
+                            dotHeight: 10, // inactive size
+                            dotWidth: 10, // inactive size
+                            expansionFactor: 2.5, // ← active dot is 2.5x wider
+                            spacing: 8,
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-          ),
-
-          // smooth page indicator
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: SmoothPageIndicator(
-              controller: pageController,
-              count: 3,
-              effect: ExpandingDotsEffect(
-                activeDotColor: Theme.of(context).colorScheme.primary,
-                dotHeight: 8,
-                dotWidth: 16,
-                spacing: 8,
-                expansionFactor: 3,
+                    if (isLastPage)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 32),
+                        child: SizedBox(
+                            width: double.infinity,
+                            child: Button(
+                              'Get Started',
+                              onPressed: !state.hasAcceptedTerms
+                                  ? null
+                                  : () => context
+                                      .read<OnboardingBloc>()
+                                      .add(const OnboardingEvent.completed()),
+                            )),
+                      ),
+                    if (!isLastPage) const SizedBox(height: 32 + 48),
+                  ],
+                ),
               ),
             ),
-          ),
-
-          // next / get started button
-          Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
-              child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: isLastPage && !state.hasAcceptedTerms
-                        ? null
-                        : () {
-                            if (isLastPage) {
-                              context
-                                  .read<OnboardingBloc>()
-                                  .add(const OnboardingEvent.completed());
-                            } else {
-                              pageController.nextPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                              );
-                            }
-                          },
-                    child: Text(isLastPage ? 'Get Started' : 'Next'),
-                  )))
-        ])));
-      }, listener: (context, state) {
-        if (state.isCompleted == true) {
-          context.go('/login');
-        }
-      }),
+          );
+        },
+      ),
     );
   }
 }

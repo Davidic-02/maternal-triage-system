@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
 import 'package:maternal_triage/firebase_options.dart';
-import 'package:maternal_triage/router/app_routes.dart';
+import 'package:maternal_triage/router/app_router.dart';
 import 'package:maternal_triage/services/persistence_services.dart';
 import 'package:maternal_triage/services/theme_services.dart';
 
