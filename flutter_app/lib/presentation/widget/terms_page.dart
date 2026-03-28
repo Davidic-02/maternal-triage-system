@@ -33,13 +33,14 @@ class TermsPage extends StatelessWidget {
                 'to your institution\'s data protection policies.\n\n'
                 'By using this app you confirm you are a licensed healthcare '
                 'professional and agree to use this tool responsibly.',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
+                style: TextStyle(fontSize: 15, color: Colors.grey),
               ),
             ),
           ),
           Row(
             children: [
               Checkbox(
+                activeColor: Colors.green,
                 value: accepted,
                 onChanged: (val) => onAccepted(val ?? false),
               ),

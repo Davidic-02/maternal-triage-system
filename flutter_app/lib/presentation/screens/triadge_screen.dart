@@ -8,16 +8,6 @@ class TriadgeScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Center(
-            child: Center(
-      child: LottieBuilder.asset(
-        'flutter_app/assets/animations/Covid pregnant woman.json',
-        width: 200,
-        height: 200,
-        repeat: true,
-        animate: true,
-      ),
-    )));
+    return Scaffold();
   }
 }
