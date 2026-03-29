@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:maternal_triage/router/app_routes.dart';
 
 class SplashScreen extends HookWidget {
   static const routeName = '/';
@@ -11,7 +12,7 @@ class SplashScreen extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       Future.delayed(const Duration(seconds: 2), () {
-        context.go('/signUp');
+        context.go(AppRoutes.login);
       });
       return null;
     }, const []);

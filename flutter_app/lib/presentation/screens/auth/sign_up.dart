@@ -19,8 +19,6 @@ class SignUpScreen extends HookWidget {
   Widget build(BuildContext context) {
     final pageController = usePageController();
 
-    // ← only hook needed
-
     return Scaffold(
       body: BlocListener<SignUpBloc, SignUpState>(
         listenWhen: (previous, current) => _listenWhen(previous, current),
@@ -169,8 +167,6 @@ class SignUpScreen extends HookWidget {
     }
   }
 
-  // ── build ────────────────────────────────────────────────────
-
   bool _buildWhen(SignUpState previous, SignUpState current) =>
       previous.currentStep != current.currentStep ||
       previous.status != current.status ||
@@ -181,11 +177,3 @@ class SignUpScreen extends HookWidget {
       previous.medicalId != current.medicalId ||
       previous.isPasswordVisible != current.isPasswordVisible;
 }
-
-// ── Step 1 ───────────────────────────────────────────────────
-
-
-
-// ── Step 2 ───────────────────────────────────────────────────
-
-

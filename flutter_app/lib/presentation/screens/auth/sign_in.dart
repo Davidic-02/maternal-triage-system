@@ -41,19 +41,17 @@ class LoginScreen extends HookWidget {
                       child: Text(
                         'Login to Your Account',
                         style: TextStyle(
-                          color: AppColors.white,
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    AppSpacing.verticalSpaceSmall,
+                    AppSpacing.verticalSpaceMedium,
                     CustomTextFormField(
                       focusNode: emailFocusNode,
                       hintText: 'Email',
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
-                      fillColor: AppColors.white,
                       onChanged: (value) => context.read<AuthBloc>().add(
                         AuthEvent.emailChanged(value),
                       ),
@@ -61,13 +59,13 @@ class LoginScreen extends HookWidget {
                           ? "Please enter a valid email address"
                           : null,
                     ),
-                    AppSpacing.verticalSpaceSmall,
+                    AppSpacing.verticalSpaceMedium,
                     CustomTextFormField(
                       focusNode: passwordFocusNode,
                       textInputAction: TextInputAction.send,
                       hintText: 'Password',
                       keyboardType: TextInputType.text,
-                      fillColor: AppColors.white,
+
                       obscureText: !obscurePassword.value,
                       isPassword: true,
                       onChanged: (value) => context.read<AuthBloc>().add(
@@ -76,7 +74,7 @@ class LoginScreen extends HookWidget {
                       onFieldSubmitted: (_) =>
                           context.read<AuthBloc>().add(const AuthEvent.login()),
                     ),
-                    AppSpacing.verticalSpaceLarge,
+                    AppSpacing.verticalSpaceMassive,
                     Button(
                       'Login',
                       onPressed: () {

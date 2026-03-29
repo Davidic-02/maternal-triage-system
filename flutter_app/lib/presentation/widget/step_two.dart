@@ -8,7 +8,7 @@ import 'package:maternal_triage/presentation/data/hospital_roles.dart';
 import 'package:maternal_triage/presentation/widget/custom_text_form_field.dart';
 
 class StepTwo extends HookWidget {
-  const StepTwo();
+  const StepTwo({super.key});
 
   @override
   Widget build(BuildContext context) {

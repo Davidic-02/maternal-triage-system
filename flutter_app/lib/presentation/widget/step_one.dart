@@ -46,7 +46,7 @@ class StepOne extends HookWidget {
                     ? 'Name must be at least 3 characters'
                     : null,
               ),
-              AppSpacing.verticalSpaceSmall,
+              AppSpacing.verticalSpaceMedium,
               CustomTextFormField(
                 hintText: 'Email',
                 focusNode: emailFocusNode,
@@ -59,7 +59,7 @@ class StepOne extends HookWidget {
                     ? 'Please enter a valid email address'
                     : null,
               ),
-              AppSpacing.verticalSpaceSmall,
+              AppSpacing.verticalSpaceMedium,
               CustomTextFormField(
                 focusNode: passwordFocusNode,
                 textInputAction: TextInputAction.next,
@@ -81,9 +81,7 @@ class StepOne extends HookWidget {
                 onFieldSubmitted: (_) =>
                     confirmPasswordFocusNode.requestFocus(),
               ),
-
-              AppSpacing.verticalSpaceSmall,
-
+              AppSpacing.verticalSpaceMedium,
               CustomTextFormField(
                 focusNode: confirmPasswordFocusNode,
                 textInputAction: TextInputAction.done,

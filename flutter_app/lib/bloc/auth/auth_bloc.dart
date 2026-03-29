@@ -220,7 +220,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) {
     emit(
-      state.copyWith(status: FormzSubmissionStatus.success, errorMessage: null),
+      state.copyWith(
+        forgotPasswordStatus: FormzSubmissionStatus.success,
+        errorMessage: null,
+      ),
     );
   }
 
@@ -230,7 +233,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) {
     emit(
       state.copyWith(
-        status: FormzSubmissionStatus.failure,
+        forgotPasswordStatus: FormzSubmissionStatus.failure,
         errorMessage: event.message ?? 'Failed to send reset email.',
       ),
     );
