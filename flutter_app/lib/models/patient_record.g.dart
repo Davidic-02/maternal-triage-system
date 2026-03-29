@@ -21,8 +21,9 @@ _PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
       preexistingDiabetes: json['preexistingDiabetes'] as bool? ?? false,
       gestationalDiabetes: json['gestationalDiabetes'] as bool? ?? false,
       mentalHealthStatus: json['mentalHealthStatus'] as String? ?? 'none',
-      createdAt:
-          const TimestampConverter().fromJson(json['createdAt'] as Timestamp),
+      createdAt: const TimestampConverter().fromJson(
+        json['createdAt'] as Timestamp,
+      ),
       assessedBy: json['assessedBy'] as String?,
       hospitalId: json['hospitalId'] as String?,
     );

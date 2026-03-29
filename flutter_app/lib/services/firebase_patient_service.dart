@@ -9,7 +9,7 @@ class FirebaseService {
   final FirebaseFirestore _db;
 
   FirebaseService({FirebaseFirestore? firestore})
-      : _db = firestore ?? FirebaseFirestore.instance {
+    : _db = firestore ?? FirebaseFirestore.instance {
     // Enable offline persistence
     _db.settings = const Settings(persistenceEnabled: true);
   }
@@ -20,7 +20,6 @@ class FirebaseService {
     return ref.id;
   }
 
-  /// Fetches all records, ordered by creation time (newest first).
   Future<List<PatientRecord>> getRecords() async {
     final snapshot = await _db
         .collection(_collection)
@@ -31,18 +30,18 @@ class FirebaseService {
         .toList();
   }
 
-  /// Returns a real-time stream of all records.
   Stream<List<PatientRecord>> watchRecords() {
     return _db
         .collection(_collection)
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snap) => snap.docs
-            .map((doc) => PatientRecord.fromFirestore(doc.data(), doc.id))
-            .toList());
+        .map(
+          (snap) => snap.docs
+              .map((doc) => PatientRecord.fromFirestore(doc.data(), doc.id))
+              .toList(),
+        );
   }
 
-  /// Deletes a record by [id].
   Future<void> deleteRecord(String id) async {
     await _db.collection(_collection).doc(id).delete();
   }
