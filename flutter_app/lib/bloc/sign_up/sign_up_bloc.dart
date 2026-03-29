@@ -25,6 +25,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<_RoleChanged>(_onRoleChanged);
     on<_EmailChanged>(_onEmailChanged);
     on<_PasswordChanged>(_onPasswordChanged);
+    on<_ConfirmPasswordChanged>(_onConfirmPasswordChanged);
     on<_MedicalIdChanged>(_onMedicalIdChanged);
     on<_ValidateStepOne>(_onValidateStepOne);
     on<_ValidateStepTwo>(_onValidateStepTwo);
@@ -80,6 +81,49 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             : PasswordFormz.pure(event.password),
         status: FormzSubmissionStatus.initial,
         errorMessage: null,
+      ),
+    );
+  }
+
+  void _onConfirmPasswordChanged(
+    _ConfirmPasswordChanged event,
+    Emitter<SignUpState> emit,
+  ) {
+    final confirm = PasswordConfirmFormz.dirty(
+      state.password.value, // compare to current password
+      event.value,
+    );
+
+    emit(state.copyWith(passwordConfirm: confirm));
+  }
+
+  void _onPasswordVisibilityToggled(
+    _PasswordVisibilityToggled event,
+    Emitter<SignUpState> emit,
+  ) {
+    emit(state.copyWith(isPasswordVisible: !state.isPasswordVisible));
+  }
+
+  void _onStepChanged(_StepChanged event, Emitter<SignUpState> emit) {
+    emit(state.copyWith(currentStep: event.step));
+  }
+
+  void _onValidateStepOne(_ValidateStepOne event, Emitter<SignUpState> emit) {
+    emit(
+      state.copyWith(
+        name: NameFormz.dirty(state.name.value),
+        email: EmailFormz.dirty(state.email.value),
+        password: PasswordFormz.dirty(state.password.value),
+      ),
+    );
+  }
+
+  // validates step 2 — marks all fields dirty to show errors
+  void _onValidateStepTwo(_ValidateStepTwo event, Emitter<SignUpState> emit) {
+    emit(
+      state.copyWith(
+        role: RoleFormz.dirty(state.role.value),
+        medicalId: MedicalIdFormz.dirty(state.medicalId.value),
       ),
     );
   }

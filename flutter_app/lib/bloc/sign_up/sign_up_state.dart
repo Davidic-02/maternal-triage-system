@@ -8,9 +8,11 @@ abstract class SignUpState with _$SignUpState {
     @Default(0) int currentStep,
     @Default(EmailFormz.pure()) EmailFormz email,
     @Default(PasswordFormz.pure()) PasswordFormz password,
+    @Default(PasswordConfirmFormz.pure()) PasswordConfirmFormz passwordConfirm,
     @Default(NameFormz.pure()) NameFormz name,
     @Default(RoleFormz.pure()) RoleFormz role,
     @Default(MedicalIdFormz.pure()) MedicalIdFormz medicalId,
+    @Default(false) bool isPasswordVisible,
     String? errorMessage,
   }) = _SignUpState;
 
@@ -54,6 +56,22 @@ class PasswordFormz extends FormzInput<String, ValidationError> {
       return ValidationError.short;
     }
 
+    return null;
+  }
+}
+
+class PasswordConfirmFormz extends FormzInput<String, ValidationError> {
+  final String password; // need to compare with actual password
+
+  const PasswordConfirmFormz.pure([this.password = '', String value = ''])
+    : super.pure(value);
+  const PasswordConfirmFormz.dirty(this.password, [String value = ''])
+    : super.dirty(value);
+
+  @override
+  ValidationError? validator(String? value) {
+    if (value == null || value.isEmpty) return ValidationError.empty;
+    if (value != password) return ValidationError.invalid; // mismatch
     return null;
   }
 }

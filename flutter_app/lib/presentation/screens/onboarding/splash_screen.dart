@@ -10,22 +10,26 @@ class SplashScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      Future.delayed(const Duration(seconds: 10), () {
-        context.go('/login');
+      Future.delayed(const Duration(seconds: 2), () {
+        context.go('/signUp');
       });
       return null;
     }, const []);
     return Scaffold(
-        body: Center(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      LottieBuilder.asset(
-        'assets/animations/covid_pregnant_woman.json',
-        width: 600,
-        height: 600,
-        repeat: true,
-        animate: true,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            LottieBuilder.asset(
+              'assets/animations/covid_pregnant_woman.json',
+              width: 600,
+              height: 600,
+              repeat: true,
+              animate: true,
+            ),
+          ],
+        ),
       ),
-    ])));
+    );
   }
 }

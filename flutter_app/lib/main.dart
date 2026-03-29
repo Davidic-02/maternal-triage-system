@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
+import 'package:maternal_triage/bloc/sign_up/sign_up_bloc.dart';
+import 'package:maternal_triage/constant/theme_data.dart';
 import 'package:maternal_triage/firebase_options.dart';
 import 'package:maternal_triage/router/app_router.dart';
 import 'package:maternal_triage/services/firebase_doctor_service.dart';
 import 'package:maternal_triage/services/persistence_services.dart';
 import 'package:maternal_triage/services/theme_services.dart';
+import 'package:toastification/toastification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +45,7 @@ class MaternalTriageApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthBloc>.value(value: authBloc), // ← reuse existing
         BlocProvider<AssessmentBloc>.value(value: assessmentBloc),
+        BlocProvider<SignUpBloc>(create: (_) => SignUpBloc()),
       ],
       child: Builder(
         builder: (context) {
@@ -49,17 +53,20 @@ class MaternalTriageApp extends StatelessWidget {
             authBloc: context.read<AuthBloc>(),
             assessmentBloc: context.read<AssessmentBloc>(),
             persistenceService: PersistenceService(),
+            debugFlow: true,
           );
 
           return ValueListenableBuilder<ThemeMode>(
             valueListenable: ThemeService.themeModeNotifier,
             builder: (context, mode, _) {
-              return MaterialApp.router(
-                debugShowCheckedModeBanner: false,
-                theme: ThemeData.light(),
-                darkTheme: ThemeData.dark(),
-                themeMode: mode,
-                routerConfig: appRouter.router,
+              return ToastificationWrapper(
+                child: MaterialApp.router(
+                  debugShowCheckedModeBanner: false,
+                  theme: lightTheme, // ✅ your custom light theme
+                  darkTheme: darkTheme,
+                  themeMode: mode,
+                  routerConfig: appRouter.router,
+                ),
               );
             },
           );

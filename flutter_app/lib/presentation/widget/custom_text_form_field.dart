@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:maternal_triage/constant/app_colors.dart';
 import 'package:maternal_triage/constant/app_spacing.dart';
 
 class CustomTextFormField extends StatelessWidget {
@@ -63,11 +62,9 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
-    // ✅ Resolve suffix icon
+    // Determine suffix icon
     Widget? resolvedSuffixIcon;
-
     if (showEditIcon == true && editIcon != null) {
       resolvedSuffixIcon = Padding(
         padding: const EdgeInsets.all(13),
@@ -87,38 +84,33 @@ class CustomTextFormField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (title != null && title!.isNotEmpty) ...[
-          Text(
-            title!,
-            style: theme.textTheme.bodySmall,
-          ),
+          Text(title!, style: theme.textTheme.bodySmall),
           AppSpacing.verticalSpaceSmall,
         ],
         TextFormField(
+          controller: controller,
+          focusNode: focusNode,
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
           maxLines: obscureText ? 1 : (maxLines ?? 1),
           minLines: minLines,
-          cursorColor: theme.colorScheme.primary,
           maxLength: maxLength,
           onFieldSubmitted: onFieldSubmitted,
           onChanged: onChanged,
           readOnly: readOnly,
-          style: theme.textTheme.bodyMedium,
-          focusNode: focusNode,
-          textInputAction: textInputAction,
-          controller: controller,
-          keyboardType: keyboardType,
-          onTap: onTap,
+          obscureText: obscureText,
           inputFormatters: inputFormatters,
+          onTap: onTap,
+          validator: validator,
+          style: theme.textTheme.bodyMedium, // text color follows theme
+          cursorColor: theme.colorScheme.primary, // cursor adapts to theme
           decoration: InputDecoration(
-            errorText: errorText,
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(12),
-            ),
             filled: isFilled,
-            fillColor: fillColor ??
-                (isDark
-                    ? AppColors.darkSurface
-                    : AppColors.textGrey.withValues(alpha: .1)),
+            fillColor: fillColor ?? theme.inputDecorationTheme.fillColor,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
             hintText: hintText,
             hintStyle: theme.textTheme.bodyMedium?.copyWith(
               fontSize: 14,
@@ -131,15 +123,15 @@ class CustomTextFormField extends StatelessWidget {
                     child: SvgPicture.asset(
                       'assets/svg/$prefixIcon.svg',
                       colorFilter: ColorFilter.mode(
-                        theme.iconTheme.color ?? AppColors.textGrey,
+                        theme.iconTheme.color ??
+                            theme.textTheme.bodySmall!.color!,
                         BlendMode.srcIn,
                       ),
                     ),
                   ),
             suffixIcon: resolvedSuffixIcon,
+            errorText: errorText,
           ),
-          obscureText: obscureText,
-          validator: validator,
         ),
       ],
     );

@@ -5,7 +5,7 @@ import 'package:maternal_triage/models/patient_record.dart';
 import 'package:maternal_triage/models/risk_result.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:maternal_triage/services/firebase_service.dart';
+import 'package:maternal_triage/services/firebase_patient_service.dart';
 import 'package:maternal_triage/services/inference_service.dart';
 import 'package:maternal_triage/services/shap_service.dart';
 
@@ -24,11 +24,11 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
     InferenceService? inferenceService,
     ShapService? shapService,
     FirebaseService? firebaseService,
-  })  : _authBloc = authBloc,
-        _inferenceService = inferenceService ?? InferenceService(),
-        _shapService = shapService ?? ShapService(),
-        _firebaseService = firebaseService ?? FirebaseService(),
-        super(const AssessmentState()) {
+  }) : _authBloc = authBloc,
+       _inferenceService = inferenceService ?? InferenceService(),
+       _shapService = shapService ?? ShapService(),
+       _firebaseService = firebaseService ?? FirebaseService(),
+       super(const AssessmentState()) {
     on<_RunAssessment>(_onRunAssessment);
     on<_ClearAssessment>(_onClearAssessment);
   }
@@ -39,13 +39,18 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
   }
 
   Future<void> _onRunAssessment(
-      _RunAssessment event, Emitter<AssessmentState> emit) async {
+    _RunAssessment event,
+    Emitter<AssessmentState> emit,
+  ) async {
     if (state.status == FormzSubmissionStatus.inProgress) return;
 
     if (!event.patientRecord.isValid) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           status: FormzSubmissionStatus.failure,
-          errorMessage: "Patient Record is invalid"));
+          errorMessage: "Patient Record is invalid",
+        ),
+      );
       return;
     }
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
@@ -63,25 +68,33 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
       List<ShapFeature> shapFeatures = [];
       if (_shapService.isLoaded) {
         shapFeatures = _shapService.getLocalExplanation(
-            index: 0, predictedClass: riskClass);
+          index: 0,
+          predictedClass: riskClass,
+        );
       }
 
       final riskResult = RiskResult(
-          riskClass: riskClass,
-          probabilities: probs,
-          shapFeatures: shapFeatures);
+        riskClass: riskClass,
+        probabilities: probs,
+        shapFeatures: shapFeatures,
+      );
       await _firebaseService.saveRecord(auditedRecord);
 
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           status: FormzSubmissionStatus.success,
           result: riskResult,
           record: auditedRecord,
-          errorMessage: null));
+          errorMessage: null,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        status: FormzSubmissionStatus.failure,
-        errorMessage: e.toString(),
-      ));
+      emit(
+        state.copyWith(
+          status: FormzSubmissionStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 

@@ -22,7 +22,7 @@ class OnboardingScreen extends HookWidget {
       child: BlocConsumer<OnboardingBloc, OnboardingState>(
         listener: (context, state) {
           if (state.isCompleted == true) {
-            context.go(AppRoutes.login);
+            context.go(AppRoutes.signUp);
           }
         },
         builder: (context, state) {
@@ -59,7 +59,7 @@ class OnboardingScreen extends HookWidget {
                             onAccepted: (val) => context
                                 .read<OnboardingBloc>()
                                 .add(OnboardingEvent.termsAccepted(val)),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -83,15 +83,16 @@ class OnboardingScreen extends HookWidget {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32),
                         child: SizedBox(
-                            width: double.infinity,
-                            child: Button(
-                              'Get Started',
-                              onPressed: !state.hasAcceptedTerms
-                                  ? null
-                                  : () => context
-                                      .read<OnboardingBloc>()
-                                      .add(const OnboardingEvent.completed()),
-                            )),
+                          width: double.infinity,
+                          child: Button(
+                            'Get Started',
+                            onPressed: !state.hasAcceptedTerms
+                                ? null
+                                : () => context.read<OnboardingBloc>().add(
+                                    const OnboardingEvent.completed(),
+                                  ),
+                          ),
+                        ),
                       ),
                     if (!isLastPage) const SizedBox(height: 32 + 48),
                   ],

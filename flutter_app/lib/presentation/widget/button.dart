@@ -49,7 +49,7 @@ class Button extends StatelessWidget {
               //  return AppColors.darkSurface;
               return AppColors.textGrey;
             }
-            return color ?? AppColors.primaryGreen;
+            return color ?? const Color(0xFF66B2B2);
           }),
           padding: WidgetStateProperty.all<EdgeInsets>(
             const EdgeInsets.all(10),
@@ -87,21 +87,23 @@ class Button extends StatelessWidget {
                 ],
               )
             : (icon == null
-                ? Text(
-                    text!,
-                    style: GoogleFonts.sofiaSans(
-                      color: onPressed == null ? disabledTextColor : textColor,
-                      fontSize: 16.0,
-                    ),
+                  ? Text(
+                      text!,
+                      style: GoogleFonts.sofiaSans(
+                        color: onPressed == null
+                            ? disabledTextColor
+                            : textColor,
+                        fontSize: 16.0,
+                      ),
 
-                    // TextStyle(
-                    //color: onPressed == null ? disabledTextColor : textColor,
-                    //fontSize: 16.0,
-                    //fontFamily: "HelveticaRounded",
-                    //),
-                    //textAlign: TextAlign.center,
-                  )
-                : Icon(icon, color: iconColor ?? Colors.black)),
+                      // TextStyle(
+                      //color: onPressed == null ? disabledTextColor : textColor,
+                      //fontSize: 16.0,
+                      //fontFamily: "HelveticaRounded",
+                      //),
+                      //textAlign: TextAlign.center,
+                    )
+                  : Icon(icon, color: iconColor ?? Colors.black)),
       ),
     );
   }
