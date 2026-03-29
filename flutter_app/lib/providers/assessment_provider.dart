@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../models/patient_record.dart';
 import '../models/risk_result.dart';
-import '../services/firebase_service.dart';
+import '../services/firebase_patient_service.dart';
 import '../services/inference_service.dart';
 import '../services/shap_service.dart';
 
@@ -22,9 +22,9 @@ class AssessmentProvider extends ChangeNotifier {
     InferenceService? inferenceService,
     ShapService? shapService,
     FirebaseService? firebaseService,
-  })  : _inferenceService = inferenceService ?? InferenceService(),
-        _shapService = shapService ?? ShapService(),
-        _firebaseService = firebaseService ?? FirebaseService();
+  }) : _inferenceService = inferenceService ?? InferenceService(),
+       _shapService = shapService ?? ShapService(),
+       _firebaseService = firebaseService ?? FirebaseService();
 
   PatientRecord? get currentRecord => _currentRecord;
   RiskResult? get currentResult => _currentResult;

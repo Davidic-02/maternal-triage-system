@@ -1,12 +1,15 @@
-part of 'sign_up_bloc';
+part of 'sign_up_bloc.dart';
 
 @freezed
-abstract class RegisterEvent with _$RegisterEvent {
-  const factory RegisterEvent.nameChanged(String name) = _NameChanged;
-  const factory RegisterEvent.roleChanged(String role) = _RoleChanged;
-  const factory RegisterEvent.emailChanged(String email) = _EmailChanged;
-  const factory RegisterEvent.passwordChanged(String password) =
-      _PasswordChanged;
-  const factory RegisterEvent.medicalIdChanged(String id) = _MedicalIdChanged;
-  const factory RegisterEvent.submitted() = _Submitted;
+abstract class SignUpEvent with _$SignUpEvent {
+  const factory SignUpEvent() = _SignUpEvent;
+  const factory SignUpEvent.nameChanged(String name) = _NameChanged;
+  const factory SignUpEvent.roleChanged(String role) = _RoleChanged;
+  const factory SignUpEvent.emailChanged(String email) = _EmailChanged;
+  const factory SignUpEvent.passwordChanged(String password) = _PasswordChanged;
+  const factory SignUpEvent.medicalIdChanged(String id) = _MedicalIdChanged;
+  const factory SignUpEvent.submit() = _Submit;
+  const factory SignUpEvent.submitSuccessful() = _SubmitSuccessful;
+  const factory SignUpEvent.submitFailed([String? message]) = _SubmitFailed;
+  const factory SignUpEvent.errorMessage([String? message]) = _ErrorMessage;
 }

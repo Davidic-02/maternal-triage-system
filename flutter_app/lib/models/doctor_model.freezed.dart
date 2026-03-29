@@ -15,8 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DoctorModel {
 
- String get uid;// ← not required, set via fromFirestore
- String get name; String get email; String get role; String get medicalId; String get status; String get avatarUrl; DateTime get createdAt;
+ String get uid; String get name; String get email; String get role; String get medicalId; String get status; String get avatarUrl; DateTime get createdAt;
 /// Create a copy of DoctorModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -221,7 +220,6 @@ class _DoctorModel implements DoctorModel {
   factory _DoctorModel.fromJson(Map<String, dynamic> json) => _$DoctorModelFromJson(json);
 
 @override@JsonKey() final  String uid;
-// ← not required, set via fromFirestore
 @override final  String name;
 @override final  String email;
 @override final  String role;
