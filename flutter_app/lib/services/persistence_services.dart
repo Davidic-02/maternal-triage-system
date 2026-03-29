@@ -11,15 +11,14 @@ class PersistenceService {
 
   static const _themeKey = 'app_theme_mode';
   Future<void> saveThemeMode(String theme) async {
-  await _ensurePreferenceLoaded();
-  _preferences!.setString(_themeKey, theme);
-}
+    await _ensurePreferenceLoaded();
+    _preferences!.setString(_themeKey, theme);
+  }
 
-Future<String> getThemeMode() async {
-  await _ensurePreferenceLoaded();
-  return _preferences!.getString(_themeKey) ?? 'system';
-}
-
+  Future<String> getThemeMode() async {
+    await _ensurePreferenceLoaded();
+    return _preferences!.getString(_themeKey) ?? 'system';
+  }
 
   Future<void> _ensurePreferenceLoaded() async {
     _manager._preferences ??= await SharedPreferences.getInstance();
@@ -45,6 +44,28 @@ Future<String> getThemeMode() async {
     return _manager._preferences!.getString(PrefKeys.userEmail);
   }
 
+  // ───── Save / Get User Name ─────────
+  Future<void> saveUserName(String name) async {
+    await _ensurePreferenceLoaded();
+    _preferences!.setString(PrefKeys.userName, name);
+  }
+
+  Future<String?> getUserName() async {
+    await _ensurePreferenceLoaded();
+    return _preferences!.getString(PrefKeys.userName);
+  }
+
+  // ───── Save / Get User Role ─────────
+  Future<void> saveUserRole(String role) async {
+    await _ensurePreferenceLoaded();
+    _preferences!.setString(PrefKeys.userRole, role);
+  }
+
+  Future<String?> getUserRole() async {
+    await _ensurePreferenceLoaded();
+    return _preferences!.getString(PrefKeys.userRole);
+  }
+
   // ─── add these two methods ───────────────────────────────
 
   Future<void> saveOnboardingComplete() async {
@@ -56,10 +77,6 @@ Future<String> getThemeMode() async {
     await _manager._ensurePreferenceLoaded();
     return _manager._preferences!.getBool(PrefKeys.onboardingComplete) ?? false;
   }
-
-
-
-
 
   // ─────────────────────────────────────────────────────────
 

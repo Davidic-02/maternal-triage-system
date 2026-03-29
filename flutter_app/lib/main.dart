@@ -4,25 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
+import 'package:maternal_triage/bloc/sign_up/sign_up_bloc.dart';
+import 'package:maternal_triage/constant/theme_data.dart';
 import 'package:maternal_triage/firebase_options.dart';
 import 'package:maternal_triage/router/app_router.dart';
+import 'package:maternal_triage/services/firebase_doctor_service.dart';
 import 'package:maternal_triage/services/persistence_services.dart';
 import 'package:maternal_triage/services/theme_services.dart';
+import 'package:toastification/toastification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  final authBloc = AuthBloc(FirebaseAuth.instance, PersistenceService())
-    ..add(const AuthEvent());
+  final authBloc = AuthBloc(
+    FirebaseAuth.instance,
+    PersistenceService(),
+    DoctorService(),
+  )..add(const AuthEvent());
 
   final assessmentBloc = AssessmentBloc(authBloc: authBloc);
   await assessmentBloc.initialise();
 
-  runApp(MaternalTriageApp(
-    assessmentBloc: assessmentBloc,
-    authBloc: authBloc,
-  ));
+  runApp(MaternalTriageApp(assessmentBloc: assessmentBloc, authBloc: authBloc));
 }
 
 class MaternalTriageApp extends StatelessWidget {
@@ -38,31 +42,36 @@ class MaternalTriageApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
-          BlocProvider<AuthBloc>.value(value: authBloc), // ← reuse existing
-          BlocProvider<AssessmentBloc>.value(value: assessmentBloc),
-        ],
-        child: Builder(
-          builder: (context) {
-            final appRouter = AppRouter(
-              authBloc: context.read<AuthBloc>(),
-              assessmentBloc: context.read<AssessmentBloc>(),
-              persistenceService: PersistenceService(),
-            );
+      providers: [
+        BlocProvider<AuthBloc>.value(value: authBloc), // ← reuse existing
+        BlocProvider<AssessmentBloc>.value(value: assessmentBloc),
+        BlocProvider<SignUpBloc>(create: (_) => SignUpBloc()),
+      ],
+      child: Builder(
+        builder: (context) {
+          final appRouter = AppRouter(
+            authBloc: context.read<AuthBloc>(),
+            assessmentBloc: context.read<AssessmentBloc>(),
+            persistenceService: PersistenceService(),
+            debugFlow: true,
+          );
 
-            return ValueListenableBuilder<ThemeMode>(
-              valueListenable: ThemeService.themeModeNotifier,
-              builder: (context, mode, _) {
-                return MaterialApp.router(
+          return ValueListenableBuilder<ThemeMode>(
+            valueListenable: ThemeService.themeModeNotifier,
+            builder: (context, mode, _) {
+              return ToastificationWrapper(
+                child: MaterialApp.router(
                   debugShowCheckedModeBanner: false,
-                  theme: ThemeData.light(),
-                  darkTheme: ThemeData.dark(),
+                  theme: lightTheme, // ✅ your custom light theme
+                  darkTheme: darkTheme,
                   themeMode: mode,
                   routerConfig: appRouter.router,
-                );
-              },
-            );
-          },
-        ));
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

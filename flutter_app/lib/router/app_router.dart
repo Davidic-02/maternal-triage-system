@@ -4,9 +4,10 @@ import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
+import 'package:maternal_triage/presentation/screens/auth/sign_up.dart';
 import 'package:maternal_triage/presentation/screens/history_screen.dart';
-import 'package:maternal_triage/presentation/screens/onboarding/forgot_password_screen.dart';
-import 'package:maternal_triage/presentation/screens/onboarding/login_screen.dart';
+import 'package:maternal_triage/presentation/screens/auth/forgot_password_screen.dart';
+import 'package:maternal_triage/presentation/screens/auth/sign_in.dart';
 import 'package:maternal_triage/presentation/screens/onboarding/onboarding_screen.dart';
 import 'package:maternal_triage/presentation/screens/onboarding/splash_screen.dart';
 import 'package:maternal_triage/presentation/screens/patient_detail_screen.dart';
@@ -22,10 +23,13 @@ class AppRouter {
   final AssessmentBloc assessmentBloc;
   final PersistenceService _persistenceService;
 
+  final bool debugFlow;
+
   AppRouter({
     required this.authBloc,
     required this.assessmentBloc,
     PersistenceService? persistenceService,
+    this.debugFlow = false,
   }) : _persistenceService = persistenceService ?? PersistenceService();
 
   late final router = GoRouter(
@@ -45,6 +49,11 @@ class AppRouter {
         builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
+        path: '/signUp',
+        name: 'signUp',
+        builder: (context, state) => const SignUpScreen(),
+      ),
+      GoRoute(
         path: '/login',
         name: 'login',
         builder: (context, state) => const LoginScreen(),
@@ -53,6 +62,11 @@ class AppRouter {
             path: 'forgot-password',
             name: 'forgot-password',
             builder: (context, state) => const ForgotPasswordScreen(),
+          ),
+          GoRoute(
+            path: 'login/signUp',
+            name: 'login-signUp',
+            builder: (context, state) => const SignUpScreen(),
           ),
         ],
       ),
@@ -74,9 +88,8 @@ class AppRouter {
               GoRoute(
                 path: ':id',
                 name: 'patient-detail',
-                builder: (context, state) => PatientDetailScreen(
-                  patientId: state.pathParameters['id']!,
-                ),
+                builder: (context, state) =>
+                    PatientDetailScreen(patientId: state.pathParameters['id']!),
               ),
             ],
           ),
@@ -98,9 +111,8 @@ class AppRouter {
               GoRoute(
                 path: ':id',
                 name: 'history-detail',
-                builder: (context, state) => PatientDetailScreen(
-                  patientId: state.pathParameters['id']!,
-                ),
+                builder: (context, state) =>
+                    PatientDetailScreen(patientId: state.pathParameters['id']!),
               ),
             ],
           ),
@@ -110,25 +122,31 @@ class AppRouter {
   );
 
   Future<String?> _guard(BuildContext context, GoRouterState state) async {
-    final onboardingComplete =
-        await _persistenceService.getOnboardingComplete();
+    if (debugFlow) return null;
+
+    final onboardingComplete = await _persistenceService
+        .getOnboardingComplete();
     final persistedSignIn = await _persistenceService.getSignInStatus();
     final isLoggedIn =
         (authBloc.state.status == FormzSubmissionStatus.success &&
-                authBloc.state.userEmail != null) ||
-            persistedSignIn;
+            authBloc.state.userEmail != null) ||
+        persistedSignIn;
 
     final location = state.matchedLocation;
     final onSplash = location == '/';
     final onOnboarding = location == '/onboarding';
     final onAuthPages =
-        location == '/login' || location == '/login/forgot-password';
-
-    if (onSplash) return null;
-    if (!onboardingComplete && !onOnboarding) return '/onboarding';
-    if (onboardingComplete && !isLoggedIn && !onAuthPages) return '/login';
-    if (isLoggedIn && onAuthPages) return '/triage'; // ✅ triage is home base
-    return null;
+        location == '/login' ||
+        location == '/login/forgot-password' ||
+        location == '/sign-up';
+    if (onSplash) return null; // splash always shows once
+    if (!onboardingComplete && !onOnboarding)
+      return '/onboarding'; // first-time onboarding
+    if (onboardingComplete && !isLoggedIn && !onAuthPages)
+      return '/sign-up'; // force signup/login
+    if (isLoggedIn && onAuthPages)
+      return '/triage'; // logged-in users redirected to main app
+    return null; // default: allow current route
   }
 }
 

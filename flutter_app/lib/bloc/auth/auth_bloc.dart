@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:formz/formz.dart';
 import 'package:maternal_triage/enums/validator_error.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:maternal_triage/models/doctor_model.dart';
+import 'package:maternal_triage/services/firebase_doctor_service.dart';
 import 'package:maternal_triage/services/persistence_services.dart';
 import '../../services/logging_helper.dart';
 part 'auth_bloc.freezed.dart';
@@ -15,14 +18,19 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FirebaseAuth _firebaseAuth;
   final PersistenceService _persistenceService;
+  final DoctorService _doctorService;
   StreamSubscription<User?>? _authStateSubscription;
   Timer? _sessionTimer;
   static const _sessionTimeout = Duration(minutes: 30);
 
-  AuthBloc(FirebaseAuth? firebaseAuth, PersistenceService? persistence)
-      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _persistenceService = persistence ?? PersistenceService(),
-        super(const AuthState()) {
+  AuthBloc(
+    FirebaseAuth? firebaseAuth,
+    PersistenceService? persistence,
+    DoctorService? doctorService,
+  ) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+      _persistenceService = persistence ?? PersistenceService(),
+      _doctorService = doctorService ?? DoctorService(),
+      super(const AuthState()) {
     on<_AuthEvent>(_onInit);
     on<_EmailChanged>(_onEmailChanged);
     on<_PasswordChanged>(_onPasswordChanged);
@@ -43,60 +51,62 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       add(const AuthEvent.userChanged());
     });
   }
-  Future<void> _onInit(
-    _AuthEvent event,
-    Emitter<AuthState> emit,
-  ) async {
+  Future<void> _onInit(_AuthEvent event, Emitter<AuthState> emit) async {
     final isSignedIn = await _persistenceService.getSignInStatus();
-    final onboardingComplete =
-        await _persistenceService.getOnboardingComplete();
+    final onboardingComplete = await _persistenceService
+        .getOnboardingComplete();
     if (isSignedIn) {
       final email = await _persistenceService.getUserEmail();
-      emit(state.copyWith(
-        status: FormzSubmissionStatus.success,
-        userEmail: email,
-        onboardingComplete: onboardingComplete,
-      ));
+      emit(
+        state.copyWith(
+          status: FormzSubmissionStatus.success,
+          userEmail: email,
+          onboardingComplete: onboardingComplete,
+        ),
+      );
     } else {
-      emit(state.copyWith(
-        onboardingComplete: onboardingComplete,
-        status: FormzSubmissionStatus.initial,
-      ));
+      emit(
+        state.copyWith(
+          onboardingComplete: onboardingComplete,
+          status: FormzSubmissionStatus.initial,
+        ),
+      );
     }
-    emit(const AuthState());
   }
 
   void _onEmailChanged(_EmailChanged event, Emitter<AuthState> emit) {
     final email = EmailFormz.dirty(event.email);
 
-    emit(state.copyWith(
-      email: email.isValid ? email : EmailFormz.pure(event.email),
-    ));
+    emit(
+      state.copyWith(
+        email: email.isValid ? email : EmailFormz.pure(event.email),
+      ),
+    );
   }
 
   void _onPasswordChanged(_PasswordChanged event, Emitter<AuthState> emit) {
     final password = PasswordFormz.dirty(event.password);
     emit(
       state.copyWith(
-        password:
-            password.isValid ? password : PasswordFormz.pure(event.password),
+        password: password.isValid
+            ? password
+            : PasswordFormz.pure(event.password),
         status: FormzSubmissionStatus.initial,
         errorMessage: null,
       ),
     );
   }
 
-  Future<void> _onLogin(
-    _Login event,
-    Emitter<AuthState> emit,
-  ) async {
+  Future<void> _onLogin(_Login event, Emitter<AuthState> emit) async {
     if (state.loginStatus == FormzSubmissionStatus.inProgress) return;
     if (!state.isLoginFormValid) {
-      emit(state.copyWith(
-        email: EmailFormz.dirty(state.email.value),
-        password: PasswordFormz.dirty(state.password.value),
-        errorMessage: 'Please fill in all fields correctly.',
-      ));
+      emit(
+        state.copyWith(
+          email: EmailFormz.dirty(state.email.value),
+          password: PasswordFormz.dirty(state.password.value),
+          errorMessage: 'Please fill in all fields correctly.',
+        ),
+      );
       return;
     }
     emit(state.copyWith(loginStatus: FormzSubmissionStatus.inProgress));
@@ -108,13 +118,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       final user = credential.user;
       if (user == null) {
-        add(const AuthEvent.loginFailed(
-            'Authentication failed. Please try again.'));
+        add(
+          const AuthEvent.loginFailed(
+            'Authentication failed. Please try again.',
+          ),
+        );
         return;
       }
-
+      final doctor = await _doctorService.getDoctor(user.uid);
+      if (doctor == null) {
+        add(
+          const AuthEvent.loginFailed(
+            'User data not found. Please contact support.',
+          ),
+        );
+        return;
+      }
       await _persistenceService.saveSignInStatus(true);
       await _persistenceService.saveUserEmail(user.email ?? '');
+      await PersistenceService().saveUserName(doctor.name);
+      await PersistenceService().saveUserRole(doctor.role);
 
       logInfo('Login successful for: ${user.email}');
       add(const AuthEvent.loginSuccessful());
@@ -127,36 +150,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  void _onLoginSuccessful(
-    _LoginSuccessful event,
-    Emitter<AuthState> emit,
-  ) {
+  void _onLoginSuccessful(_LoginSuccessful event, Emitter<AuthState> emit) {
     _startSessionTimer();
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         status: FormzSubmissionStatus.success,
         userEmail: _firebaseAuth.currentUser?.email,
-        errorMessage: null));
+        errorMessage: null,
+      ),
+    );
   }
 
-  void _onLoginFailed(
-    _LoginFailed event,
-    Emitter<AuthState> emit,
-  ) {
-    emit(state.copyWith(
-      status: FormzSubmissionStatus.failure,
-      errorMessage: event.message ?? 'Login failed. Please try again.',
-    ));
+  void _onLoginFailed(_LoginFailed event, Emitter<AuthState> emit) {
+    emit(
+      state.copyWith(
+        status: FormzSubmissionStatus.failure,
+        errorMessage: event.message ?? 'Login failed. Please try again.',
+      ),
+    );
     add(_ErrorMessage(event.message));
   }
 
-  void _onErrorMessage(
-    _ErrorMessage event,
-    Emitter<AuthState> emit,
-  ) {
-    emit(state.copyWith(
-      errorMessage: event.message,
-      status: FormzSubmissionStatus.failure,
-    ));
+  void _onErrorMessage(_ErrorMessage event, Emitter<AuthState> emit) {
+    emit(
+      state.copyWith(
+        errorMessage: event.message,
+        status: FormzSubmissionStatus.failure,
+      ),
+    );
   }
 
   Future<void> _onForgotPassword(
@@ -181,7 +202,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       await _firebaseAuth.sendPasswordResetEmail(
-          email: state.email.value.trim());
+        email: state.email.value.trim(),
+      );
       logInfo('Password reset email sent to: ${state.email.value}');
       add(const AuthEvent.forgotPasswordSuccessful());
     } on FirebaseAuthException catch (e) {
@@ -197,20 +219,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _ForgotPasswordSuccessful event,
     Emitter<AuthState> emit,
   ) {
-    emit(state.copyWith(
-      status: FormzSubmissionStatus.success,
-      errorMessage: null,
-    ));
+    emit(
+      state.copyWith(
+        forgotPasswordStatus: FormzSubmissionStatus.success,
+        errorMessage: null,
+      ),
+    );
   }
 
   void _onForgotPasswordFailed(
     _ForgotPasswordFailed event,
     Emitter<AuthState> emit,
   ) {
-    emit(state.copyWith(
-      status: FormzSubmissionStatus.failure,
-      errorMessage: event.message ?? 'Failed to send reset email.',
-    ));
+    emit(
+      state.copyWith(
+        forgotPasswordStatus: FormzSubmissionStatus.failure,
+        errorMessage: event.message ?? 'Failed to send reset email.',
+      ),
+    );
   }
 
   Future<void> _onLogoutRequested(
@@ -228,18 +254,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const AuthState());
   }
 
-  void _onUserChanged(
-    _UserChanged event,
-    Emitter<AuthState> emit,
-  ) {
+  void _onUserChanged(_UserChanged event, Emitter<AuthState> emit) {
     final user = _firebaseAuth.currentUser;
-    if (user != null) {
-      emit(state.copyWith(
-        status: FormzSubmissionStatus.success,
-        userEmail: user.email,
-        errorMessage: null,
-      ));
-    } else {
+
+    if (state.loginStatus == FormzSubmissionStatus.inProgress) return;
+    if (state.status == FormzSubmissionStatus.inProgress) return;
+
+    if (user == null && state.status == FormzSubmissionStatus.success) {
       emit(const AuthState());
     }
   }
@@ -289,11 +310,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       logError(e, st);
     }
 
-    emit(state.copyWith(
-      status: FormzSubmissionStatus.failure,
-      errorMessage: 'Your session has expired. Please log in again.',
-      userEmail: null,
-    ));
+    emit(
+      state.copyWith(
+        status: FormzSubmissionStatus.failure,
+        errorMessage: 'Your session has expired. Please log in again.',
+        userEmail: null,
+      ),
+    );
   }
 
   @override

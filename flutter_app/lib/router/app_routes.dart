@@ -2,6 +2,7 @@ class AppRoutes {
   // ── Public (no auth) ─────────────────────────
   static const splash = '/';
   static const onboarding = '/onboarding';
+  static const signUp = "/signUp";
   static const login = '/login';
   static const forgotPassword = '/login/forgot-password';
   static const results = '/results';

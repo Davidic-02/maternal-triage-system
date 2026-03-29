@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:maternal_triage/router/app_routes.dart';
 
 class SplashScreen extends HookWidget {
   static const routeName = '/';
@@ -10,22 +11,26 @@ class SplashScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      Future.delayed(const Duration(seconds: 10), () {
-        context.go('/login');
+      Future.delayed(const Duration(seconds: 2), () {
+        context.go(AppRoutes.login);
       });
       return null;
     }, const []);
     return Scaffold(
-        body: Center(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      LottieBuilder.asset(
-        'assets/animations/covid_pregnant_woman.json',
-        width: 600,
-        height: 600,
-        repeat: true,
-        animate: true,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            LottieBuilder.asset(
+              'assets/animations/covid_pregnant_woman.json',
+              width: 600,
+              height: 600,
+              repeat: true,
+              animate: true,
+            ),
+          ],
+        ),
       ),
-    ])));
+    );
   }
 }

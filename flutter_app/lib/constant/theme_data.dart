@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maternal_triage/constant/app_colors.dart';
 
+//========================= LIGHT THEME =========================//
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   scaffoldBackgroundColor: AppColors.lightBg,
@@ -38,40 +39,50 @@ final ThemeData lightTheme = ThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: AppColors.primaryGreen,
       foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
 );
 
+//========================= DARK THEME =========================//
+
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   scaffoldBackgroundColor: AppColors.darkBg,
-  primaryColor: AppColors.accentGreen,
+  primaryColor: AppColors.primaryGreen.withOpacity(0.1),
   colorScheme: const ColorScheme.dark(
-    primary: AppColors.accentGreen,
-    secondary: AppColors.primaryGreen,
+    primary: AppColors.primaryGreen,
+    secondary: AppColors.accentNeon,
     surface: AppColors.darkSurface,
   ),
-  appBarTheme: const AppBarTheme(
-    backgroundColor: AppColors.darkSurface,
-    foregroundColor: AppColors.textLight,
+  appBarTheme: AppBarTheme(
+    backgroundColor: AppColors.primaryGreen.withOpacity(0.2),
+    foregroundColor: AppColors.white,
     elevation: 0,
+    titleTextStyle: GoogleFonts.sofiaSans(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      color: AppColors.white,
+    ),
   ),
-  cardColor: AppColors.darkSurface,
   textTheme: TextTheme(
-    bodyLarge: GoogleFonts.sofiaSans(color: AppColors.textLight),
-    bodyMedium: GoogleFonts.sofiaSans(color: AppColors.textLight),
-    bodySmall: GoogleFonts.sofiaSans(color: AppColors.textLight),
+    bodyLarge: GoogleFonts.sofiaSans(color: AppColors.white),
+    bodyMedium: GoogleFonts.sofiaSans(color: AppColors.white),
+    bodySmall: GoogleFonts.sofiaSans(color: AppColors.mutedText),
+    displaySmall: GoogleFonts.sofiaSans(
+      color: AppColors.accentNeon,
+      fontSize: 18,
+    ),
     headlineSmall: GoogleFonts.sofiaSans(
-      color: AppColors.textLight,
+      color: AppColors.white,
       fontWeight: FontWeight.bold,
     ),
   ),
+  cardColor: AppColors.darkSurface,
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: AppColors.darkSurface,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide.none,
@@ -79,11 +90,17 @@ final ThemeData darkTheme = ThemeData(
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: AppColors.accentGreen,
+      backgroundColor: AppColors.accentNeon,
       foregroundColor: AppColors.darkBg,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+  ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    backgroundColor: AppColors.darkSurface,
+    selectedIconTheme: const IconThemeData(color: AppColors.primaryGreen),
+    unselectedIconTheme: IconThemeData(
+      color: AppColors.primaryGreen.withOpacity(0.5),
     ),
   ),
 );

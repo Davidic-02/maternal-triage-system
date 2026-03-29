@@ -7,14 +7,14 @@ part of 'risk_result.dart';
 // **************************************************************************
 
 RiskResult _$RiskResultFromJson(Map<String, dynamic> json) => RiskResult(
-      riskClass: (json['riskClass'] as num).toInt(),
-      probabilities: (json['probabilities'] as List<dynamic>)
-          .map((e) => (e as num).toDouble())
-          .toList(),
-      shapFeatures: (json['shapFeatures'] as List<dynamic>)
-          .map((e) => ShapFeature.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+  riskClass: (json['riskClass'] as num).toInt(),
+  probabilities: (json['probabilities'] as List<dynamic>)
+      .map((e) => (e as num).toDouble())
+      .toList(),
+  shapFeatures: (json['shapFeatures'] as List<dynamic>)
+      .map((e) => ShapFeature.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
 
 Map<String, dynamic> _$RiskResultToJson(RiskResult instance) =>
     <String, dynamic>{
@@ -24,9 +24,9 @@ Map<String, dynamic> _$RiskResultToJson(RiskResult instance) =>
     };
 
 ShapFeature _$ShapFeatureFromJson(Map<String, dynamic> json) => ShapFeature(
-      featureName: json['featureName'] as String,
-      shapValue: (json['shapValue'] as num).toDouble(),
-    );
+  featureName: json['featureName'] as String,
+  shapValue: (json['shapValue'] as num).toDouble(),
+);
 
 Map<String, dynamic> _$ShapFeatureToJson(ShapFeature instance) =>
     <String, dynamic>{

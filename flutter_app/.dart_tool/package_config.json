@@ -827,7 +827,7 @@
       "name": "maternal_triage",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.8"
     }
   ],
   "generator": "pub",
