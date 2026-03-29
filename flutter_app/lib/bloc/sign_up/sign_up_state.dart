@@ -5,13 +5,12 @@ abstract class SignUpState with _$SignUpState {
   const SignUpState._();
   const factory SignUpState({
     @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
-
+    @Default(0) int currentStep,
     @Default(EmailFormz.pure()) EmailFormz email,
     @Default(PasswordFormz.pure()) PasswordFormz password,
     @Default(NameFormz.pure()) NameFormz name,
     @Default(RoleFormz.pure()) RoleFormz role,
     @Default(MedicalIdFormz.pure()) MedicalIdFormz medicalId,
-
     String? errorMessage,
   }) = _SignUpState;
 
@@ -21,6 +20,10 @@ abstract class SignUpState with _$SignUpState {
       name.isValid &&
       role.isValid &&
       medicalId.isValid;
+
+  bool get isStepOneValid => name.isValid && email.isValid && password.isValid;
+
+  bool get isStepTwoValid => role.isValid && medicalId.isValid;
 }
 
 class EmailFormz extends FormzInput<String, ValidationError> {

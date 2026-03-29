@@ -26,6 +26,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<_EmailChanged>(_onEmailChanged);
     on<_PasswordChanged>(_onPasswordChanged);
     on<_MedicalIdChanged>(_onMedicalIdChanged);
+    on<_ValidateStepOne>(_onValidateStepOne);
+    on<_ValidateStepTwo>(_onValidateStepTwo);
+    on<_StepChanged>(_onStepChanged);
+    on<_PasswordVisibilityToggled>(_onPasswordVisibilityToggled);
     on<_Submit>(_onSubmit);
     on<_SubmitSuccessful>(_onSubmitSuccessful);
     on<_SubmitFailed>(_onSubmitFailed);

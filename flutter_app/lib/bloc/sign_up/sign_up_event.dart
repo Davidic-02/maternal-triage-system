@@ -8,6 +8,11 @@ abstract class SignUpEvent with _$SignUpEvent {
   const factory SignUpEvent.emailChanged(String email) = _EmailChanged;
   const factory SignUpEvent.passwordChanged(String password) = _PasswordChanged;
   const factory SignUpEvent.medicalIdChanged(String id) = _MedicalIdChanged;
+  const factory SignUpEvent.validateStepOne() = _ValidateStepOne;
+  const factory SignUpEvent.validateStepTwo() = _ValidateStepTwo;
+  const factory SignUpEvent.stepChanged(int step) = _StepChanged;
+  const factory SignUpEvent.passwordVisibilityToggled() =
+      _PasswordVisibilityToggled;
   const factory SignUpEvent.submit() = _Submit;
   const factory SignUpEvent.submitSuccessful() = _SubmitSuccessful;
   const factory SignUpEvent.submitFailed([String? message]) = _SubmitFailed;
