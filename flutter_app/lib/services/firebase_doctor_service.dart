@@ -10,8 +10,6 @@ class DoctorService {
     _db.settings = const Settings(persistenceEnabled: true);
   }
 
-  // ── write ────────────────────────────────────────────────────
-
   Future<void> saveDoctor(DoctorModel doctor) async {
     await _db.collection(_collection).doc(doctor.uid).set(doctor.toJson());
   }
@@ -20,15 +18,12 @@ class DoctorService {
     await _db.collection(_collection).doc(doctor.uid).update(doctor.toJson());
   }
 
-  // ── read ─────────────────────────────────────────────────────
-
   Future<DoctorModel?> getDoctor(String uid) async {
     final doc = await _db.collection(_collection).doc(uid).get();
     if (!doc.exists) return null;
     return DoctorModel.fromFirestore(doc.data()!, doc.id);
   }
 
-  // real time — watches for status changes (pending → approved)
   Stream<DoctorModel?> watchDoctor(String uid) {
     return _db.collection(_collection).doc(uid).snapshots().map((doc) {
       if (!doc.exists) return null;
