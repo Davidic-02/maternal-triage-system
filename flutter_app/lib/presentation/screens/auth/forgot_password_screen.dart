@@ -85,7 +85,6 @@ class ForgotPasswordScreen extends HookWidget {
   }
 
   bool _buildWhen(BuildContext context, AuthState previous, AuthState current) {
-    // Show success toast and go back
     if (previous.forgotPasswordStatus != current.forgotPasswordStatus &&
         current.forgotPasswordStatus.isSuccess) {
       ToastService.toast(
@@ -114,7 +113,6 @@ class ForgotPasswordScreen extends HookWidget {
     if (previous.email != current.email) {
       return true;
     }
-
     return false;
   }
 }

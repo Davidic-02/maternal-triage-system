@@ -27,6 +27,7 @@ abstract class PatientRecord with _$PatientRecord {
     required double heartRate,
     double? weight,
     double? height,
+    @Default(0) int riskClass,
     @Default(false) bool previousComplications,
     @Default(false) bool preexistingDiabetes,
     @Default(false) bool gestationalDiabetes,
