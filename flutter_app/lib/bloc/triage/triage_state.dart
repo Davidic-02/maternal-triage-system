@@ -1,0 +1,82 @@
+part of 'triage_bloc.dart';
+
+@freezed
+abstract class TriageState with _$TriageState {
+  const TriageState._();
+
+  const factory TriageState({
+    @Default(TriageStatus.initial) TriageStatus status,
+    @Default([]) List<PatientRecord> activeQueue,
+    @Default([]) List<PatientRecord> resolvedToday,
+    @Default(TriageFilter.all) TriageFilter filter,
+    @Default('') String searchQuery,
+    String? errorMessage,
+  }) = _TriageState;
+
+  // summary counts
+  int get emergencyCount => activeQueue.where((r) => r.riskClass == 2).length;
+  int get urgentCount => activeQueue.where((r) => r.riskClass == 1).length;
+  int get stableCount => activeQueue.where((r) => r.riskClass == 0).length;
+
+  List<PatientRecord> get filteredQueue {
+    var records = activeQueue;
+
+    switch (filter) {
+      case TriageFilter.high:
+        records = records.where((r) => r.riskClass == 2).toList();
+        break;
+      case TriageFilter.moderate:
+        records = records.where((r) => r.riskClass == 1).toList();
+        break;
+      case TriageFilter.low:
+        records = records.where((r) => r.riskClass == 0).toList();
+        break;
+      case TriageFilter.all:
+        break;
+    }
+
+    if (searchQuery.isNotEmpty) {
+      final query = searchQuery.toLowerCase();
+      records = records.where((r) {
+        return (r.assessedBy?.toLowerCase().contains(query) ?? false) ||
+            r.age.toString().contains(query) ||
+            r.systolicBP.toString().contains(query) ||
+            r.diastolicBP.toString().contains(query) ||
+            _riskLabel(r.riskClass).toLowerCase().contains(query) ||
+            r.mentalHealthStatus.toLowerCase().contains(query) ||
+            r.createdAt.toString().contains(query);
+      }).toList();
+    }
+
+    records.sort((a, b) => b.riskClass.compareTo(a.riskClass));
+    return records;
+  }
+
+  // filtered resolved today
+  List<PatientRecord> get filteredResolved {
+    if (searchQuery.isEmpty) return resolvedToday;
+    final query = searchQuery.toLowerCase();
+    return resolvedToday.where((r) {
+      return (r.assessedBy?.toLowerCase().contains(query) ?? false) ||
+          r.age.toString().contains(query) ||
+          r.systolicBP.toString().contains(query) ||
+          r.diastolicBP.toString().contains(query) ||
+          _riskLabel(r.riskClass).toLowerCase().contains(query) ||
+          r.mentalHealthStatus.toLowerCase().contains(query) ||
+          r.createdAt.toString().contains(query);
+    }).toList();
+  }
+
+  String _riskLabel(int riskClass) {
+    switch (riskClass) {
+      case 0:
+        return 'low';
+      case 1:
+        return 'moderate';
+      case 2:
+        return 'high';
+      default:
+        return '';
+    }
+  }
+}
