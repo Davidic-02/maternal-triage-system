@@ -56,12 +56,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final isSignedIn = await _persistenceService.getSignInStatus();
     final onboardingComplete = await _persistenceService
         .getOnboardingComplete();
+    final userName = await _persistenceService.getUserName();
+    final userRole = await _persistenceService.getUserRole();
     if (isSignedIn) {
       final email = await _persistenceService.getUserEmail();
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.success,
           userEmail: email,
+          userName: userName,
+          userRole: userRole,
           onboardingComplete: onboardingComplete,
         ),
       );
@@ -156,8 +160,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(
       state.copyWith(
         status: FormzSubmissionStatus.success,
-
         userEmail: _firebaseAuth.currentUser?.email,
+        userName: _firebaseAuth.currentUser?.displayName,
         errorMessage: null,
       ),
     );

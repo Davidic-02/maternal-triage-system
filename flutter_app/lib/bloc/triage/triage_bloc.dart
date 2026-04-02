@@ -29,6 +29,7 @@ class TriageBloc extends Bloc<TriageEvent, TriageState> {
     on<_ActiveQueueUpdated>(_onActiveQueueUpdated);
     on<_ResolvedTodayUpdated>(_onResolvedTodayUpdated);
     on<_ErrorOccurred>(_onErrorOccurred);
+    add(const TriageEvent.started());
   }
 
   // ── started ──────────────────────────────────────────────────

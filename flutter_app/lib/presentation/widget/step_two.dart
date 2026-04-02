@@ -32,7 +32,9 @@ class StepTwo extends HookWidget {
               ),
               AppSpacing.verticalSpaceMedium,
               DropdownButtonFormField<String>(
-                value: state.role.value.isEmpty ? null : state.role.value,
+                initialValue: state.role.value.isEmpty
+                    ? null
+                    : state.role.value,
                 hint: const Text('Select Role'),
                 decoration: InputDecoration(
                   filled: true,

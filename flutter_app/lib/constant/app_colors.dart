@@ -24,5 +24,10 @@ class AppColors {
 
   // EXTRA / UTILITIES
   static const blackColor = Color(0xFF000000); // used in old theme
-  static const mutedText = Color(0xFFB0B3B8); // optional muted text in dark
+  static const mutedText = Color(0xFFB0B3B8);
+  static const Color greyColor = Color(0xFF9E9E9E);
+  static const Color shadowColor = Color(0x33000000);
+  static const Color greenColor = Color(
+    0xFF4CAF50,
+  ); // optional muted text in dark
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:maternal_triage/extension/build_context.dart';
 
-class CustomTopBar extends StatelessWidget {
+class CustomTopBar extends HookWidget {
   final String title;
   final Widget? leading;
   final String? ending;

@@ -20,106 +20,109 @@ class SignUpScreen extends HookWidget {
     final pageController = usePageController();
 
     return Scaffold(
-      body: BlocListener<SignUpBloc, SignUpState>(
-        listenWhen: (previous, current) => _listenWhen(previous, current),
-        listener: (context, state) => _listener(context, state),
-        child: BlocBuilder<SignUpBloc, SignUpState>(
-          buildWhen: (previous, current) => _buildWhen(previous, current),
-          builder: (context, state) {
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 40,
-                ),
-                child: Column(
-                  children: [
-                    // header
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 30,
-                      ),
-                      child: Row(
-                        children: [
-                          if (state.currentStep > 0)
-                            IconButton(
-                              icon: const Icon(Icons.arrow_back_ios),
-                              onPressed: () {
-                                pageController.previousPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                );
-                                context.read<SignUpBloc>().add(
-                                  SignUpEvent.stepChanged(
-                                    state.currentStep - 1,
-                                  ),
-                                );
-                              },
-                            ),
-                          const Spacer(),
-                          Text(
-                            'Step ${state.currentStep + 1} of 2',
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // steps
-                    Expanded(
-                      child: PageView(
-                        controller: pageController,
-                        physics: const NeverScrollableScrollPhysics(),
-                        onPageChanged: (index) => context
-                            .read<SignUpBloc>()
-                            .add(SignUpEvent.stepChanged(index)),
-                        children: const [StepOne(), StepTwo()],
-                      ),
-                    ),
-
-                    // button
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: Button(
-                              state.currentStep == 0 ? 'Next' : 'Register',
-                              onPressed: state.status.isInProgress
-                                  ? null
-                                  : () => _onButtonPressed(
-                                      context,
-                                      state,
-                                      pageController,
+      body: BlocProvider<SignUpBloc>(
+        create: (_) => SignUpBloc(),
+        child: BlocListener<SignUpBloc, SignUpState>(
+          listenWhen: (previous, current) => _listenWhen(previous, current),
+          listener: (context, state) => _listener(context, state),
+          child: BlocBuilder<SignUpBloc, SignUpState>(
+            buildWhen: (previous, current) => _buildWhen(previous, current),
+            builder: (context, state) {
+              return SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 40,
+                  ),
+                  child: Column(
+                    children: [
+                      // header
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 30,
+                        ),
+                        child: Row(
+                          children: [
+                            if (state.currentStep > 0)
+                              IconButton(
+                                icon: const Icon(Icons.arrow_back_ios),
+                                onPressed: () {
+                                  pageController.previousPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                  );
+                                  context.read<SignUpBloc>().add(
+                                    SignUpEvent.stepChanged(
+                                      state.currentStep - 1,
                                     ),
-                              busy: state.status.isInProgress,
-                              busyText: 'Please wait...', // ← optional
-                            ),
-                          ),
-                          AppSpacing.verticalSpaceSmall,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text('Already have an account?'),
-                              TextButton(
-                                onPressed: () => context.go('/login'),
-                                child: const Text('Login'),
+                                  );
+                                },
                               ),
-                            ],
-                          ),
-                        ],
+                            const Spacer(),
+                            Text(
+                              'Step ${state.currentStep + 1} of 2',
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+
+                      // steps
+                      Expanded(
+                        child: PageView(
+                          controller: pageController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          onPageChanged: (index) => context
+                              .read<SignUpBloc>()
+                              .add(SignUpEvent.stepChanged(index)),
+                          children: const [StepOne(), StepTwo()],
+                        ),
+                      ),
+
+                      // button
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: Button(
+                                state.currentStep == 0 ? 'Next' : 'Register',
+                                onPressed: state.status.isInProgress
+                                    ? null
+                                    : () => _onButtonPressed(
+                                        context,
+                                        state,
+                                        pageController,
+                                      ),
+                                busy: state.status.isInProgress,
+                                busyText: 'Please wait...', // ← optional
+                              ),
+                            ),
+                            AppSpacing.verticalSpaceSmall,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('Already have an account?'),
+                                TextButton(
+                                  onPressed: () => context.go('/login'),
+                                  child: const Text('Login'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

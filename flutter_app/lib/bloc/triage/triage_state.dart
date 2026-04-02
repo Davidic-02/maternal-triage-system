@@ -19,7 +19,7 @@ abstract class TriageState with _$TriageState {
   int get stableCount => activeQueue.where((r) => r.riskClass == 0).length;
 
   List<PatientRecord> get filteredQueue {
-    var records = activeQueue;
+    var records = List<PatientRecord>.from(activeQueue);
 
     switch (filter) {
       case TriageFilter.high:
@@ -47,16 +47,21 @@ abstract class TriageState with _$TriageState {
             r.createdAt.toString().contains(query);
       }).toList();
     }
-
+    final sorted = List<PatientRecord>.from(records);
     records.sort((a, b) => b.riskClass.compareTo(a.riskClass));
-    return records;
+    return sorted;
   }
 
   // filtered resolved today
   List<PatientRecord> get filteredResolved {
-    if (searchQuery.isEmpty) return resolvedToday;
+    if (searchQuery.isEmpty) {
+      final sorted = List<PatientRecord>.from(resolvedToday);
+      sorted.sort((a, b) => b.riskClass.compareTo(a.riskClass));
+      return sorted;
+    }
+
     final query = searchQuery.toLowerCase();
-    return resolvedToday.where((r) {
+    final filtered = resolvedToday.where((r) {
       return (r.assessedBy?.toLowerCase().contains(query) ?? false) ||
           r.age.toString().contains(query) ||
           r.systolicBP.toString().contains(query) ||
@@ -65,6 +70,9 @@ abstract class TriageState with _$TriageState {
           r.mentalHealthStatus.toLowerCase().contains(query) ||
           r.createdAt.toString().contains(query);
     }).toList();
+
+    filtered.sort((a, b) => b.riskClass.compareTo(a.riskClass));
+    return filtered;
   }
 
   String _riskLabel(int riskClass) {

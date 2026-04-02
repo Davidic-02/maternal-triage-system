@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
-import 'package:maternal_triage/constant/app_colors.dart';
 import 'package:maternal_triage/constant/app_spacing.dart';
 import 'package:maternal_triage/presentation/widget/button.dart';
 import 'package:maternal_triage/presentation/widget/custom_text_form_field.dart';
@@ -119,6 +118,7 @@ class LoginScreen extends HookWidget {
         previous.password != current.password) {
       return true;
     }
+    if (previous.loginStatus != current.loginStatus) return true;
 
     return false;
   }

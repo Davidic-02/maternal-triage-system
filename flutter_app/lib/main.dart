@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
 import 'package:maternal_triage/bloc/sign_up/sign_up_bloc.dart';
+import 'package:maternal_triage/bloc/triage/triage_bloc.dart';
 import 'package:maternal_triage/constant/theme_data.dart';
 import 'package:maternal_triage/firebase_options.dart';
 import 'package:maternal_triage/router/app_router.dart';
@@ -45,7 +46,8 @@ class MaternalTriageApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthBloc>.value(value: authBloc), // ← reuse existing
         BlocProvider<AssessmentBloc>.value(value: assessmentBloc),
-        BlocProvider<SignUpBloc>(create: (_) => SignUpBloc()),
+        //  BlocProvider<SignUpBloc>(create: (_) => SignUpBloc()),
+        //  BlocProvider<TriageBloc>(create: (_) => TriageBloc(authBloc: authBloc)),
       ],
       child: Builder(
         builder: (context) {
@@ -53,7 +55,7 @@ class MaternalTriageApp extends StatelessWidget {
             authBloc: context.read<AuthBloc>(),
             assessmentBloc: context.read<AssessmentBloc>(),
             persistenceService: PersistenceService(),
-            debugFlow: true,
+            // debugFlow: true,
           );
 
           return ValueListenableBuilder<ThemeMode>(
