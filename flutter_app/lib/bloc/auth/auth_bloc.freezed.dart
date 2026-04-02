@@ -832,7 +832,8 @@ String toString() {
 /// @nodoc
 mixin _$AuthState {
 
- String? get userEmail; bool? get onboardingComplete; EmailFormz get email; PasswordFormz get password; FormzSubmissionStatus get status; FormzSubmissionStatus get loginStatus; FormzSubmissionStatus get forgotPasswordStatus; String? get errorMessage;
+ String? get userEmail; bool? get onboardingComplete; String? get doctorName;// Doctor full name
+ String? get userRole; EmailFormz get email; PasswordFormz get password; FormzSubmissionStatus get status; FormzSubmissionStatus get loginStatus; FormzSubmissionStatus get forgotPasswordStatus; String? get errorMessage;
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -843,16 +844,16 @@ $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.onboardingComplete, onboardingComplete) || other.onboardingComplete == onboardingComplete)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.status, status) || other.status == status)&&(identical(other.loginStatus, loginStatus) || other.loginStatus == loginStatus)&&(identical(other.forgotPasswordStatus, forgotPasswordStatus) || other.forgotPasswordStatus == forgotPasswordStatus)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.onboardingComplete, onboardingComplete) || other.onboardingComplete == onboardingComplete)&&(identical(other.doctorName, doctorName) || other.doctorName == doctorName)&&(identical(other.userRole, userRole) || other.userRole == userRole)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.status, status) || other.status == status)&&(identical(other.loginStatus, loginStatus) || other.loginStatus == loginStatus)&&(identical(other.forgotPasswordStatus, forgotPasswordStatus) || other.forgotPasswordStatus == forgotPasswordStatus)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userEmail,onboardingComplete,email,password,status,loginStatus,forgotPasswordStatus,errorMessage);
+int get hashCode => Object.hash(runtimeType,userEmail,onboardingComplete,doctorName,userRole,email,password,status,loginStatus,forgotPasswordStatus,errorMessage);
 
 @override
 String toString() {
-  return 'AuthState(userEmail: $userEmail, onboardingComplete: $onboardingComplete, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
+  return 'AuthState(userEmail: $userEmail, onboardingComplete: $onboardingComplete, doctorName: $doctorName, userRole: $userRole, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
 }
 
 
@@ -863,7 +864,7 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- String? userEmail, bool? onboardingComplete, EmailFormz email, PasswordFormz password, FormzSubmissionStatus status, FormzSubmissionStatus loginStatus, FormzSubmissionStatus forgotPasswordStatus, String? errorMessage
+ String? userEmail, bool? onboardingComplete, String? doctorName, String? userRole, EmailFormz email, PasswordFormz password, FormzSubmissionStatus status, FormzSubmissionStatus loginStatus, FormzSubmissionStatus forgotPasswordStatus, String? errorMessage
 });
 
 
@@ -880,11 +881,13 @@ class _$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userEmail = freezed,Object? onboardingComplete = freezed,Object? email = null,Object? password = null,Object? status = null,Object? loginStatus = null,Object? forgotPasswordStatus = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userEmail = freezed,Object? onboardingComplete = freezed,Object? doctorName = freezed,Object? userRole = freezed,Object? email = null,Object? password = null,Object? status = null,Object? loginStatus = null,Object? forgotPasswordStatus = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 userEmail: freezed == userEmail ? _self.userEmail : userEmail // ignore: cast_nullable_to_non_nullable
 as String?,onboardingComplete: freezed == onboardingComplete ? _self.onboardingComplete : onboardingComplete // ignore: cast_nullable_to_non_nullable
-as bool?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as bool?,doctorName: freezed == doctorName ? _self.doctorName : doctorName // ignore: cast_nullable_to_non_nullable
+as String?,userRole: freezed == userRole ? _self.userRole : userRole // ignore: cast_nullable_to_non_nullable
+as String?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as EmailFormz,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as PasswordFormz,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as FormzSubmissionStatus,loginStatus: null == loginStatus ? _self.loginStatus : loginStatus // ignore: cast_nullable_to_non_nullable
@@ -975,10 +978,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? userEmail,  bool? onboardingComplete,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? userEmail,  bool? onboardingComplete,  String? doctorName,  String? userRole,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.userEmail,_that.onboardingComplete,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
+return $default(_that.userEmail,_that.onboardingComplete,_that.doctorName,_that.userRole,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -996,10 +999,10 @@ return $default(_that.userEmail,_that.onboardingComplete,_that.email,_that.passw
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? userEmail,  bool? onboardingComplete,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? userEmail,  bool? onboardingComplete,  String? doctorName,  String? userRole,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _AuthState():
-return $default(_that.userEmail,_that.onboardingComplete,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
+return $default(_that.userEmail,_that.onboardingComplete,_that.doctorName,_that.userRole,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1016,10 +1019,10 @@ return $default(_that.userEmail,_that.onboardingComplete,_that.email,_that.passw
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? userEmail,  bool? onboardingComplete,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? userEmail,  bool? onboardingComplete,  String? doctorName,  String? userRole,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.userEmail,_that.onboardingComplete,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
+return $default(_that.userEmail,_that.onboardingComplete,_that.doctorName,_that.userRole,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
   return null;
 
 }
@@ -1031,11 +1034,14 @@ return $default(_that.userEmail,_that.onboardingComplete,_that.email,_that.passw
 
 
 class _AuthState extends AuthState {
-  const _AuthState({this.userEmail, this.onboardingComplete, this.email = const EmailFormz.pure(), this.password = const PasswordFormz.pure(), this.status = FormzSubmissionStatus.initial, this.loginStatus = FormzSubmissionStatus.initial, this.forgotPasswordStatus = FormzSubmissionStatus.initial, this.errorMessage}): super._();
+  const _AuthState({this.userEmail, this.onboardingComplete, this.doctorName, this.userRole, this.email = const EmailFormz.pure(), this.password = const PasswordFormz.pure(), this.status = FormzSubmissionStatus.initial, this.loginStatus = FormzSubmissionStatus.initial, this.forgotPasswordStatus = FormzSubmissionStatus.initial, this.errorMessage}): super._();
   
 
 @override final  String? userEmail;
 @override final  bool? onboardingComplete;
+@override final  String? doctorName;
+// Doctor full name
+@override final  String? userRole;
 @override@JsonKey() final  EmailFormz email;
 @override@JsonKey() final  PasswordFormz password;
 @override@JsonKey() final  FormzSubmissionStatus status;
@@ -1053,16 +1059,16 @@ _$AuthStateCopyWith<_AuthState> get copyWith => __$AuthStateCopyWithImpl<_AuthSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.onboardingComplete, onboardingComplete) || other.onboardingComplete == onboardingComplete)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.status, status) || other.status == status)&&(identical(other.loginStatus, loginStatus) || other.loginStatus == loginStatus)&&(identical(other.forgotPasswordStatus, forgotPasswordStatus) || other.forgotPasswordStatus == forgotPasswordStatus)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.onboardingComplete, onboardingComplete) || other.onboardingComplete == onboardingComplete)&&(identical(other.doctorName, doctorName) || other.doctorName == doctorName)&&(identical(other.userRole, userRole) || other.userRole == userRole)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.status, status) || other.status == status)&&(identical(other.loginStatus, loginStatus) || other.loginStatus == loginStatus)&&(identical(other.forgotPasswordStatus, forgotPasswordStatus) || other.forgotPasswordStatus == forgotPasswordStatus)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userEmail,onboardingComplete,email,password,status,loginStatus,forgotPasswordStatus,errorMessage);
+int get hashCode => Object.hash(runtimeType,userEmail,onboardingComplete,doctorName,userRole,email,password,status,loginStatus,forgotPasswordStatus,errorMessage);
 
 @override
 String toString() {
-  return 'AuthState(userEmail: $userEmail, onboardingComplete: $onboardingComplete, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
+  return 'AuthState(userEmail: $userEmail, onboardingComplete: $onboardingComplete, doctorName: $doctorName, userRole: $userRole, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
 }
 
 
@@ -1073,7 +1079,7 @@ abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Re
   factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
 @override @useResult
 $Res call({
- String? userEmail, bool? onboardingComplete, EmailFormz email, PasswordFormz password, FormzSubmissionStatus status, FormzSubmissionStatus loginStatus, FormzSubmissionStatus forgotPasswordStatus, String? errorMessage
+ String? userEmail, bool? onboardingComplete, String? doctorName, String? userRole, EmailFormz email, PasswordFormz password, FormzSubmissionStatus status, FormzSubmissionStatus loginStatus, FormzSubmissionStatus forgotPasswordStatus, String? errorMessage
 });
 
 
@@ -1090,11 +1096,13 @@ class __$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userEmail = freezed,Object? onboardingComplete = freezed,Object? email = null,Object? password = null,Object? status = null,Object? loginStatus = null,Object? forgotPasswordStatus = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userEmail = freezed,Object? onboardingComplete = freezed,Object? doctorName = freezed,Object? userRole = freezed,Object? email = null,Object? password = null,Object? status = null,Object? loginStatus = null,Object? forgotPasswordStatus = null,Object? errorMessage = freezed,}) {
   return _then(_AuthState(
 userEmail: freezed == userEmail ? _self.userEmail : userEmail // ignore: cast_nullable_to_non_nullable
 as String?,onboardingComplete: freezed == onboardingComplete ? _self.onboardingComplete : onboardingComplete // ignore: cast_nullable_to_non_nullable
-as bool?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as bool?,doctorName: freezed == doctorName ? _self.doctorName : doctorName // ignore: cast_nullable_to_non_nullable
+as String?,userRole: freezed == userRole ? _self.userRole : userRole // ignore: cast_nullable_to_non_nullable
+as String?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as EmailFormz,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as PasswordFormz,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as FormzSubmissionStatus,loginStatus: null == loginStatus ? _self.loginStatus : loginStatus // ignore: cast_nullable_to_non_nullable

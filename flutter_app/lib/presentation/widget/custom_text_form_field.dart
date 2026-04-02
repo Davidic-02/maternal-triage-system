@@ -30,6 +30,7 @@ class CustomTextFormField extends StatelessWidget {
     this.minLines,
     this.inputFormatters,
     this.showEditIcon,
+    this.suffixIcon,
   });
 
   final TextEditingController? controller;
@@ -45,6 +46,7 @@ class CustomTextFormField extends StatelessWidget {
   final bool isFilled;
   final bool readOnly;
   final bool? showEditIcon;
+  final Widget? suffixIcon;
 
   final int? maxLength;
   final String? errorText;
@@ -129,7 +131,7 @@ class CustomTextFormField extends StatelessWidget {
                       ),
                     ),
                   ),
-            suffixIcon: resolvedSuffixIcon,
+            suffixIcon: suffixIcon ?? resolvedSuffixIcon,
             errorText: errorText,
           ),
         ),

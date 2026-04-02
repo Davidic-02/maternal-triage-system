@@ -11,6 +11,7 @@ import 'package:maternal_triage/models/doctor_model.dart';
 import 'package:maternal_triage/services/firebase_doctor_service.dart';
 import 'package:maternal_triage/services/persistence_services.dart';
 import '../../services/logging_helper.dart';
+
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -155,6 +156,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(
       state.copyWith(
         status: FormzSubmissionStatus.success,
+
         userEmail: _firebaseAuth.currentUser?.email,
         errorMessage: null,
       ),
