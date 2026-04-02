@@ -12,7 +12,7 @@ class SplashScreen extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       Future.delayed(const Duration(seconds: 2), () {
-        context.go(AppRoutes.signUp);
+        context.go(AppRoutes.onboarding);
       });
       return null;
     }, const []);

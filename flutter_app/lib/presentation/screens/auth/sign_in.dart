@@ -104,6 +104,7 @@ class LoginScreen extends HookWidget {
     if (previous.loginStatus != current.loginStatus &&
         current.loginStatus.isSuccess) {
       ToastService.toast('Welcome!');
+      context.go('/triage');
     }
 
     if (previous.errorMessage != current.errorMessage &&

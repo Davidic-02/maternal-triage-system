@@ -159,6 +159,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _startSessionTimer();
     emit(
       state.copyWith(
+        loginStatus: FormzSubmissionStatus.success,
         status: FormzSubmissionStatus.success,
         userEmail: _firebaseAuth.currentUser?.email,
         userName: _firebaseAuth.currentUser?.displayName,
@@ -171,6 +172,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(
       state.copyWith(
         status: FormzSubmissionStatus.failure,
+        loginStatus: FormzSubmissionStatus.failure,
         errorMessage: event.message ?? 'Login failed. Please try again.',
       ),
     );
@@ -181,7 +183,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(
       state.copyWith(
         errorMessage: event.message,
-        status: FormzSubmissionStatus.failure,
+
+        loginStatus: FormzSubmissionStatus.failure,
       ),
     );
   }

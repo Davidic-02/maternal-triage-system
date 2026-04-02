@@ -8,6 +8,7 @@ import 'package:maternal_triage/constant/app_colors.dart';
 import 'package:maternal_triage/constant/app_spacing.dart';
 import 'package:maternal_triage/enums/risk_enum.dart';
 import 'package:maternal_triage/models/patient_record.dart';
+import 'package:maternal_triage/presentation/widget/custom_text_form_field.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class TriageScreen extends HookWidget {
@@ -191,7 +192,7 @@ class _Header extends StatelessWidget {
             // avatar with initials
             CircleAvatar(
               radius: 22,
-              backgroundColor: AppColors.primaryGreen.withOpacity(0.15),
+              backgroundColor: AppColors.primaryGreen.withValues(alpha: 0.15),
               child: Text(
                 _initials(displayName),
                 style: const TextStyle(
@@ -206,6 +207,10 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
+                  displayName,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                Text(
                   displayRole.toUpperCase(),
                   style: const TextStyle(
                     color: AppColors.primaryGreen,
@@ -214,10 +219,7 @@ class _Header extends StatelessWidget {
                     letterSpacing: 0.5,
                   ),
                 ),
-                Text(
-                  displayName,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
+
                 const Text(
                   'Triage Dashboard',
                   style: TextStyle(color: AppColors.greyColor, fontSize: 12),
@@ -235,7 +237,7 @@ class _Header extends StatelessWidget {
                   BoxShadow(
                     color: AppColors.shadowColor,
                     blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
@@ -315,9 +317,9 @@ class _SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.15)),
+        border: Border.all(color: color.withValues(alpha: 0.08)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,31 +364,25 @@ class _TriageSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return CustomTextFormField(
       controller: controller,
       focusNode: focusNode,
+      hintText: 'Search patients...',
+      keyboardType: TextInputType.text,
+      prefixIcon: 'search', // ← your svg asset name
       onChanged: (value) =>
           context.read<TriageBloc>().add(TriageEvent.searchChanged(value)),
-      decoration: InputDecoration(
-        hintText: 'Search patients...',
-        prefixIcon: const Icon(Icons.search, size: 20),
-        suffixIcon: controller.text.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear, size: 18),
-                onPressed: () {
-                  controller.clear();
-                  context.read<TriageBloc>().add(
-                    const TriageEvent.searchChanged(''),
-                  );
-                },
-              )
-            : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        filled: true,
-      ),
+      suffixIcon: controller.text.isNotEmpty
+          ? IconButton(
+              icon: const Icon(Icons.clear, size: 18),
+              onPressed: () {
+                controller.clear();
+                context.read<TriageBloc>().add(
+                  const TriageEvent.searchChanged(''),
+                );
+              },
+            )
+          : null,
     );
   }
 }
@@ -460,7 +456,7 @@ class _FilterChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? color : color.withOpacity(0.08),
+          color: isActive ? color : color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -516,11 +512,11 @@ class _PatientCard extends StatelessWidget {
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(16),
             border: Border(left: BorderSide(color: riskColor, width: 4)),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: AppColors.shadowColor,
                 blurRadius: 8,
-                offset: const Offset(0, 2),
+                offset: Offset(0, 2),
               ),
             ],
           ),
@@ -547,7 +543,7 @@ class _PatientCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: riskColor.withOpacity(0.12),
+                        color: riskColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -627,7 +623,7 @@ class _PatientCard extends StatelessWidget {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.accentGreen.withOpacity(0.1),
+                          color: AppColors.accentGreen.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: const Text(
@@ -703,7 +699,7 @@ class _VitalTag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen.withOpacity(0.07),
+        color: AppColors.primaryGreen.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(

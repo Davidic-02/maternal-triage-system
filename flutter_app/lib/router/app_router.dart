@@ -151,7 +151,7 @@ class AppRouter {
       return '/sign-up'; // force signup/login
     }
     if (isLoggedIn && onAuthPages) {
-      return '/triage'; // logged-in users redirected to main app
+      return '/login'; // logged-in users redirected to main app
     }
     return null; // default: allow current route
   }
