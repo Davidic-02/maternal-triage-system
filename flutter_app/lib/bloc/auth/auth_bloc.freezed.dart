@@ -55,7 +55,7 @@ extension AuthEventPatterns on AuthEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AuthEvent value)?  $default,{TResult Function( _EmailChanged value)?  emailChanged,TResult Function( _PasswordChanged value)?  passwordChanged,TResult Function( _Login value)?  login,TResult Function( _LoginSuccessful value)?  loginSuccessful,TResult Function( _LoginFailed value)?  loginFailed,TResult Function( _ErrorMessage value)?  errorMessage,TResult Function( _ForgotPassword value)?  forgotPassword,TResult Function( _ForgotPasswordSuccessful value)?  forgotPasswordSuccessful,TResult Function( _ForgotPasswordFailed value)?  forgotPasswordFailed,TResult Function( _LogoutRequested value)?  logoutRequested,TResult Function( _UserChanged value)?  userChanged,TResult Function( _SessionExpired value)?  sessionExpired,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AuthEvent value)?  $default,{TResult Function( _EmailChanged value)?  emailChanged,TResult Function( _PasswordChanged value)?  passwordChanged,TResult Function( _Login value)?  login,TResult Function( _LoginSuccessful value)?  loginSuccessful,TResult Function( _LoginFailed value)?  loginFailed,TResult Function( _ErrorMessage value)?  errorMessage,TResult Function( _ForgotPassword value)?  forgotPassword,TResult Function( _ForgotPasswordSuccessful value)?  forgotPasswordSuccessful,TResult Function( _ForgotPasswordFailed value)?  forgotPasswordFailed,TResult Function( _LogoutRequested value)?  logoutRequested,TResult Function( _UserChanged value)?  userChanged,TResult Function( _DoctorStatusChanged value)?  doctorStatusChanged,TResult Function( _SessionExpired value)?  sessionExpired,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _AuthEvent() when $default != null:
@@ -70,7 +70,8 @@ return forgotPassword(_that);case _ForgotPasswordSuccessful() when forgotPasswor
 return forgotPasswordSuccessful(_that);case _ForgotPasswordFailed() when forgotPasswordFailed != null:
 return forgotPasswordFailed(_that);case _LogoutRequested() when logoutRequested != null:
 return logoutRequested(_that);case _UserChanged() when userChanged != null:
-return userChanged(_that);case _SessionExpired() when sessionExpired != null:
+return userChanged(_that);case _DoctorStatusChanged() when doctorStatusChanged != null:
+return doctorStatusChanged(_that);case _SessionExpired() when sessionExpired != null:
 return sessionExpired(_that);case _:
   return orElse();
 
@@ -89,7 +90,7 @@ return sessionExpired(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AuthEvent value)  $default,{required TResult Function( _EmailChanged value)  emailChanged,required TResult Function( _PasswordChanged value)  passwordChanged,required TResult Function( _Login value)  login,required TResult Function( _LoginSuccessful value)  loginSuccessful,required TResult Function( _LoginFailed value)  loginFailed,required TResult Function( _ErrorMessage value)  errorMessage,required TResult Function( _ForgotPassword value)  forgotPassword,required TResult Function( _ForgotPasswordSuccessful value)  forgotPasswordSuccessful,required TResult Function( _ForgotPasswordFailed value)  forgotPasswordFailed,required TResult Function( _LogoutRequested value)  logoutRequested,required TResult Function( _UserChanged value)  userChanged,required TResult Function( _SessionExpired value)  sessionExpired,}){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AuthEvent value)  $default,{required TResult Function( _EmailChanged value)  emailChanged,required TResult Function( _PasswordChanged value)  passwordChanged,required TResult Function( _Login value)  login,required TResult Function( _LoginSuccessful value)  loginSuccessful,required TResult Function( _LoginFailed value)  loginFailed,required TResult Function( _ErrorMessage value)  errorMessage,required TResult Function( _ForgotPassword value)  forgotPassword,required TResult Function( _ForgotPasswordSuccessful value)  forgotPasswordSuccessful,required TResult Function( _ForgotPasswordFailed value)  forgotPasswordFailed,required TResult Function( _LogoutRequested value)  logoutRequested,required TResult Function( _UserChanged value)  userChanged,required TResult Function( _DoctorStatusChanged value)  doctorStatusChanged,required TResult Function( _SessionExpired value)  sessionExpired,}){
 final _that = this;
 switch (_that) {
 case _AuthEvent():
@@ -104,7 +105,8 @@ return forgotPassword(_that);case _ForgotPasswordSuccessful():
 return forgotPasswordSuccessful(_that);case _ForgotPasswordFailed():
 return forgotPasswordFailed(_that);case _LogoutRequested():
 return logoutRequested(_that);case _UserChanged():
-return userChanged(_that);case _SessionExpired():
+return userChanged(_that);case _DoctorStatusChanged():
+return doctorStatusChanged(_that);case _SessionExpired():
 return sessionExpired(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -122,7 +124,7 @@ return sessionExpired(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AuthEvent value)?  $default,{TResult? Function( _EmailChanged value)?  emailChanged,TResult? Function( _PasswordChanged value)?  passwordChanged,TResult? Function( _Login value)?  login,TResult? Function( _LoginSuccessful value)?  loginSuccessful,TResult? Function( _LoginFailed value)?  loginFailed,TResult? Function( _ErrorMessage value)?  errorMessage,TResult? Function( _ForgotPassword value)?  forgotPassword,TResult? Function( _ForgotPasswordSuccessful value)?  forgotPasswordSuccessful,TResult? Function( _ForgotPasswordFailed value)?  forgotPasswordFailed,TResult? Function( _LogoutRequested value)?  logoutRequested,TResult? Function( _UserChanged value)?  userChanged,TResult? Function( _SessionExpired value)?  sessionExpired,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AuthEvent value)?  $default,{TResult? Function( _EmailChanged value)?  emailChanged,TResult? Function( _PasswordChanged value)?  passwordChanged,TResult? Function( _Login value)?  login,TResult? Function( _LoginSuccessful value)?  loginSuccessful,TResult? Function( _LoginFailed value)?  loginFailed,TResult? Function( _ErrorMessage value)?  errorMessage,TResult? Function( _ForgotPassword value)?  forgotPassword,TResult? Function( _ForgotPasswordSuccessful value)?  forgotPasswordSuccessful,TResult? Function( _ForgotPasswordFailed value)?  forgotPasswordFailed,TResult? Function( _LogoutRequested value)?  logoutRequested,TResult? Function( _UserChanged value)?  userChanged,TResult? Function( _DoctorStatusChanged value)?  doctorStatusChanged,TResult? Function( _SessionExpired value)?  sessionExpired,}){
 final _that = this;
 switch (_that) {
 case _AuthEvent() when $default != null:
@@ -137,7 +139,8 @@ return forgotPassword(_that);case _ForgotPasswordSuccessful() when forgotPasswor
 return forgotPasswordSuccessful(_that);case _ForgotPasswordFailed() when forgotPasswordFailed != null:
 return forgotPasswordFailed(_that);case _LogoutRequested() when logoutRequested != null:
 return logoutRequested(_that);case _UserChanged() when userChanged != null:
-return userChanged(_that);case _SessionExpired() when sessionExpired != null:
+return userChanged(_that);case _DoctorStatusChanged() when doctorStatusChanged != null:
+return doctorStatusChanged(_that);case _SessionExpired() when sessionExpired != null:
 return sessionExpired(_that);case _:
   return null;
 
@@ -155,7 +158,7 @@ return sessionExpired(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function()?  $default,{TResult Function( String email)?  emailChanged,TResult Function( String password)?  passwordChanged,TResult Function()?  login,TResult Function()?  loginSuccessful,TResult Function( String? message)?  loginFailed,TResult Function( String? message)?  errorMessage,TResult Function()?  forgotPassword,TResult Function()?  forgotPasswordSuccessful,TResult Function( String? message)?  forgotPasswordFailed,TResult Function()?  logoutRequested,TResult Function()?  userChanged,TResult Function()?  sessionExpired,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function()?  $default,{TResult Function( String email)?  emailChanged,TResult Function( String password)?  passwordChanged,TResult Function()?  login,TResult Function()?  loginSuccessful,TResult Function( String? message)?  loginFailed,TResult Function( String? message)?  errorMessage,TResult Function()?  forgotPassword,TResult Function()?  forgotPasswordSuccessful,TResult Function( String? message)?  forgotPasswordFailed,TResult Function()?  logoutRequested,TResult Function()?  userChanged,TResult Function( String status)?  doctorStatusChanged,TResult Function()?  sessionExpired,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthEvent() when $default != null:
 return $default();case _EmailChanged() when emailChanged != null:
@@ -169,7 +172,8 @@ return forgotPassword();case _ForgotPasswordSuccessful() when forgotPasswordSucc
 return forgotPasswordSuccessful();case _ForgotPasswordFailed() when forgotPasswordFailed != null:
 return forgotPasswordFailed(_that.message);case _LogoutRequested() when logoutRequested != null:
 return logoutRequested();case _UserChanged() when userChanged != null:
-return userChanged();case _SessionExpired() when sessionExpired != null:
+return userChanged();case _DoctorStatusChanged() when doctorStatusChanged != null:
+return doctorStatusChanged(_that.status);case _SessionExpired() when sessionExpired != null:
 return sessionExpired();case _:
   return orElse();
 
@@ -188,7 +192,7 @@ return sessionExpired();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function()  $default,{required TResult Function( String email)  emailChanged,required TResult Function( String password)  passwordChanged,required TResult Function()  login,required TResult Function()  loginSuccessful,required TResult Function( String? message)  loginFailed,required TResult Function( String? message)  errorMessage,required TResult Function()  forgotPassword,required TResult Function()  forgotPasswordSuccessful,required TResult Function( String? message)  forgotPasswordFailed,required TResult Function()  logoutRequested,required TResult Function()  userChanged,required TResult Function()  sessionExpired,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function()  $default,{required TResult Function( String email)  emailChanged,required TResult Function( String password)  passwordChanged,required TResult Function()  login,required TResult Function()  loginSuccessful,required TResult Function( String? message)  loginFailed,required TResult Function( String? message)  errorMessage,required TResult Function()  forgotPassword,required TResult Function()  forgotPasswordSuccessful,required TResult Function( String? message)  forgotPasswordFailed,required TResult Function()  logoutRequested,required TResult Function()  userChanged,required TResult Function( String status)  doctorStatusChanged,required TResult Function()  sessionExpired,}) {final _that = this;
 switch (_that) {
 case _AuthEvent():
 return $default();case _EmailChanged():
@@ -202,7 +206,8 @@ return forgotPassword();case _ForgotPasswordSuccessful():
 return forgotPasswordSuccessful();case _ForgotPasswordFailed():
 return forgotPasswordFailed(_that.message);case _LogoutRequested():
 return logoutRequested();case _UserChanged():
-return userChanged();case _SessionExpired():
+return userChanged();case _DoctorStatusChanged():
+return doctorStatusChanged(_that.status);case _SessionExpired():
 return sessionExpired();case _:
   throw StateError('Unexpected subclass');
 
@@ -220,7 +225,7 @@ return sessionExpired();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function()?  $default,{TResult? Function( String email)?  emailChanged,TResult? Function( String password)?  passwordChanged,TResult? Function()?  login,TResult? Function()?  loginSuccessful,TResult? Function( String? message)?  loginFailed,TResult? Function( String? message)?  errorMessage,TResult? Function()?  forgotPassword,TResult? Function()?  forgotPasswordSuccessful,TResult? Function( String? message)?  forgotPasswordFailed,TResult? Function()?  logoutRequested,TResult? Function()?  userChanged,TResult? Function()?  sessionExpired,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function()?  $default,{TResult? Function( String email)?  emailChanged,TResult? Function( String password)?  passwordChanged,TResult? Function()?  login,TResult? Function()?  loginSuccessful,TResult? Function( String? message)?  loginFailed,TResult? Function( String? message)?  errorMessage,TResult? Function()?  forgotPassword,TResult? Function()?  forgotPasswordSuccessful,TResult? Function( String? message)?  forgotPasswordFailed,TResult? Function()?  logoutRequested,TResult? Function()?  userChanged,TResult? Function( String status)?  doctorStatusChanged,TResult? Function()?  sessionExpired,}) {final _that = this;
 switch (_that) {
 case _AuthEvent() when $default != null:
 return $default();case _EmailChanged() when emailChanged != null:
@@ -234,7 +239,8 @@ return forgotPassword();case _ForgotPasswordSuccessful() when forgotPasswordSucc
 return forgotPasswordSuccessful();case _ForgotPasswordFailed() when forgotPasswordFailed != null:
 return forgotPasswordFailed(_that.message);case _LogoutRequested() when logoutRequested != null:
 return logoutRequested();case _UserChanged() when userChanged != null:
-return userChanged();case _SessionExpired() when sessionExpired != null:
+return userChanged();case _DoctorStatusChanged() when doctorStatusChanged != null:
+return doctorStatusChanged(_that.status);case _SessionExpired() when sessionExpired != null:
 return sessionExpired();case _:
   return null;
 
@@ -800,6 +806,72 @@ String toString() {
 /// @nodoc
 
 
+class _DoctorStatusChanged implements AuthEvent {
+  const _DoctorStatusChanged(this.status);
+  
+
+ final  String status;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DoctorStatusChangedCopyWith<_DoctorStatusChanged> get copyWith => __$DoctorStatusChangedCopyWithImpl<_DoctorStatusChanged>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DoctorStatusChanged&&(identical(other.status, status) || other.status == status));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,status);
+
+@override
+String toString() {
+  return 'AuthEvent.doctorStatusChanged(status: $status)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DoctorStatusChangedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory _$DoctorStatusChangedCopyWith(_DoctorStatusChanged value, $Res Function(_DoctorStatusChanged) _then) = __$DoctorStatusChangedCopyWithImpl;
+@useResult
+$Res call({
+ String status
+});
+
+
+
+
+}
+/// @nodoc
+class __$DoctorStatusChangedCopyWithImpl<$Res>
+    implements _$DoctorStatusChangedCopyWith<$Res> {
+  __$DoctorStatusChangedCopyWithImpl(this._self, this._then);
+
+  final _DoctorStatusChanged _self;
+  final $Res Function(_DoctorStatusChanged) _then;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? status = null,}) {
+  return _then(_DoctorStatusChanged(
+null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class _SessionExpired implements AuthEvent {
   const _SessionExpired();
   
@@ -833,7 +905,7 @@ String toString() {
 mixin _$AuthState {
 
  String? get userEmail; bool? get onboardingComplete; String? get userName;// Doctor full name
- String? get userRole; EmailFormz get email; PasswordFormz get password; FormzSubmissionStatus get status; FormzSubmissionStatus get loginStatus; FormzSubmissionStatus get forgotPasswordStatus; String? get errorMessage;
+ String? get userRole; String get doctorStatus; EmailFormz get email; PasswordFormz get password; FormzSubmissionStatus get status; FormzSubmissionStatus get loginStatus; FormzSubmissionStatus get forgotPasswordStatus; String? get errorMessage;
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -844,16 +916,16 @@ $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.onboardingComplete, onboardingComplete) || other.onboardingComplete == onboardingComplete)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userRole, userRole) || other.userRole == userRole)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.status, status) || other.status == status)&&(identical(other.loginStatus, loginStatus) || other.loginStatus == loginStatus)&&(identical(other.forgotPasswordStatus, forgotPasswordStatus) || other.forgotPasswordStatus == forgotPasswordStatus)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.onboardingComplete, onboardingComplete) || other.onboardingComplete == onboardingComplete)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userRole, userRole) || other.userRole == userRole)&&(identical(other.doctorStatus, doctorStatus) || other.doctorStatus == doctorStatus)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.status, status) || other.status == status)&&(identical(other.loginStatus, loginStatus) || other.loginStatus == loginStatus)&&(identical(other.forgotPasswordStatus, forgotPasswordStatus) || other.forgotPasswordStatus == forgotPasswordStatus)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userEmail,onboardingComplete,userName,userRole,email,password,status,loginStatus,forgotPasswordStatus,errorMessage);
+int get hashCode => Object.hash(runtimeType,userEmail,onboardingComplete,userName,userRole,doctorStatus,email,password,status,loginStatus,forgotPasswordStatus,errorMessage);
 
 @override
 String toString() {
-  return 'AuthState(userEmail: $userEmail, onboardingComplete: $onboardingComplete, userName: $userName, userRole: $userRole, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
+  return 'AuthState(userEmail: $userEmail, onboardingComplete: $onboardingComplete, userName: $userName, userRole: $userRole, doctorStatus: $doctorStatus, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
 }
 
 
@@ -864,7 +936,7 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- String? userEmail, bool? onboardingComplete, String? userName, String? userRole, EmailFormz email, PasswordFormz password, FormzSubmissionStatus status, FormzSubmissionStatus loginStatus, FormzSubmissionStatus forgotPasswordStatus, String? errorMessage
+ String? userEmail, bool? onboardingComplete, String? userName, String? userRole, String doctorStatus, EmailFormz email, PasswordFormz password, FormzSubmissionStatus status, FormzSubmissionStatus loginStatus, FormzSubmissionStatus forgotPasswordStatus, String? errorMessage
 });
 
 
@@ -881,13 +953,14 @@ class _$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userEmail = freezed,Object? onboardingComplete = freezed,Object? userName = freezed,Object? userRole = freezed,Object? email = null,Object? password = null,Object? status = null,Object? loginStatus = null,Object? forgotPasswordStatus = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userEmail = freezed,Object? onboardingComplete = freezed,Object? userName = freezed,Object? userRole = freezed,Object? doctorStatus = null,Object? email = null,Object? password = null,Object? status = null,Object? loginStatus = null,Object? forgotPasswordStatus = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 userEmail: freezed == userEmail ? _self.userEmail : userEmail // ignore: cast_nullable_to_non_nullable
 as String?,onboardingComplete: freezed == onboardingComplete ? _self.onboardingComplete : onboardingComplete // ignore: cast_nullable_to_non_nullable
 as bool?,userName: freezed == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String?,userRole: freezed == userRole ? _self.userRole : userRole // ignore: cast_nullable_to_non_nullable
-as String?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,doctorStatus: null == doctorStatus ? _self.doctorStatus : doctorStatus // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as EmailFormz,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as PasswordFormz,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as FormzSubmissionStatus,loginStatus: null == loginStatus ? _self.loginStatus : loginStatus // ignore: cast_nullable_to_non_nullable
@@ -978,10 +1051,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? userEmail,  bool? onboardingComplete,  String? userName,  String? userRole,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? userEmail,  bool? onboardingComplete,  String? userName,  String? userRole,  String doctorStatus,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.userEmail,_that.onboardingComplete,_that.userName,_that.userRole,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
+return $default(_that.userEmail,_that.onboardingComplete,_that.userName,_that.userRole,_that.doctorStatus,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -999,10 +1072,10 @@ return $default(_that.userEmail,_that.onboardingComplete,_that.userName,_that.us
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? userEmail,  bool? onboardingComplete,  String? userName,  String? userRole,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? userEmail,  bool? onboardingComplete,  String? userName,  String? userRole,  String doctorStatus,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _AuthState():
-return $default(_that.userEmail,_that.onboardingComplete,_that.userName,_that.userRole,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
+return $default(_that.userEmail,_that.onboardingComplete,_that.userName,_that.userRole,_that.doctorStatus,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1019,10 +1092,10 @@ return $default(_that.userEmail,_that.onboardingComplete,_that.userName,_that.us
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? userEmail,  bool? onboardingComplete,  String? userName,  String? userRole,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? userEmail,  bool? onboardingComplete,  String? userName,  String? userRole,  String doctorStatus,  EmailFormz email,  PasswordFormz password,  FormzSubmissionStatus status,  FormzSubmissionStatus loginStatus,  FormzSubmissionStatus forgotPasswordStatus,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.userEmail,_that.onboardingComplete,_that.userName,_that.userRole,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
+return $default(_that.userEmail,_that.onboardingComplete,_that.userName,_that.userRole,_that.doctorStatus,_that.email,_that.password,_that.status,_that.loginStatus,_that.forgotPasswordStatus,_that.errorMessage);case _:
   return null;
 
 }
@@ -1034,7 +1107,7 @@ return $default(_that.userEmail,_that.onboardingComplete,_that.userName,_that.us
 
 
 class _AuthState extends AuthState {
-  const _AuthState({this.userEmail, this.onboardingComplete, this.userName, this.userRole, this.email = const EmailFormz.pure(), this.password = const PasswordFormz.pure(), this.status = FormzSubmissionStatus.initial, this.loginStatus = FormzSubmissionStatus.initial, this.forgotPasswordStatus = FormzSubmissionStatus.initial, this.errorMessage}): super._();
+  const _AuthState({this.userEmail, this.onboardingComplete, this.userName, this.userRole, this.doctorStatus = '', this.email = const EmailFormz.pure(), this.password = const PasswordFormz.pure(), this.status = FormzSubmissionStatus.initial, this.loginStatus = FormzSubmissionStatus.initial, this.forgotPasswordStatus = FormzSubmissionStatus.initial, this.errorMessage}): super._();
   
 
 @override final  String? userEmail;
@@ -1042,6 +1115,7 @@ class _AuthState extends AuthState {
 @override final  String? userName;
 // Doctor full name
 @override final  String? userRole;
+@override@JsonKey() final  String doctorStatus;
 @override@JsonKey() final  EmailFormz email;
 @override@JsonKey() final  PasswordFormz password;
 @override@JsonKey() final  FormzSubmissionStatus status;
@@ -1059,16 +1133,16 @@ _$AuthStateCopyWith<_AuthState> get copyWith => __$AuthStateCopyWithImpl<_AuthSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.onboardingComplete, onboardingComplete) || other.onboardingComplete == onboardingComplete)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userRole, userRole) || other.userRole == userRole)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.status, status) || other.status == status)&&(identical(other.loginStatus, loginStatus) || other.loginStatus == loginStatus)&&(identical(other.forgotPasswordStatus, forgotPasswordStatus) || other.forgotPasswordStatus == forgotPasswordStatus)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.onboardingComplete, onboardingComplete) || other.onboardingComplete == onboardingComplete)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userRole, userRole) || other.userRole == userRole)&&(identical(other.doctorStatus, doctorStatus) || other.doctorStatus == doctorStatus)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.status, status) || other.status == status)&&(identical(other.loginStatus, loginStatus) || other.loginStatus == loginStatus)&&(identical(other.forgotPasswordStatus, forgotPasswordStatus) || other.forgotPasswordStatus == forgotPasswordStatus)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userEmail,onboardingComplete,userName,userRole,email,password,status,loginStatus,forgotPasswordStatus,errorMessage);
+int get hashCode => Object.hash(runtimeType,userEmail,onboardingComplete,userName,userRole,doctorStatus,email,password,status,loginStatus,forgotPasswordStatus,errorMessage);
 
 @override
 String toString() {
-  return 'AuthState(userEmail: $userEmail, onboardingComplete: $onboardingComplete, userName: $userName, userRole: $userRole, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
+  return 'AuthState(userEmail: $userEmail, onboardingComplete: $onboardingComplete, userName: $userName, userRole: $userRole, doctorStatus: $doctorStatus, email: $email, password: $password, status: $status, loginStatus: $loginStatus, forgotPasswordStatus: $forgotPasswordStatus, errorMessage: $errorMessage)';
 }
 
 
@@ -1079,7 +1153,7 @@ abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Re
   factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
 @override @useResult
 $Res call({
- String? userEmail, bool? onboardingComplete, String? userName, String? userRole, EmailFormz email, PasswordFormz password, FormzSubmissionStatus status, FormzSubmissionStatus loginStatus, FormzSubmissionStatus forgotPasswordStatus, String? errorMessage
+ String? userEmail, bool? onboardingComplete, String? userName, String? userRole, String doctorStatus, EmailFormz email, PasswordFormz password, FormzSubmissionStatus status, FormzSubmissionStatus loginStatus, FormzSubmissionStatus forgotPasswordStatus, String? errorMessage
 });
 
 
@@ -1096,13 +1170,14 @@ class __$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userEmail = freezed,Object? onboardingComplete = freezed,Object? userName = freezed,Object? userRole = freezed,Object? email = null,Object? password = null,Object? status = null,Object? loginStatus = null,Object? forgotPasswordStatus = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userEmail = freezed,Object? onboardingComplete = freezed,Object? userName = freezed,Object? userRole = freezed,Object? doctorStatus = null,Object? email = null,Object? password = null,Object? status = null,Object? loginStatus = null,Object? forgotPasswordStatus = null,Object? errorMessage = freezed,}) {
   return _then(_AuthState(
 userEmail: freezed == userEmail ? _self.userEmail : userEmail // ignore: cast_nullable_to_non_nullable
 as String?,onboardingComplete: freezed == onboardingComplete ? _self.onboardingComplete : onboardingComplete // ignore: cast_nullable_to_non_nullable
 as bool?,userName: freezed == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String?,userRole: freezed == userRole ? _self.userRole : userRole // ignore: cast_nullable_to_non_nullable
-as String?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,doctorStatus: null == doctorStatus ? _self.doctorStatus : doctorStatus // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as EmailFormz,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as PasswordFormz,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as FormzSubmissionStatus,loginStatus: null == loginStatus ? _self.loginStatus : loginStatus // ignore: cast_nullable_to_non_nullable

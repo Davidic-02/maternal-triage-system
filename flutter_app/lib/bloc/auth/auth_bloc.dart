@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,6 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final PersistenceService _persistenceService;
   final DoctorService _doctorService;
   StreamSubscription<User?>? _authStateSubscription;
+  StreamSubscription<DoctorModel?>? _doctorSubscription;
   Timer? _sessionTimer;
   static const _sessionTimeout = Duration(minutes: 30);
 
@@ -39,14 +39,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_LoginSuccessful>(_onLoginSuccessful);
     on<_LoginFailed>(_onLoginFailed);
     on<_ErrorMessage>(_onErrorMessage);
-
     on<_ForgotPassword>(_onForgotPassword);
     on<_ForgotPasswordSuccessful>(_onForgotPasswordSuccessful);
     on<_ForgotPasswordFailed>(_onForgotPasswordFailed);
-
     on<_LogoutRequested>(_onLogoutRequested);
     on<_UserChanged>(_onUserChanged);
     on<_SessionExpired>(_onSessionExpired);
+    on<_DoctorStatusChanged>(_onDoctorStatusChanged);
+
+    _authStateSubscription = _firebaseAuth.authStateChanges().listen((user) {
+      add(const AuthEvent.userChanged());
+    });
 
     _authStateSubscription = _firebaseAuth.authStateChanges().listen((user) {
       add(const AuthEvent.userChanged());
@@ -157,6 +160,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _onLoginSuccessful(_LoginSuccessful event, Emitter<AuthState> emit) {
     _startSessionTimer();
+
+    final uid = _firebaseAuth.currentUser?.uid;
+    if (uid != null) {
+      _doctorSubscription?.cancel();
+      _doctorSubscription = _doctorService.watchDoctor(uid).listen((doctor) {
+        if (doctor != null) {
+          add(AuthEvent.doctorStatusChanged(doctor.status));
+        }
+      });
+    }
+
     emit(
       state.copyWith(
         loginStatus: FormzSubmissionStatus.success,
@@ -187,6 +201,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         loginStatus: FormzSubmissionStatus.failure,
       ),
     );
+  }
+
+  void _onDoctorStatusChanged(
+    _DoctorStatusChanged event,
+    Emitter<AuthState> emit,
+  ) {
+    emit(state.copyWith(doctorStatus: event.status));
   }
 
   Future<void> _onForgotPassword(
@@ -331,6 +352,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   @override
   Future<void> close() {
     _authStateSubscription?.cancel();
+    _doctorSubscription?.cancel();
     _cancelSessionTimer();
     return super.close();
   }

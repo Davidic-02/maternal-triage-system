@@ -143,6 +143,8 @@ class AppRouter {
         location == '/login' ||
         location == '/login/forgot-password' ||
         location == '/sign-up';
+    final onPending = location == '/pending-approval';
+    final onRejected = location == '/rejected';
     if (onSplash) return null; // splash always shows once
     if (!onboardingComplete && !onOnboarding) {
       return '/onboarding'; // first-time onboarding
@@ -150,6 +152,15 @@ class AppRouter {
     if (onboardingComplete && !isLoggedIn && !onAuthPages) {
       return '/sign-up'; // force signup/login
     }
+    if (isLoggedIn) {
+      final doctorStatus = authBloc.state.doctorStatus;
+      if (doctorStatus == 'pending' && !onPending) return '/pending-approval';
+      if (doctorStatus == 'rejected' && !onRejected) return '/rejected';
+      if (doctorStatus == 'approved' && (onPending || onRejected)) {
+        return '/triage';
+      }
+    }
+
     if (isLoggedIn && onAuthPages) {
       return '/login'; // logged-in users redirected to main app
     }

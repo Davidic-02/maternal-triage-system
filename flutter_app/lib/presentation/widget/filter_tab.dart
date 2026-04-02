@@ -60,11 +60,9 @@ class _FilterChip extends StatelessWidget {
     required this.currentFilter,
     required this.color,
   });
-
   @override
   Widget build(BuildContext context) {
     final isActive = currentFilter == filter;
-
     return GestureDetector(
       onTap: () =>
           context.read<TriageBloc>().add(TriageEvent.filterChanged(filter)),

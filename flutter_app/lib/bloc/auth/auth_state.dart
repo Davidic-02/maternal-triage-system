@@ -9,6 +9,7 @@ abstract class AuthState with _$AuthState {
     bool? onboardingComplete,
     String? userName, // Doctor full name
     String? userRole,
+    @Default('') String doctorStatus,
     @Default(EmailFormz.pure()) EmailFormz email,
     @Default(PasswordFormz.pure()) PasswordFormz password,
     @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
