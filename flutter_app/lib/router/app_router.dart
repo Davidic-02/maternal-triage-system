@@ -5,7 +5,10 @@ import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
+import 'package:maternal_triage/bloc/sign_up/sign_up_bloc.dart';
 import 'package:maternal_triage/bloc/triage/triage_bloc.dart';
+import 'package:maternal_triage/presentation/screens/auth/pending_approval.dart';
+import 'package:maternal_triage/presentation/screens/auth/rejected_screen.dart';
 import 'package:maternal_triage/presentation/screens/auth/sign_up.dart';
 import 'package:maternal_triage/presentation/screens/history_screen.dart';
 import 'package:maternal_triage/presentation/screens/auth/forgot_password_screen.dart';
@@ -53,7 +56,11 @@ class AppRouter {
       GoRoute(
         path: '/signUp',
         name: 'signUp',
-        builder: (context, state) => const SignUpScreen(),
+        builder: (context, state) => BlocProvider(
+          // ← needs BlocProvider
+          create: (_) => SignUpBloc(),
+          child: const SignUpScreen(),
+        ),
       ),
       GoRoute(
         path: '/login',
@@ -76,6 +83,16 @@ class AppRouter {
         path: '/results',
         name: 'results',
         builder: (context, state) => const ResultScreen(),
+      ),
+      GoRoute(
+        path: '/pending-approval',
+        name: 'pending-approval',
+        builder: (context, state) => const PendingApprovalScreen(),
+      ),
+      GoRoute(
+        path: '/rejected',
+        name: 'rejected',
+        builder: (context, state) => const RejectedScreen(),
       ),
 
       // ── shell ──────────────────────────────────
@@ -142,7 +159,9 @@ class AppRouter {
     final onAuthPages =
         location == '/login' ||
         location == '/login/forgot-password' ||
-        location == '/sign-up';
+        location == '/signUp' ||
+        location == '/pending-approval' ||
+        location == '/rejected';
     final onPending = location == '/pending-approval';
     final onRejected = location == '/rejected';
     if (onSplash) return null; // splash always shows once
@@ -150,19 +169,18 @@ class AppRouter {
       return '/onboarding'; // first-time onboarding
     }
     if (onboardingComplete && !isLoggedIn && !onAuthPages) {
-      return '/sign-up'; // force signup/login
+      return '/signUp'; // force signup/login
     }
     if (isLoggedIn) {
       final doctorStatus = authBloc.state.doctorStatus;
       if (doctorStatus == 'pending' && !onPending) return '/pending-approval';
       if (doctorStatus == 'rejected' && !onRejected) return '/rejected';
-      if (doctorStatus == 'approved' && (onPending || onRejected)) {
-        return '/triage';
-      }
+      //   if (doctorStatus == 'approved' && (onPending || onRejected)) {
+      //   return '/triage';}
     }
 
     if (isLoggedIn && onAuthPages) {
-      return '/login'; // logged-in users redirected to main app
+      return '/triage'; // logged-in users redirected to main app
     }
     return null; // default: allow current route
   }

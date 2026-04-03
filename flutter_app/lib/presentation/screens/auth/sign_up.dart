@@ -162,6 +162,14 @@ class SignUpScreen extends HookWidget {
       ToastService.toast('Registration successful! Awaiting approval.');
       context.go('/pending-approval');
     }
+
+    if (state.status.isFailure && state.errorMessage != null) {
+      ToastService.toast(
+        state.errorMessage ?? 'Something went wrong',
+        ToastType.error,
+      );
+    }
+
     if (state.status.isFailure && state.errorMessage != null) {
       ToastService.toast(
         state.errorMessage ?? 'Something went wrong',

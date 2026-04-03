@@ -158,7 +158,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  void _onLoginSuccessful(_LoginSuccessful event, Emitter<AuthState> emit) {
+  void _onLoginSuccessful(
+    _LoginSuccessful event,
+    Emitter<AuthState> emit,
+  ) async {
     _startSessionTimer();
 
     final uid = _firebaseAuth.currentUser?.uid;
@@ -175,8 +178,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       state.copyWith(
         loginStatus: FormzSubmissionStatus.success,
         status: FormzSubmissionStatus.success,
-        userEmail: _firebaseAuth.currentUser?.email,
-        userName: _firebaseAuth.currentUser?.displayName,
+        userName: await _persistenceService.getUserName(),
+        userRole: await _persistenceService.getUserRole(),
         errorMessage: null,
       ),
     );
@@ -289,6 +292,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (state.loginStatus == FormzSubmissionStatus.inProgress) return;
     if (state.status == FormzSubmissionStatus.inProgress) return;
+    if (user != null) {
+      // ← start watching whenever user is detected (login OR signup)
+      _doctorSubscription?.cancel();
+      _doctorSubscription = _doctorService.watchDoctor(user.uid).listen((
+        doctor,
+      ) {
+        if (doctor != null) {
+          add(AuthEvent.doctorStatusChanged(doctor.status));
+        }
+      });
+    }
 
     if (user == null && state.status == FormzSubmissionStatus.success) {
       emit(const AuthState());

@@ -16,7 +16,7 @@ class Header extends StatelessWidget {
       builder: (context, state) {
         final displayName = state.userName ?? 'Doctor';
         final displayRole = state.userRole ?? 'Medical Officer';
-
+        print("USERNAME: ${state.userName}");
         return Row(
           children: [
             // avatar with initials

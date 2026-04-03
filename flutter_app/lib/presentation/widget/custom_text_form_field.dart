@@ -47,7 +47,6 @@ class CustomTextFormField extends StatelessWidget {
   final bool readOnly;
   final bool? showEditIcon;
   final Widget? suffixIcon;
-
   final int? maxLength;
   final String? errorText;
   final String? Function(String?)? validator;
