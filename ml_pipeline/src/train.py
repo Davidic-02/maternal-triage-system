@@ -156,7 +156,16 @@ if __name__ == "__main__":
     X_res, y_res = apply_smote(X_train, y_train)
     print(f"  Balanced train set: {X_res.shape}  classes: {dict(pd.Series(y_res).value_counts().sort_index())}")
 
-    print("\n-- Normalising features ---")
+    print("\n-- Normalizing features ---")
+    # Canonical feature order saved into scaler_params.json (must match
+    # Flutter app's _buildInputTensor in inference_service.dart):
+    #   0  Age                 5  BMI
+    #   1  SystolicBP          6  HeartRate
+    #   2  DiastolicBP         7  Weight
+    #   3  BloodSugar          8  Height
+    #   4  BodyTemp            9  PreviousComplications
+    #  10  PreexistingDiabetes 11 GestationalDiabetes
+    #  12  MentalHealthStatus  13 PulsePressure
     X_train_norm, X_test_norm = normalize_features(X_res, X_test)
 
     print("\n-- Training stacking ensemble (this may take ~2 min) ---")
