@@ -39,8 +39,15 @@ def evaluate_model(
     model,
     X_test: np.ndarray,
     y_test: np.ndarray,
-) -> dict:
-    """Compute and print classification metrics."""
+) -> tuple:
+    """Compute and print classification metrics.
+
+    Returns
+    -------
+    tuple
+        ``(results, class_report)`` where *results* is the metrics dict and
+        *class_report* is the ``classification_report`` dict (``output_dict=True``).
+    """
     y_pred  = model.predict(X_test)
     y_proba = model.predict_proba(X_test)
     classes = np.unique(y_test)
@@ -66,6 +73,11 @@ def evaluate_model(
         "confusion_matrix": cm,
     }
 
+    target_names = [CLASS_NAMES[int(c)] for c in sorted(classes)]
+    class_report = classification_report(
+        y_test, y_pred, target_names=target_names, zero_division=0, output_dict=True
+    )
+
     print("\n-- Evaluation Metrics ---")
     print(f"  Accuracy  : {acc:.4f}")
     print(f"  Precision : {prec:.4f}  (macro)")
@@ -74,14 +86,13 @@ def evaluate_model(
     print(f"  AUC-ROC   : {auc_roc:.4f}  (macro OvR)")
 
     print("\n-- Per-class Classification Report ---")
-    target_names = [CLASS_NAMES[int(c)] for c in sorted(classes)]
     print(classification_report(y_test, y_pred, target_names=target_names, zero_division=0))
 
     print("-- Confusion Matrix (rows=actual, cols=predicted) ---")
     print(f"  Classes: {target_names}")
     print(cm)
 
-    return results
+    return results, class_report
 
 
 # ---------------------------------------------------------------------------
@@ -190,6 +201,7 @@ if __name__ == "__main__":
     from src.feature_engineering import run_feature_engineering
     from src.balancing import apply_smote
     from src.train import normalize_features
+    from src.reporting import save_evaluation_metrics_json, generate_markdown_report
 
     print("-- Loading pipeline data ---")
     X_train, X_test, y_train, y_test = run_feature_engineering()
@@ -201,7 +213,7 @@ if __name__ == "__main__":
     model = joblib.load("models/stacking_model.pkl")
     print("  Model loaded from models/stacking_model.pkl")
 
-    results = evaluate_model(model, X_test_norm, np.asarray(y_test))
+    results, class_report = evaluate_model(model, X_test_norm, np.asarray(y_test))
 
     print("\n-- Saving plots ---")
     classes = sorted(np.unique(y_test))
@@ -209,6 +221,24 @@ if __name__ == "__main__":
     plot_confusion_matrix(results["confusion_matrix"], class_names=c_names)
     plot_roc_curves(model, X_test_norm, np.asarray(y_test), class_names=c_names)
 
-    youden_threshold_optimization(model, X_test_norm, np.asarray(y_test))
+    thresholds = youden_threshold_optimization(model, X_test_norm, np.asarray(y_test))
+
+    print("\n-- Saving metrics and report ---")
+    save_evaluation_metrics_json(
+        results,
+        class_report,
+        thresholds,
+        np.asarray(y_test),
+        class_names=c_names,
+        output_path="models/evaluation_metrics.json",
+    )
+    generate_markdown_report(
+        results,
+        class_report,
+        thresholds,
+        np.asarray(y_test),
+        class_names=c_names,
+        output_path="reports/EVALUATION_REPORT.md",
+    )
 
     print("\n-- Done! ---")
