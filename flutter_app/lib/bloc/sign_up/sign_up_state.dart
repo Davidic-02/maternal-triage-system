@@ -63,8 +63,8 @@ class PasswordFormz extends FormzInput<String, ValidationError> {
 class PasswordConfirmFormz extends FormzInput<String, ValidationError> {
   final String password; // need to compare with actual password
 
-  const PasswordConfirmFormz.pure([this.password = '', String value = ''])
-    : super.pure(value);
+  const PasswordConfirmFormz.pure([this.password = '', super.value = ''])
+    : super.pure();
   const PasswordConfirmFormz.dirty(this.password, [String value = ''])
     : super.dirty(value);
 

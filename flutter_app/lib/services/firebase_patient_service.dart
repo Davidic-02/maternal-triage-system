@@ -53,4 +53,57 @@ class FirebaseService {
     }
     await _db.collection(_collection).doc(record.id).update(record.toJson());
   }
+
+  DateTime get _startOfToday {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
+
+  Stream<List<PatientRecord>> watchActiveQueue() {
+    return _db
+        .collection(_collection)
+        .where(
+          'createdAt',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(_startOfToday),
+        )
+        .where('resolved', isEqualTo: false)
+        .orderBy('createdAt', descending: false)
+        .snapshots()
+        .map(
+          (snap) => snap.docs
+              .map((doc) => PatientRecord.fromFirestore(doc.data(), doc.id))
+              .toList(),
+        );
+  }
+
+  Stream<List<PatientRecord>> watchResolvedToday() {
+    return _db
+        .collection(_collection)
+        .where(
+          'createdAt',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(_startOfToday),
+        )
+        .where('resolved', isEqualTo: true)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (snap) => snap.docs
+              .map((doc) => PatientRecord.fromFirestore(doc.data(), doc.id))
+              .toList(),
+        );
+  }
+
+  Future<void> resolveRecord(String id, String doctorEmail) async {
+    await _db.collection(_collection).doc(id).update({
+      'resolved': true,
+      'resolvedAt': Timestamp.fromDate(DateTime.now()),
+      'resolvedBy': doctorEmail,
+    });
+  }
+
+  Future<PatientRecord?> getRecord(String id) async {
+    final doc = await _db.collection(_collection).doc(id).get();
+    if (!doc.exists) return null;
+    return PatientRecord.fromFirestore(doc.data()!, doc.id);
+  }
 }

@@ -360,7 +360,7 @@ $Res call({
 });
 
 
-$PatientRecordCopyWith<$Res>? get record;
+$PatientRecordCopyWith<$Res>? get record;$RiskResultCopyWith<$Res>? get result;
 
 }
 /// @nodoc
@@ -393,6 +393,18 @@ $PatientRecordCopyWith<$Res>? get record {
 
   return $PatientRecordCopyWith<$Res>(_self.record!, (value) {
     return _then(_self.copyWith(record: value));
+  });
+}/// Create a copy of AssessmentState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RiskResultCopyWith<$Res>? get result {
+    if (_self.result == null) {
+    return null;
+  }
+
+  return $RiskResultCopyWith<$Res>(_self.result!, (value) {
+    return _then(_self.copyWith(result: value));
   });
 }
 }
@@ -574,7 +586,7 @@ $Res call({
 });
 
 
-@override $PatientRecordCopyWith<$Res>? get record;
+@override $PatientRecordCopyWith<$Res>? get record;@override $RiskResultCopyWith<$Res>? get result;
 
 }
 /// @nodoc
@@ -608,6 +620,18 @@ $PatientRecordCopyWith<$Res>? get record {
 
   return $PatientRecordCopyWith<$Res>(_self.record!, (value) {
     return _then(_self.copyWith(record: value));
+  });
+}/// Create a copy of AssessmentState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RiskResultCopyWith<$Res>? get result {
+    if (_self.result == null) {
+    return null;
+  }
+
+  return $RiskResultCopyWith<$Res>(_self.result!, (value) {
+    return _then(_self.copyWith(result: value));
   });
 }
 }

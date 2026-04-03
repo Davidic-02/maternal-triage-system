@@ -20,5 +20,7 @@ abstract class AuthEvent with _$AuthEvent {
 
   const factory AuthEvent.logoutRequested() = _LogoutRequested;
   const factory AuthEvent.userChanged() = _UserChanged;
+  const factory AuthEvent.doctorStatusChanged(String status) =
+      _DoctorStatusChanged;
   const factory AuthEvent.sessionExpired() = _SessionExpired;
 }

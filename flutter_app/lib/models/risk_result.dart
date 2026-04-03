@@ -1,18 +1,17 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'risk_result.freezed.dart';
 part 'risk_result.g.dart';
 
-@JsonSerializable()
-class RiskResult {
-  final int riskClass;
-  final List<double> probabilities;
-  final List<ShapFeature> shapFeatures;
+@freezed
+abstract class RiskResult with _$RiskResult {
+  const RiskResult._();
 
-  const RiskResult({
-    required this.riskClass,
-    required this.probabilities,
-    required this.shapFeatures,
-  });
+  const factory RiskResult({
+    required int riskClass,
+    required List<double> probabilities,
+    @Default([]) List<ShapFeature> shapFeatures,
+  }) = _RiskResult;
 
   String get riskLabel {
     switch (riskClass) {
@@ -42,24 +41,19 @@ class RiskResult {
 
   factory RiskResult.fromJson(Map<String, dynamic> json) =>
       _$RiskResultFromJson(json);
-
-  Map<String, dynamic> toJson() => _$RiskResultToJson(this);
 }
 
-@JsonSerializable()
-class ShapFeature {
-  final String featureName;
-  final double shapValue;
+@freezed
+abstract class ShapFeature with _$ShapFeature {
+  const ShapFeature._();
 
-  const ShapFeature({
-    required this.featureName,
-    required this.shapValue,
-  });
+  const factory ShapFeature({
+    required String featureName,
+    required double shapValue,
+  }) = _ShapFeature;
 
   bool get isPositive => shapValue >= 0;
 
   factory ShapFeature.fromJson(Map<String, dynamic> json) =>
       _$ShapFeatureFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ShapFeatureToJson(this);
 }

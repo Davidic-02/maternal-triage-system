@@ -734,6 +734,12 @@
       "languageVersion": "3.5"
     },
     {
+      "name": "timeago",
+      "rootUri": "file:///Users/mac/.pub-cache/hosted/pub.dev/timeago-3.7.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "toastification",
       "rootUri": "file:///Users/mac/.pub-cache/hosted/pub.dev/toastification-3.0.3",
       "packageUri": "lib/",

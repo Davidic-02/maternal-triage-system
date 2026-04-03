@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -11,6 +10,7 @@ import 'package:maternal_triage/models/doctor_model.dart';
 import 'package:maternal_triage/services/firebase_doctor_service.dart';
 import 'package:maternal_triage/services/persistence_services.dart';
 import '../../services/logging_helper.dart';
+
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -20,6 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final PersistenceService _persistenceService;
   final DoctorService _doctorService;
   StreamSubscription<User?>? _authStateSubscription;
+  StreamSubscription<DoctorModel?>? _doctorSubscription;
   Timer? _sessionTimer;
   static const _sessionTimeout = Duration(minutes: 30);
 
@@ -38,14 +39,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_LoginSuccessful>(_onLoginSuccessful);
     on<_LoginFailed>(_onLoginFailed);
     on<_ErrorMessage>(_onErrorMessage);
-
     on<_ForgotPassword>(_onForgotPassword);
     on<_ForgotPasswordSuccessful>(_onForgotPasswordSuccessful);
     on<_ForgotPasswordFailed>(_onForgotPasswordFailed);
-
     on<_LogoutRequested>(_onLogoutRequested);
     on<_UserChanged>(_onUserChanged);
     on<_SessionExpired>(_onSessionExpired);
+    on<_DoctorStatusChanged>(_onDoctorStatusChanged);
+
+    _authStateSubscription = _firebaseAuth.authStateChanges().listen((user) {
+      add(const AuthEvent.userChanged());
+    });
 
     _authStateSubscription = _firebaseAuth.authStateChanges().listen((user) {
       add(const AuthEvent.userChanged());
@@ -55,12 +59,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final isSignedIn = await _persistenceService.getSignInStatus();
     final onboardingComplete = await _persistenceService
         .getOnboardingComplete();
+    final userName = await _persistenceService.getUserName();
+    final userRole = await _persistenceService.getUserRole();
     if (isSignedIn) {
       final email = await _persistenceService.getUserEmail();
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.success,
           userEmail: email,
+          userName: userName,
+          userRole: userRole,
           onboardingComplete: onboardingComplete,
         ),
       );
@@ -150,12 +158,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  void _onLoginSuccessful(_LoginSuccessful event, Emitter<AuthState> emit) {
+  void _onLoginSuccessful(
+    _LoginSuccessful event,
+    Emitter<AuthState> emit,
+  ) async {
     _startSessionTimer();
+
+    final uid = _firebaseAuth.currentUser?.uid;
+    if (uid != null) {
+      _doctorSubscription?.cancel();
+      _doctorSubscription = _doctorService.watchDoctor(uid).listen((doctor) {
+        if (doctor != null) {
+          add(AuthEvent.doctorStatusChanged(doctor.status));
+        }
+      });
+    }
+
     emit(
       state.copyWith(
+        loginStatus: FormzSubmissionStatus.success,
         status: FormzSubmissionStatus.success,
-        userEmail: _firebaseAuth.currentUser?.email,
+        userName: await _persistenceService.getUserName(),
+        userRole: await _persistenceService.getUserRole(),
         errorMessage: null,
       ),
     );
@@ -165,6 +189,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(
       state.copyWith(
         status: FormzSubmissionStatus.failure,
+        loginStatus: FormzSubmissionStatus.failure,
         errorMessage: event.message ?? 'Login failed. Please try again.',
       ),
     );
@@ -175,9 +200,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(
       state.copyWith(
         errorMessage: event.message,
-        status: FormzSubmissionStatus.failure,
+
+        loginStatus: FormzSubmissionStatus.failure,
       ),
     );
+  }
+
+  void _onDoctorStatusChanged(
+    _DoctorStatusChanged event,
+    Emitter<AuthState> emit,
+  ) {
+    emit(state.copyWith(doctorStatus: event.status));
   }
 
   Future<void> _onForgotPassword(
@@ -259,6 +292,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (state.loginStatus == FormzSubmissionStatus.inProgress) return;
     if (state.status == FormzSubmissionStatus.inProgress) return;
+    if (user != null) {
+      // ← start watching whenever user is detected (login OR signup)
+      _doctorSubscription?.cancel();
+      _doctorSubscription = _doctorService.watchDoctor(user.uid).listen((
+        doctor,
+      ) {
+        if (doctor != null) {
+          add(AuthEvent.doctorStatusChanged(doctor.status));
+        }
+      });
+    }
 
     if (user == null && state.status == FormzSubmissionStatus.success) {
       emit(const AuthState());
@@ -322,6 +366,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   @override
   Future<void> close() {
     _authStateSubscription?.cancel();
+    _doctorSubscription?.cancel();
     _cancelSessionTimer();
     return super.close();
   }
