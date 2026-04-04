@@ -190,4 +190,39 @@ class AssessmentFormBloc
   ) {
     emit(state.copyWith(reducedFetalMovement: !state.reducedFetalMovement));
   }
+
+  void _onPreviousComplicationsToggled(
+    _PreviousComplicationsToggled event,
+    Emitter<AssessmentFormState> emit,
+  ) {
+    emit(state.copyWith(previousComplications: !state.previousComplications));
+  }
+
+  void _onPreexistingDiabetesToggled(
+    _PreexistingDiabetesToggled event,
+    Emitter<AssessmentFormState> emit,
+  ) {
+    emit(state.copyWith(preexistingDiabetes: !state.preexistingDiabetes));
+  }
+
+  void _onGestationalDiabetesToggled(
+    _GestationalDiabetesToggled event,
+    Emitter<AssessmentFormState> emit,
+  ) {
+    emit(state.copyWith(gestationalDiabetes: !state.gestationalDiabetes));
+  }
+
+  void _onHypertensionToggled(
+    _HypertensionToggled event,
+    Emitter<AssessmentFormState> emit,
+  ) {
+    emit(state.copyWith(hypertension: !state.hypertension));
+  }
+
+  void _onMentalHealthStatusChanged(
+    _MentalHealthStatusChanged event,
+    Emitter<AssessmentFormState> emit,
+  ) {
+    emit(state.copyWith(mentalHealthStatus: event.value));
+  }
 }

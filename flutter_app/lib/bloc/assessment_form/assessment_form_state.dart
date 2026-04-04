@@ -1,57 +1,108 @@
-
-
 part of 'assessment_form_bloc.dart';
 
 @freezed
-abstract class AssessmentFormEvent with _$AssessmentFormEvent {
-  // ── section 1 — basic identification ────────────────────────
-  const factory AssessmentFormEvent.patientNameOrIdChanged(String value) =
-      _PatientNameOrIdChanged;
-  const factory AssessmentFormEvent.ageChanged(String value) = _AgeChanged;
-  const factory AssessmentFormEvent.gestationalAgeChanged(String value) =
-      _GestationalAgeChanged;
+abstract class AssessmentFormState with _$AssessmentFormState {
+  const AssessmentFormState._();
 
-  // ── section 2 — vital signs ──────────────────────────────────
-  const factory AssessmentFormEvent.systolicBPChanged(String value) =
-      _SystolicBPChanged;
-  const factory AssessmentFormEvent.diastolicBPChanged(String value) =
-      _DiastolicBPChanged;
-  const factory AssessmentFormEvent.heartRateChanged(String value) =
-      _HeartRateChanged;
-  const factory AssessmentFormEvent.fetalHeartRateChanged(String value) =
-      _FetalHeartRateChanged;
-  const factory AssessmentFormEvent.bloodSugarChanged(String value) =
-      _BloodSugarChanged;
-  const factory AssessmentFormEvent.bodyTempChanged(String value) =
-      _BodyTempChanged;
-  const factory AssessmentFormEvent.weightChanged(String value) =
-      _WeightChanged;
-  const factory AssessmentFormEvent.heightChanged(String value) =
-      _HeightChanged;
+  const factory AssessmentFormState({
+    // ── section 1 — basic identification ──────────────────────
+    @Default('') String patientNameOrId,
+    @Default(NumericFieldFormz.pure()) NumericFieldFormz age,
+    @Default('') String gestationalAge, // optional — not ML feature
+    // ── section 2 — vital signs ────────────────────────────────
+    @Default(NumericFieldFormz.pure()) NumericFieldFormz systolicBP,
+    @Default(NumericFieldFormz.pure()) NumericFieldFormz diastolicBP,
+    @Default(NumericFieldFormz.pure()) NumericFieldFormz heartRate,
+    @Default('') String fetalHeartRate, // optional — not ML feature
+    @Default(NumericFieldFormz.pure()) NumericFieldFormz bloodSugar,
+    @Default(NumericFieldFormz.pure()) NumericFieldFormz bodyTemp,
+    @Default('') String weight, // optional
+    @Default('') String height, // optional
+    // ── section 3 — danger signs ───────────────────────────────
+    @Default(false) bool blurredVision,
+    @Default(false) bool vaginalBleeding,
+    @Default(false) bool severeSwelling,
+    @Default(false) bool reducedFetalMovement,
 
-  // ── section 3 — danger signs ─────────────────────────────────
-  const factory AssessmentFormEvent.blurredVisionToggled() =
-      _BlurredVisionToggled;
-  const factory AssessmentFormEvent.vaginalBleedingToggled() =
-      _VaginalBleedingToggled;
-  const factory AssessmentFormEvent.severeSwellingToggled() =
-      _SevereSwellingToggled;
-  const factory AssessmentFormEvent.reducedFetalMovementToggled() =
-      _ReducedFetalMovementToggled;
+    // ── section 4 — medical history ────────────────────────────
+    @Default(false) bool previousComplications,
+    @Default(false) bool preexistingDiabetes,
+    @Default(false) bool gestationalDiabetes,
+    @Default(false) bool hypertension,
+    @Default('none') String mentalHealthStatus,
 
-  // ── section 4 — medical history ──────────────────────────────
-  const factory AssessmentFormEvent.previousComplicationsToggled() =
-      _PreviousComplicationsToggled;
-  const factory AssessmentFormEvent.preexistingDiabetesToggled() =
-      _PreexistingDiabetesToggled;
-  const factory AssessmentFormEvent.gestationalDiabetesToggled() =
-      _GestationalDiabetesToggled;
-  const factory AssessmentFormEvent.hypertensionToggled() =
-      _HypertensionToggled;
-  const factory AssessmentFormEvent.mentalHealthStatusChanged(String value) =
-      _MentalHealthStatusChanged;
+    // ── submission ─────────────────────────────────────────────
+    @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
+    String? errorMessage,
+  }) = _AssessmentFormState;
 
-  // ── actions ──────────────────────────────────────────────────
-  const factory AssessmentFormEvent.submitted() = _Submitted;
-  const factory AssessmentFormEvent.cleared() = _Cleared;
+  // form valid only when all required fields pass
+  bool get isFormValid =>
+      age.isValid &&
+      systolicBP.isValid &&
+      diastolicBP.isValid &&
+      heartRate.isValid &&
+      bloodSugar.isValid &&
+      bodyTemp.isValid;
+
+  // derived — shown in UI for doctor reference
+  double? get bmi {
+    final w = double.tryParse(weight);
+    final h = double.tryParse(height);
+    if (w == null || h == null || h <= 0) return null;
+    final heightM = h / 100; // cm → meters
+    return w / (heightM * heightM);
+  }
+
+  double? get pulsePressure {
+    final s = double.tryParse(systolicBP.value);
+    final d = double.tryParse(diastolicBP.value);
+    if (s == null || d == null) return null;
+    return s - d;
+  }
+
+  // builds PatientRecord from form state — passed to AssessmentBloc
+  PatientRecord toPatientRecord() => PatientRecord(
+    patientNameOrId: patientNameOrId.isEmpty ? null : patientNameOrId,
+    gestationalAge: gestationalAge.isEmpty
+        ? null
+        : double.tryParse(gestationalAge),
+    fetalHeartRate: fetalHeartRate.isEmpty
+        ? null
+        : double.tryParse(fetalHeartRate),
+    age: double.parse(age.value),
+    systolicBP: double.parse(systolicBP.value),
+    diastolicBP: double.parse(diastolicBP.value),
+    heartRate: double.parse(heartRate.value),
+    bloodSugar: double.parse(bloodSugar.value),
+    bodyTemp: double.parse(bodyTemp.value),
+    weight: weight.isEmpty ? null : double.tryParse(weight),
+    height: height.isEmpty ? null : double.tryParse(height),
+    previousComplications: previousComplications,
+    preexistingDiabetes: preexistingDiabetes,
+    gestationalDiabetes: gestationalDiabetes,
+    hypertension: hypertension,
+    blurredVision: blurredVision,
+    vaginalBleeding: vaginalBleeding,
+    severeSwelling: severeSwelling,
+    reducedFetalMovement: reducedFetalMovement,
+    mentalHealthStatus: mentalHealthStatus,
+    createdAt: DateTime.now(),
+  );
+}
+
+// ── validator for all required numeric fields ─────────────────
+
+class NumericFieldFormz extends FormzInput<String, ValidationError> {
+  const NumericFieldFormz.pure([super.value = '']) : super.pure();
+  const NumericFieldFormz.dirty([super.value = '']) : super.dirty();
+
+  @override
+  ValidationError? validator(String? value) {
+    if (value == null || value.isEmpty) return ValidationError.empty;
+    final parsed = double.tryParse(value);
+    if (parsed == null) return ValidationError.invalid;
+    if (parsed <= 0) return ValidationError.invalid;
+    return null;
+  }
 }
