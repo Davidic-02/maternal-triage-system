@@ -115,19 +115,27 @@ def impute_missing(
 
 _ALL_FEATURE_COLUMNS = [
     "Age", "SystolicBP", "DiastolicBP", "BloodSugar", "BodyTemp",
-    "HeartRate", "Weight", "Height", "BMI",
+    "BMI", "HeartRate", "Weight", "Height",
     "PreviousComplications", "PreexistingDiabetes", "GestationalDiabetes",
     "MentalHealthStatus",
 ]
 
 
 def harmonize_features(df: pd.DataFrame) -> pd.DataFrame:
-    """Ensure all feature columns exist; fill missing ones with NaN."""
+    """Ensure all feature columns exist and return them in canonical order.
+
+    Missing feature columns are filled with NaN.  The returned DataFrame
+    places the feature columns in the order defined by ``_ALL_FEATURE_COLUMNS``
+    so that downstream numpy arrays align with the Flutter app's
+    ``_buildInputTensor`` tensor layout.  Any extra columns (e.g. RiskLevel,
+    source) are preserved after the feature columns.
+    """
     df = df.copy()
     for col in _ALL_FEATURE_COLUMNS:
         if col not in df.columns:
             df[col] = np.nan
-    return df
+    extra_cols = [c for c in df.columns if c not in _ALL_FEATURE_COLUMNS]
+    return df[_ALL_FEATURE_COLUMNS + extra_cols]
 
 
 # ---------------------------------------------------------------------------
