@@ -171,6 +171,10 @@ def encode_ordinal(df: pd.DataFrame, column: str = "MentalHealthStatus") -> pd.D
     if column not in df.columns:
         return df
     df = df.copy()
+
+    # Fill NaN with 'none' BEFORE mapping (FUTH and Kaggle don't have this column)
+    df[column] = df[column].fillna('none')
+
     mapping = {v: i for i, v in enumerate(_MENTAL_HEALTH_ORDER)}
     df[column] = (
         df[column]
