@@ -12,344 +12,6 @@ part of 'assessment_form_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$AssessmentFormState {
-
-// ── section 1 — basic identification ──────────────────────
- String get patientNameOrId; NumericFieldFormz get age; String get gestationalAge;// optional — not ML feature
-// ── section 2 — vital signs ────────────────────────────────
- NumericFieldFormz get systolicBP; NumericFieldFormz get diastolicBP; NumericFieldFormz get heartRate; String get fetalHeartRate;// optional — not ML feature
- NumericFieldFormz get bloodSugar; NumericFieldFormz get bodyTemp; String get weight;// optional
- String get height;// optional
-// ── section 3 — danger signs ───────────────────────────────
- bool get blurredVision; bool get vaginalBleeding; bool get severeSwelling; bool get reducedFetalMovement;// ── section 4 — medical history ────────────────────────────
- bool get previousComplications; bool get preexistingDiabetes; bool get gestationalDiabetes; bool get hypertension; String get mentalHealthStatus;// ── submission ─────────────────────────────────────────────
- FormzSubmissionStatus get status; String? get errorMessage;
-/// Create a copy of AssessmentFormState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$AssessmentFormStateCopyWith<AssessmentFormState> get copyWith => _$AssessmentFormStateCopyWithImpl<AssessmentFormState>(this as AssessmentFormState, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AssessmentFormState&&(identical(other.patientNameOrId, patientNameOrId) || other.patientNameOrId == patientNameOrId)&&(identical(other.age, age) || other.age == age)&&(identical(other.gestationalAge, gestationalAge) || other.gestationalAge == gestationalAge)&&(identical(other.systolicBP, systolicBP) || other.systolicBP == systolicBP)&&(identical(other.diastolicBP, diastolicBP) || other.diastolicBP == diastolicBP)&&(identical(other.heartRate, heartRate) || other.heartRate == heartRate)&&(identical(other.fetalHeartRate, fetalHeartRate) || other.fetalHeartRate == fetalHeartRate)&&(identical(other.bloodSugar, bloodSugar) || other.bloodSugar == bloodSugar)&&(identical(other.bodyTemp, bodyTemp) || other.bodyTemp == bodyTemp)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.height, height) || other.height == height)&&(identical(other.blurredVision, blurredVision) || other.blurredVision == blurredVision)&&(identical(other.vaginalBleeding, vaginalBleeding) || other.vaginalBleeding == vaginalBleeding)&&(identical(other.severeSwelling, severeSwelling) || other.severeSwelling == severeSwelling)&&(identical(other.reducedFetalMovement, reducedFetalMovement) || other.reducedFetalMovement == reducedFetalMovement)&&(identical(other.previousComplications, previousComplications) || other.previousComplications == previousComplications)&&(identical(other.preexistingDiabetes, preexistingDiabetes) || other.preexistingDiabetes == preexistingDiabetes)&&(identical(other.gestationalDiabetes, gestationalDiabetes) || other.gestationalDiabetes == gestationalDiabetes)&&(identical(other.hypertension, hypertension) || other.hypertension == hypertension)&&(identical(other.mentalHealthStatus, mentalHealthStatus) || other.mentalHealthStatus == mentalHealthStatus)&&(identical(other.status, status) || other.status == status)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
-}
-
-
-@override
-int get hashCode => Object.hashAll([runtimeType,patientNameOrId,age,gestationalAge,systolicBP,diastolicBP,heartRate,fetalHeartRate,bloodSugar,bodyTemp,weight,height,blurredVision,vaginalBleeding,severeSwelling,reducedFetalMovement,previousComplications,preexistingDiabetes,gestationalDiabetes,hypertension,mentalHealthStatus,status,errorMessage]);
-
-@override
-String toString() {
-  return 'AssessmentFormState(patientNameOrId: $patientNameOrId, age: $age, gestationalAge: $gestationalAge, systolicBP: $systolicBP, diastolicBP: $diastolicBP, heartRate: $heartRate, fetalHeartRate: $fetalHeartRate, bloodSugar: $bloodSugar, bodyTemp: $bodyTemp, weight: $weight, height: $height, blurredVision: $blurredVision, vaginalBleeding: $vaginalBleeding, severeSwelling: $severeSwelling, reducedFetalMovement: $reducedFetalMovement, previousComplications: $previousComplications, preexistingDiabetes: $preexistingDiabetes, gestationalDiabetes: $gestationalDiabetes, hypertension: $hypertension, mentalHealthStatus: $mentalHealthStatus, status: $status, errorMessage: $errorMessage)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $AssessmentFormStateCopyWith<$Res>  {
-  factory $AssessmentFormStateCopyWith(AssessmentFormState value, $Res Function(AssessmentFormState) _then) = _$AssessmentFormStateCopyWithImpl;
-@useResult
-$Res call({
- String patientNameOrId, NumericFieldFormz age, String gestationalAge, NumericFieldFormz systolicBP, NumericFieldFormz diastolicBP, NumericFieldFormz heartRate, String fetalHeartRate, NumericFieldFormz bloodSugar, NumericFieldFormz bodyTemp, String weight, String height, bool blurredVision, bool vaginalBleeding, bool severeSwelling, bool reducedFetalMovement, bool previousComplications, bool preexistingDiabetes, bool gestationalDiabetes, bool hypertension, String mentalHealthStatus, FormzSubmissionStatus status, String? errorMessage
-});
-
-
-
-
-}
-/// @nodoc
-class _$AssessmentFormStateCopyWithImpl<$Res>
-    implements $AssessmentFormStateCopyWith<$Res> {
-  _$AssessmentFormStateCopyWithImpl(this._self, this._then);
-
-  final AssessmentFormState _self;
-  final $Res Function(AssessmentFormState) _then;
-
-/// Create a copy of AssessmentFormState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? patientNameOrId = null,Object? age = null,Object? gestationalAge = null,Object? systolicBP = null,Object? diastolicBP = null,Object? heartRate = null,Object? fetalHeartRate = null,Object? bloodSugar = null,Object? bodyTemp = null,Object? weight = null,Object? height = null,Object? blurredVision = null,Object? vaginalBleeding = null,Object? severeSwelling = null,Object? reducedFetalMovement = null,Object? previousComplications = null,Object? preexistingDiabetes = null,Object? gestationalDiabetes = null,Object? hypertension = null,Object? mentalHealthStatus = null,Object? status = null,Object? errorMessage = freezed,}) {
-  return _then(_self.copyWith(
-patientNameOrId: null == patientNameOrId ? _self.patientNameOrId : patientNameOrId // ignore: cast_nullable_to_non_nullable
-as String,age: null == age ? _self.age : age // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,gestationalAge: null == gestationalAge ? _self.gestationalAge : gestationalAge // ignore: cast_nullable_to_non_nullable
-as String,systolicBP: null == systolicBP ? _self.systolicBP : systolicBP // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,diastolicBP: null == diastolicBP ? _self.diastolicBP : diastolicBP // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,heartRate: null == heartRate ? _self.heartRate : heartRate // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,fetalHeartRate: null == fetalHeartRate ? _self.fetalHeartRate : fetalHeartRate // ignore: cast_nullable_to_non_nullable
-as String,bloodSugar: null == bloodSugar ? _self.bloodSugar : bloodSugar // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,bodyTemp: null == bodyTemp ? _self.bodyTemp : bodyTemp // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
-as String,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
-as String,blurredVision: null == blurredVision ? _self.blurredVision : blurredVision // ignore: cast_nullable_to_non_nullable
-as bool,vaginalBleeding: null == vaginalBleeding ? _self.vaginalBleeding : vaginalBleeding // ignore: cast_nullable_to_non_nullable
-as bool,severeSwelling: null == severeSwelling ? _self.severeSwelling : severeSwelling // ignore: cast_nullable_to_non_nullable
-as bool,reducedFetalMovement: null == reducedFetalMovement ? _self.reducedFetalMovement : reducedFetalMovement // ignore: cast_nullable_to_non_nullable
-as bool,previousComplications: null == previousComplications ? _self.previousComplications : previousComplications // ignore: cast_nullable_to_non_nullable
-as bool,preexistingDiabetes: null == preexistingDiabetes ? _self.preexistingDiabetes : preexistingDiabetes // ignore: cast_nullable_to_non_nullable
-as bool,gestationalDiabetes: null == gestationalDiabetes ? _self.gestationalDiabetes : gestationalDiabetes // ignore: cast_nullable_to_non_nullable
-as bool,hypertension: null == hypertension ? _self.hypertension : hypertension // ignore: cast_nullable_to_non_nullable
-as bool,mentalHealthStatus: null == mentalHealthStatus ? _self.mentalHealthStatus : mentalHealthStatus // ignore: cast_nullable_to_non_nullable
-as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as FormzSubmissionStatus,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-}
-
-
-/// Adds pattern-matching-related methods to [AssessmentFormState].
-extension AssessmentFormStatePatterns on AssessmentFormState {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AssessmentFormState value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _AssessmentFormState() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AssessmentFormState value)  $default,){
-final _that = this;
-switch (_that) {
-case _AssessmentFormState():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AssessmentFormState value)?  $default,){
-final _that = this;
-switch (_that) {
-case _AssessmentFormState() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String patientNameOrId,  NumericFieldFormz age,  String gestationalAge,  NumericFieldFormz systolicBP,  NumericFieldFormz diastolicBP,  NumericFieldFormz heartRate,  String fetalHeartRate,  NumericFieldFormz bloodSugar,  NumericFieldFormz bodyTemp,  String weight,  String height,  bool blurredVision,  bool vaginalBleeding,  bool severeSwelling,  bool reducedFetalMovement,  bool previousComplications,  bool preexistingDiabetes,  bool gestationalDiabetes,  bool hypertension,  String mentalHealthStatus,  FormzSubmissionStatus status,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _AssessmentFormState() when $default != null:
-return $default(_that.patientNameOrId,_that.age,_that.gestationalAge,_that.systolicBP,_that.diastolicBP,_that.heartRate,_that.fetalHeartRate,_that.bloodSugar,_that.bodyTemp,_that.weight,_that.height,_that.blurredVision,_that.vaginalBleeding,_that.severeSwelling,_that.reducedFetalMovement,_that.previousComplications,_that.preexistingDiabetes,_that.gestationalDiabetes,_that.hypertension,_that.mentalHealthStatus,_that.status,_that.errorMessage);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String patientNameOrId,  NumericFieldFormz age,  String gestationalAge,  NumericFieldFormz systolicBP,  NumericFieldFormz diastolicBP,  NumericFieldFormz heartRate,  String fetalHeartRate,  NumericFieldFormz bloodSugar,  NumericFieldFormz bodyTemp,  String weight,  String height,  bool blurredVision,  bool vaginalBleeding,  bool severeSwelling,  bool reducedFetalMovement,  bool previousComplications,  bool preexistingDiabetes,  bool gestationalDiabetes,  bool hypertension,  String mentalHealthStatus,  FormzSubmissionStatus status,  String? errorMessage)  $default,) {final _that = this;
-switch (_that) {
-case _AssessmentFormState():
-return $default(_that.patientNameOrId,_that.age,_that.gestationalAge,_that.systolicBP,_that.diastolicBP,_that.heartRate,_that.fetalHeartRate,_that.bloodSugar,_that.bodyTemp,_that.weight,_that.height,_that.blurredVision,_that.vaginalBleeding,_that.severeSwelling,_that.reducedFetalMovement,_that.previousComplications,_that.preexistingDiabetes,_that.gestationalDiabetes,_that.hypertension,_that.mentalHealthStatus,_that.status,_that.errorMessage);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String patientNameOrId,  NumericFieldFormz age,  String gestationalAge,  NumericFieldFormz systolicBP,  NumericFieldFormz diastolicBP,  NumericFieldFormz heartRate,  String fetalHeartRate,  NumericFieldFormz bloodSugar,  NumericFieldFormz bodyTemp,  String weight,  String height,  bool blurredVision,  bool vaginalBleeding,  bool severeSwelling,  bool reducedFetalMovement,  bool previousComplications,  bool preexistingDiabetes,  bool gestationalDiabetes,  bool hypertension,  String mentalHealthStatus,  FormzSubmissionStatus status,  String? errorMessage)?  $default,) {final _that = this;
-switch (_that) {
-case _AssessmentFormState() when $default != null:
-return $default(_that.patientNameOrId,_that.age,_that.gestationalAge,_that.systolicBP,_that.diastolicBP,_that.heartRate,_that.fetalHeartRate,_that.bloodSugar,_that.bodyTemp,_that.weight,_that.height,_that.blurredVision,_that.vaginalBleeding,_that.severeSwelling,_that.reducedFetalMovement,_that.previousComplications,_that.preexistingDiabetes,_that.gestationalDiabetes,_that.hypertension,_that.mentalHealthStatus,_that.status,_that.errorMessage);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-
-
-class _AssessmentFormState extends AssessmentFormState {
-  const _AssessmentFormState({this.patientNameOrId = '', this.age = const NumericFieldFormz.pure(), this.gestationalAge = '', this.systolicBP = const NumericFieldFormz.pure(), this.diastolicBP = const NumericFieldFormz.pure(), this.heartRate = const NumericFieldFormz.pure(), this.fetalHeartRate = '', this.bloodSugar = const NumericFieldFormz.pure(), this.bodyTemp = const NumericFieldFormz.pure(), this.weight = '', this.height = '', this.blurredVision = false, this.vaginalBleeding = false, this.severeSwelling = false, this.reducedFetalMovement = false, this.previousComplications = false, this.preexistingDiabetes = false, this.gestationalDiabetes = false, this.hypertension = false, this.mentalHealthStatus = 'none', this.status = FormzSubmissionStatus.initial, this.errorMessage}): super._();
-  
-
-// ── section 1 — basic identification ──────────────────────
-@override@JsonKey() final  String patientNameOrId;
-@override@JsonKey() final  NumericFieldFormz age;
-@override@JsonKey() final  String gestationalAge;
-// optional — not ML feature
-// ── section 2 — vital signs ────────────────────────────────
-@override@JsonKey() final  NumericFieldFormz systolicBP;
-@override@JsonKey() final  NumericFieldFormz diastolicBP;
-@override@JsonKey() final  NumericFieldFormz heartRate;
-@override@JsonKey() final  String fetalHeartRate;
-// optional — not ML feature
-@override@JsonKey() final  NumericFieldFormz bloodSugar;
-@override@JsonKey() final  NumericFieldFormz bodyTemp;
-@override@JsonKey() final  String weight;
-// optional
-@override@JsonKey() final  String height;
-// optional
-// ── section 3 — danger signs ───────────────────────────────
-@override@JsonKey() final  bool blurredVision;
-@override@JsonKey() final  bool vaginalBleeding;
-@override@JsonKey() final  bool severeSwelling;
-@override@JsonKey() final  bool reducedFetalMovement;
-// ── section 4 — medical history ────────────────────────────
-@override@JsonKey() final  bool previousComplications;
-@override@JsonKey() final  bool preexistingDiabetes;
-@override@JsonKey() final  bool gestationalDiabetes;
-@override@JsonKey() final  bool hypertension;
-@override@JsonKey() final  String mentalHealthStatus;
-// ── submission ─────────────────────────────────────────────
-@override@JsonKey() final  FormzSubmissionStatus status;
-@override final  String? errorMessage;
-
-/// Create a copy of AssessmentFormState
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$AssessmentFormStateCopyWith<_AssessmentFormState> get copyWith => __$AssessmentFormStateCopyWithImpl<_AssessmentFormState>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AssessmentFormState&&(identical(other.patientNameOrId, patientNameOrId) || other.patientNameOrId == patientNameOrId)&&(identical(other.age, age) || other.age == age)&&(identical(other.gestationalAge, gestationalAge) || other.gestationalAge == gestationalAge)&&(identical(other.systolicBP, systolicBP) || other.systolicBP == systolicBP)&&(identical(other.diastolicBP, diastolicBP) || other.diastolicBP == diastolicBP)&&(identical(other.heartRate, heartRate) || other.heartRate == heartRate)&&(identical(other.fetalHeartRate, fetalHeartRate) || other.fetalHeartRate == fetalHeartRate)&&(identical(other.bloodSugar, bloodSugar) || other.bloodSugar == bloodSugar)&&(identical(other.bodyTemp, bodyTemp) || other.bodyTemp == bodyTemp)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.height, height) || other.height == height)&&(identical(other.blurredVision, blurredVision) || other.blurredVision == blurredVision)&&(identical(other.vaginalBleeding, vaginalBleeding) || other.vaginalBleeding == vaginalBleeding)&&(identical(other.severeSwelling, severeSwelling) || other.severeSwelling == severeSwelling)&&(identical(other.reducedFetalMovement, reducedFetalMovement) || other.reducedFetalMovement == reducedFetalMovement)&&(identical(other.previousComplications, previousComplications) || other.previousComplications == previousComplications)&&(identical(other.preexistingDiabetes, preexistingDiabetes) || other.preexistingDiabetes == preexistingDiabetes)&&(identical(other.gestationalDiabetes, gestationalDiabetes) || other.gestationalDiabetes == gestationalDiabetes)&&(identical(other.hypertension, hypertension) || other.hypertension == hypertension)&&(identical(other.mentalHealthStatus, mentalHealthStatus) || other.mentalHealthStatus == mentalHealthStatus)&&(identical(other.status, status) || other.status == status)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
-}
-
-
-@override
-int get hashCode => Object.hashAll([runtimeType,patientNameOrId,age,gestationalAge,systolicBP,diastolicBP,heartRate,fetalHeartRate,bloodSugar,bodyTemp,weight,height,blurredVision,vaginalBleeding,severeSwelling,reducedFetalMovement,previousComplications,preexistingDiabetes,gestationalDiabetes,hypertension,mentalHealthStatus,status,errorMessage]);
-
-@override
-String toString() {
-  return 'AssessmentFormState(patientNameOrId: $patientNameOrId, age: $age, gestationalAge: $gestationalAge, systolicBP: $systolicBP, diastolicBP: $diastolicBP, heartRate: $heartRate, fetalHeartRate: $fetalHeartRate, bloodSugar: $bloodSugar, bodyTemp: $bodyTemp, weight: $weight, height: $height, blurredVision: $blurredVision, vaginalBleeding: $vaginalBleeding, severeSwelling: $severeSwelling, reducedFetalMovement: $reducedFetalMovement, previousComplications: $previousComplications, preexistingDiabetes: $preexistingDiabetes, gestationalDiabetes: $gestationalDiabetes, hypertension: $hypertension, mentalHealthStatus: $mentalHealthStatus, status: $status, errorMessage: $errorMessage)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$AssessmentFormStateCopyWith<$Res> implements $AssessmentFormStateCopyWith<$Res> {
-  factory _$AssessmentFormStateCopyWith(_AssessmentFormState value, $Res Function(_AssessmentFormState) _then) = __$AssessmentFormStateCopyWithImpl;
-@override @useResult
-$Res call({
- String patientNameOrId, NumericFieldFormz age, String gestationalAge, NumericFieldFormz systolicBP, NumericFieldFormz diastolicBP, NumericFieldFormz heartRate, String fetalHeartRate, NumericFieldFormz bloodSugar, NumericFieldFormz bodyTemp, String weight, String height, bool blurredVision, bool vaginalBleeding, bool severeSwelling, bool reducedFetalMovement, bool previousComplications, bool preexistingDiabetes, bool gestationalDiabetes, bool hypertension, String mentalHealthStatus, FormzSubmissionStatus status, String? errorMessage
-});
-
-
-
-
-}
-/// @nodoc
-class __$AssessmentFormStateCopyWithImpl<$Res>
-    implements _$AssessmentFormStateCopyWith<$Res> {
-  __$AssessmentFormStateCopyWithImpl(this._self, this._then);
-
-  final _AssessmentFormState _self;
-  final $Res Function(_AssessmentFormState) _then;
-
-/// Create a copy of AssessmentFormState
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? patientNameOrId = null,Object? age = null,Object? gestationalAge = null,Object? systolicBP = null,Object? diastolicBP = null,Object? heartRate = null,Object? fetalHeartRate = null,Object? bloodSugar = null,Object? bodyTemp = null,Object? weight = null,Object? height = null,Object? blurredVision = null,Object? vaginalBleeding = null,Object? severeSwelling = null,Object? reducedFetalMovement = null,Object? previousComplications = null,Object? preexistingDiabetes = null,Object? gestationalDiabetes = null,Object? hypertension = null,Object? mentalHealthStatus = null,Object? status = null,Object? errorMessage = freezed,}) {
-  return _then(_AssessmentFormState(
-patientNameOrId: null == patientNameOrId ? _self.patientNameOrId : patientNameOrId // ignore: cast_nullable_to_non_nullable
-as String,age: null == age ? _self.age : age // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,gestationalAge: null == gestationalAge ? _self.gestationalAge : gestationalAge // ignore: cast_nullable_to_non_nullable
-as String,systolicBP: null == systolicBP ? _self.systolicBP : systolicBP // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,diastolicBP: null == diastolicBP ? _self.diastolicBP : diastolicBP // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,heartRate: null == heartRate ? _self.heartRate : heartRate // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,fetalHeartRate: null == fetalHeartRate ? _self.fetalHeartRate : fetalHeartRate // ignore: cast_nullable_to_non_nullable
-as String,bloodSugar: null == bloodSugar ? _self.bloodSugar : bloodSugar // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,bodyTemp: null == bodyTemp ? _self.bodyTemp : bodyTemp // ignore: cast_nullable_to_non_nullable
-as NumericFieldFormz,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
-as String,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
-as String,blurredVision: null == blurredVision ? _self.blurredVision : blurredVision // ignore: cast_nullable_to_non_nullable
-as bool,vaginalBleeding: null == vaginalBleeding ? _self.vaginalBleeding : vaginalBleeding // ignore: cast_nullable_to_non_nullable
-as bool,severeSwelling: null == severeSwelling ? _self.severeSwelling : severeSwelling // ignore: cast_nullable_to_non_nullable
-as bool,reducedFetalMovement: null == reducedFetalMovement ? _self.reducedFetalMovement : reducedFetalMovement // ignore: cast_nullable_to_non_nullable
-as bool,previousComplications: null == previousComplications ? _self.previousComplications : previousComplications // ignore: cast_nullable_to_non_nullable
-as bool,preexistingDiabetes: null == preexistingDiabetes ? _self.preexistingDiabetes : preexistingDiabetes // ignore: cast_nullable_to_non_nullable
-as bool,gestationalDiabetes: null == gestationalDiabetes ? _self.gestationalDiabetes : gestationalDiabetes // ignore: cast_nullable_to_non_nullable
-as bool,hypertension: null == hypertension ? _self.hypertension : hypertension // ignore: cast_nullable_to_non_nullable
-as bool,mentalHealthStatus: null == mentalHealthStatus ? _self.mentalHealthStatus : mentalHealthStatus // ignore: cast_nullable_to_non_nullable
-as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as FormzSubmissionStatus,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-
-}
-
-/// @nodoc
 mixin _$AssessmentFormEvent {
 
 
@@ -1746,5 +1408,343 @@ String toString() {
 
 
 
+
+/// @nodoc
+mixin _$AssessmentFormState {
+
+// ── section 1 — basic identification ──────────────────────
+ String get patientNameOrId; NumericFieldFormz get age; String get gestationalAge;// optional — not ML feature
+// ── section 2 — vital signs ────────────────────────────────
+ NumericFieldFormz get systolicBP; NumericFieldFormz get diastolicBP; NumericFieldFormz get heartRate; String get fetalHeartRate;// optional — not ML feature
+ NumericFieldFormz get bloodSugar; NumericFieldFormz get bodyTemp; String get weight;// optional
+ String get height;// optional
+// ── section 3 — danger signs ───────────────────────────────
+ bool get blurredVision; bool get vaginalBleeding; bool get severeSwelling; bool get reducedFetalMovement;// ── section 4 — medical history ────────────────────────────
+ bool get previousComplications; bool get preexistingDiabetes; bool get gestationalDiabetes; bool get hypertension; String get mentalHealthStatus;// ── submission ─────────────────────────────────────────────
+ FormzSubmissionStatus get status; String? get errorMessage;
+/// Create a copy of AssessmentFormState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AssessmentFormStateCopyWith<AssessmentFormState> get copyWith => _$AssessmentFormStateCopyWithImpl<AssessmentFormState>(this as AssessmentFormState, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AssessmentFormState&&(identical(other.patientNameOrId, patientNameOrId) || other.patientNameOrId == patientNameOrId)&&(identical(other.age, age) || other.age == age)&&(identical(other.gestationalAge, gestationalAge) || other.gestationalAge == gestationalAge)&&(identical(other.systolicBP, systolicBP) || other.systolicBP == systolicBP)&&(identical(other.diastolicBP, diastolicBP) || other.diastolicBP == diastolicBP)&&(identical(other.heartRate, heartRate) || other.heartRate == heartRate)&&(identical(other.fetalHeartRate, fetalHeartRate) || other.fetalHeartRate == fetalHeartRate)&&(identical(other.bloodSugar, bloodSugar) || other.bloodSugar == bloodSugar)&&(identical(other.bodyTemp, bodyTemp) || other.bodyTemp == bodyTemp)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.height, height) || other.height == height)&&(identical(other.blurredVision, blurredVision) || other.blurredVision == blurredVision)&&(identical(other.vaginalBleeding, vaginalBleeding) || other.vaginalBleeding == vaginalBleeding)&&(identical(other.severeSwelling, severeSwelling) || other.severeSwelling == severeSwelling)&&(identical(other.reducedFetalMovement, reducedFetalMovement) || other.reducedFetalMovement == reducedFetalMovement)&&(identical(other.previousComplications, previousComplications) || other.previousComplications == previousComplications)&&(identical(other.preexistingDiabetes, preexistingDiabetes) || other.preexistingDiabetes == preexistingDiabetes)&&(identical(other.gestationalDiabetes, gestationalDiabetes) || other.gestationalDiabetes == gestationalDiabetes)&&(identical(other.hypertension, hypertension) || other.hypertension == hypertension)&&(identical(other.mentalHealthStatus, mentalHealthStatus) || other.mentalHealthStatus == mentalHealthStatus)&&(identical(other.status, status) || other.status == status)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+}
+
+
+@override
+int get hashCode => Object.hashAll([runtimeType,patientNameOrId,age,gestationalAge,systolicBP,diastolicBP,heartRate,fetalHeartRate,bloodSugar,bodyTemp,weight,height,blurredVision,vaginalBleeding,severeSwelling,reducedFetalMovement,previousComplications,preexistingDiabetes,gestationalDiabetes,hypertension,mentalHealthStatus,status,errorMessage]);
+
+@override
+String toString() {
+  return 'AssessmentFormState(patientNameOrId: $patientNameOrId, age: $age, gestationalAge: $gestationalAge, systolicBP: $systolicBP, diastolicBP: $diastolicBP, heartRate: $heartRate, fetalHeartRate: $fetalHeartRate, bloodSugar: $bloodSugar, bodyTemp: $bodyTemp, weight: $weight, height: $height, blurredVision: $blurredVision, vaginalBleeding: $vaginalBleeding, severeSwelling: $severeSwelling, reducedFetalMovement: $reducedFetalMovement, previousComplications: $previousComplications, preexistingDiabetes: $preexistingDiabetes, gestationalDiabetes: $gestationalDiabetes, hypertension: $hypertension, mentalHealthStatus: $mentalHealthStatus, status: $status, errorMessage: $errorMessage)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AssessmentFormStateCopyWith<$Res>  {
+  factory $AssessmentFormStateCopyWith(AssessmentFormState value, $Res Function(AssessmentFormState) _then) = _$AssessmentFormStateCopyWithImpl;
+@useResult
+$Res call({
+ String patientNameOrId, NumericFieldFormz age, String gestationalAge, NumericFieldFormz systolicBP, NumericFieldFormz diastolicBP, NumericFieldFormz heartRate, String fetalHeartRate, NumericFieldFormz bloodSugar, NumericFieldFormz bodyTemp, String weight, String height, bool blurredVision, bool vaginalBleeding, bool severeSwelling, bool reducedFetalMovement, bool previousComplications, bool preexistingDiabetes, bool gestationalDiabetes, bool hypertension, String mentalHealthStatus, FormzSubmissionStatus status, String? errorMessage
+});
+
+
+
+
+}
+/// @nodoc
+class _$AssessmentFormStateCopyWithImpl<$Res>
+    implements $AssessmentFormStateCopyWith<$Res> {
+  _$AssessmentFormStateCopyWithImpl(this._self, this._then);
+
+  final AssessmentFormState _self;
+  final $Res Function(AssessmentFormState) _then;
+
+/// Create a copy of AssessmentFormState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? patientNameOrId = null,Object? age = null,Object? gestationalAge = null,Object? systolicBP = null,Object? diastolicBP = null,Object? heartRate = null,Object? fetalHeartRate = null,Object? bloodSugar = null,Object? bodyTemp = null,Object? weight = null,Object? height = null,Object? blurredVision = null,Object? vaginalBleeding = null,Object? severeSwelling = null,Object? reducedFetalMovement = null,Object? previousComplications = null,Object? preexistingDiabetes = null,Object? gestationalDiabetes = null,Object? hypertension = null,Object? mentalHealthStatus = null,Object? status = null,Object? errorMessage = freezed,}) {
+  return _then(_self.copyWith(
+patientNameOrId: null == patientNameOrId ? _self.patientNameOrId : patientNameOrId // ignore: cast_nullable_to_non_nullable
+as String,age: null == age ? _self.age : age // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,gestationalAge: null == gestationalAge ? _self.gestationalAge : gestationalAge // ignore: cast_nullable_to_non_nullable
+as String,systolicBP: null == systolicBP ? _self.systolicBP : systolicBP // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,diastolicBP: null == diastolicBP ? _self.diastolicBP : diastolicBP // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,heartRate: null == heartRate ? _self.heartRate : heartRate // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,fetalHeartRate: null == fetalHeartRate ? _self.fetalHeartRate : fetalHeartRate // ignore: cast_nullable_to_non_nullable
+as String,bloodSugar: null == bloodSugar ? _self.bloodSugar : bloodSugar // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,bodyTemp: null == bodyTemp ? _self.bodyTemp : bodyTemp // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
+as String,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as String,blurredVision: null == blurredVision ? _self.blurredVision : blurredVision // ignore: cast_nullable_to_non_nullable
+as bool,vaginalBleeding: null == vaginalBleeding ? _self.vaginalBleeding : vaginalBleeding // ignore: cast_nullable_to_non_nullable
+as bool,severeSwelling: null == severeSwelling ? _self.severeSwelling : severeSwelling // ignore: cast_nullable_to_non_nullable
+as bool,reducedFetalMovement: null == reducedFetalMovement ? _self.reducedFetalMovement : reducedFetalMovement // ignore: cast_nullable_to_non_nullable
+as bool,previousComplications: null == previousComplications ? _self.previousComplications : previousComplications // ignore: cast_nullable_to_non_nullable
+as bool,preexistingDiabetes: null == preexistingDiabetes ? _self.preexistingDiabetes : preexistingDiabetes // ignore: cast_nullable_to_non_nullable
+as bool,gestationalDiabetes: null == gestationalDiabetes ? _self.gestationalDiabetes : gestationalDiabetes // ignore: cast_nullable_to_non_nullable
+as bool,hypertension: null == hypertension ? _self.hypertension : hypertension // ignore: cast_nullable_to_non_nullable
+as bool,mentalHealthStatus: null == mentalHealthStatus ? _self.mentalHealthStatus : mentalHealthStatus // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as FormzSubmissionStatus,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [AssessmentFormState].
+extension AssessmentFormStatePatterns on AssessmentFormState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AssessmentFormState value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AssessmentFormState() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AssessmentFormState value)  $default,){
+final _that = this;
+switch (_that) {
+case _AssessmentFormState():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AssessmentFormState value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AssessmentFormState() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String patientNameOrId,  NumericFieldFormz age,  String gestationalAge,  NumericFieldFormz systolicBP,  NumericFieldFormz diastolicBP,  NumericFieldFormz heartRate,  String fetalHeartRate,  NumericFieldFormz bloodSugar,  NumericFieldFormz bodyTemp,  String weight,  String height,  bool blurredVision,  bool vaginalBleeding,  bool severeSwelling,  bool reducedFetalMovement,  bool previousComplications,  bool preexistingDiabetes,  bool gestationalDiabetes,  bool hypertension,  String mentalHealthStatus,  FormzSubmissionStatus status,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AssessmentFormState() when $default != null:
+return $default(_that.patientNameOrId,_that.age,_that.gestationalAge,_that.systolicBP,_that.diastolicBP,_that.heartRate,_that.fetalHeartRate,_that.bloodSugar,_that.bodyTemp,_that.weight,_that.height,_that.blurredVision,_that.vaginalBleeding,_that.severeSwelling,_that.reducedFetalMovement,_that.previousComplications,_that.preexistingDiabetes,_that.gestationalDiabetes,_that.hypertension,_that.mentalHealthStatus,_that.status,_that.errorMessage);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String patientNameOrId,  NumericFieldFormz age,  String gestationalAge,  NumericFieldFormz systolicBP,  NumericFieldFormz diastolicBP,  NumericFieldFormz heartRate,  String fetalHeartRate,  NumericFieldFormz bloodSugar,  NumericFieldFormz bodyTemp,  String weight,  String height,  bool blurredVision,  bool vaginalBleeding,  bool severeSwelling,  bool reducedFetalMovement,  bool previousComplications,  bool preexistingDiabetes,  bool gestationalDiabetes,  bool hypertension,  String mentalHealthStatus,  FormzSubmissionStatus status,  String? errorMessage)  $default,) {final _that = this;
+switch (_that) {
+case _AssessmentFormState():
+return $default(_that.patientNameOrId,_that.age,_that.gestationalAge,_that.systolicBP,_that.diastolicBP,_that.heartRate,_that.fetalHeartRate,_that.bloodSugar,_that.bodyTemp,_that.weight,_that.height,_that.blurredVision,_that.vaginalBleeding,_that.severeSwelling,_that.reducedFetalMovement,_that.previousComplications,_that.preexistingDiabetes,_that.gestationalDiabetes,_that.hypertension,_that.mentalHealthStatus,_that.status,_that.errorMessage);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String patientNameOrId,  NumericFieldFormz age,  String gestationalAge,  NumericFieldFormz systolicBP,  NumericFieldFormz diastolicBP,  NumericFieldFormz heartRate,  String fetalHeartRate,  NumericFieldFormz bloodSugar,  NumericFieldFormz bodyTemp,  String weight,  String height,  bool blurredVision,  bool vaginalBleeding,  bool severeSwelling,  bool reducedFetalMovement,  bool previousComplications,  bool preexistingDiabetes,  bool gestationalDiabetes,  bool hypertension,  String mentalHealthStatus,  FormzSubmissionStatus status,  String? errorMessage)?  $default,) {final _that = this;
+switch (_that) {
+case _AssessmentFormState() when $default != null:
+return $default(_that.patientNameOrId,_that.age,_that.gestationalAge,_that.systolicBP,_that.diastolicBP,_that.heartRate,_that.fetalHeartRate,_that.bloodSugar,_that.bodyTemp,_that.weight,_that.height,_that.blurredVision,_that.vaginalBleeding,_that.severeSwelling,_that.reducedFetalMovement,_that.previousComplications,_that.preexistingDiabetes,_that.gestationalDiabetes,_that.hypertension,_that.mentalHealthStatus,_that.status,_that.errorMessage);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _AssessmentFormState extends AssessmentFormState {
+  const _AssessmentFormState({this.patientNameOrId = '', this.age = const NumericFieldFormz.pure(), this.gestationalAge = '', this.systolicBP = const NumericFieldFormz.pure(), this.diastolicBP = const NumericFieldFormz.pure(), this.heartRate = const NumericFieldFormz.pure(), this.fetalHeartRate = '', this.bloodSugar = const NumericFieldFormz.pure(), this.bodyTemp = const NumericFieldFormz.pure(), this.weight = '', this.height = '', this.blurredVision = false, this.vaginalBleeding = false, this.severeSwelling = false, this.reducedFetalMovement = false, this.previousComplications = false, this.preexistingDiabetes = false, this.gestationalDiabetes = false, this.hypertension = false, this.mentalHealthStatus = 'none', this.status = FormzSubmissionStatus.initial, this.errorMessage}): super._();
+  
+
+// ── section 1 — basic identification ──────────────────────
+@override@JsonKey() final  String patientNameOrId;
+@override@JsonKey() final  NumericFieldFormz age;
+@override@JsonKey() final  String gestationalAge;
+// optional — not ML feature
+// ── section 2 — vital signs ────────────────────────────────
+@override@JsonKey() final  NumericFieldFormz systolicBP;
+@override@JsonKey() final  NumericFieldFormz diastolicBP;
+@override@JsonKey() final  NumericFieldFormz heartRate;
+@override@JsonKey() final  String fetalHeartRate;
+// optional — not ML feature
+@override@JsonKey() final  NumericFieldFormz bloodSugar;
+@override@JsonKey() final  NumericFieldFormz bodyTemp;
+@override@JsonKey() final  String weight;
+// optional
+@override@JsonKey() final  String height;
+// optional
+// ── section 3 — danger signs ───────────────────────────────
+@override@JsonKey() final  bool blurredVision;
+@override@JsonKey() final  bool vaginalBleeding;
+@override@JsonKey() final  bool severeSwelling;
+@override@JsonKey() final  bool reducedFetalMovement;
+// ── section 4 — medical history ────────────────────────────
+@override@JsonKey() final  bool previousComplications;
+@override@JsonKey() final  bool preexistingDiabetes;
+@override@JsonKey() final  bool gestationalDiabetes;
+@override@JsonKey() final  bool hypertension;
+@override@JsonKey() final  String mentalHealthStatus;
+// ── submission ─────────────────────────────────────────────
+@override@JsonKey() final  FormzSubmissionStatus status;
+@override final  String? errorMessage;
+
+/// Create a copy of AssessmentFormState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AssessmentFormStateCopyWith<_AssessmentFormState> get copyWith => __$AssessmentFormStateCopyWithImpl<_AssessmentFormState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AssessmentFormState&&(identical(other.patientNameOrId, patientNameOrId) || other.patientNameOrId == patientNameOrId)&&(identical(other.age, age) || other.age == age)&&(identical(other.gestationalAge, gestationalAge) || other.gestationalAge == gestationalAge)&&(identical(other.systolicBP, systolicBP) || other.systolicBP == systolicBP)&&(identical(other.diastolicBP, diastolicBP) || other.diastolicBP == diastolicBP)&&(identical(other.heartRate, heartRate) || other.heartRate == heartRate)&&(identical(other.fetalHeartRate, fetalHeartRate) || other.fetalHeartRate == fetalHeartRate)&&(identical(other.bloodSugar, bloodSugar) || other.bloodSugar == bloodSugar)&&(identical(other.bodyTemp, bodyTemp) || other.bodyTemp == bodyTemp)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.height, height) || other.height == height)&&(identical(other.blurredVision, blurredVision) || other.blurredVision == blurredVision)&&(identical(other.vaginalBleeding, vaginalBleeding) || other.vaginalBleeding == vaginalBleeding)&&(identical(other.severeSwelling, severeSwelling) || other.severeSwelling == severeSwelling)&&(identical(other.reducedFetalMovement, reducedFetalMovement) || other.reducedFetalMovement == reducedFetalMovement)&&(identical(other.previousComplications, previousComplications) || other.previousComplications == previousComplications)&&(identical(other.preexistingDiabetes, preexistingDiabetes) || other.preexistingDiabetes == preexistingDiabetes)&&(identical(other.gestationalDiabetes, gestationalDiabetes) || other.gestationalDiabetes == gestationalDiabetes)&&(identical(other.hypertension, hypertension) || other.hypertension == hypertension)&&(identical(other.mentalHealthStatus, mentalHealthStatus) || other.mentalHealthStatus == mentalHealthStatus)&&(identical(other.status, status) || other.status == status)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+}
+
+
+@override
+int get hashCode => Object.hashAll([runtimeType,patientNameOrId,age,gestationalAge,systolicBP,diastolicBP,heartRate,fetalHeartRate,bloodSugar,bodyTemp,weight,height,blurredVision,vaginalBleeding,severeSwelling,reducedFetalMovement,previousComplications,preexistingDiabetes,gestationalDiabetes,hypertension,mentalHealthStatus,status,errorMessage]);
+
+@override
+String toString() {
+  return 'AssessmentFormState(patientNameOrId: $patientNameOrId, age: $age, gestationalAge: $gestationalAge, systolicBP: $systolicBP, diastolicBP: $diastolicBP, heartRate: $heartRate, fetalHeartRate: $fetalHeartRate, bloodSugar: $bloodSugar, bodyTemp: $bodyTemp, weight: $weight, height: $height, blurredVision: $blurredVision, vaginalBleeding: $vaginalBleeding, severeSwelling: $severeSwelling, reducedFetalMovement: $reducedFetalMovement, previousComplications: $previousComplications, preexistingDiabetes: $preexistingDiabetes, gestationalDiabetes: $gestationalDiabetes, hypertension: $hypertension, mentalHealthStatus: $mentalHealthStatus, status: $status, errorMessage: $errorMessage)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AssessmentFormStateCopyWith<$Res> implements $AssessmentFormStateCopyWith<$Res> {
+  factory _$AssessmentFormStateCopyWith(_AssessmentFormState value, $Res Function(_AssessmentFormState) _then) = __$AssessmentFormStateCopyWithImpl;
+@override @useResult
+$Res call({
+ String patientNameOrId, NumericFieldFormz age, String gestationalAge, NumericFieldFormz systolicBP, NumericFieldFormz diastolicBP, NumericFieldFormz heartRate, String fetalHeartRate, NumericFieldFormz bloodSugar, NumericFieldFormz bodyTemp, String weight, String height, bool blurredVision, bool vaginalBleeding, bool severeSwelling, bool reducedFetalMovement, bool previousComplications, bool preexistingDiabetes, bool gestationalDiabetes, bool hypertension, String mentalHealthStatus, FormzSubmissionStatus status, String? errorMessage
+});
+
+
+
+
+}
+/// @nodoc
+class __$AssessmentFormStateCopyWithImpl<$Res>
+    implements _$AssessmentFormStateCopyWith<$Res> {
+  __$AssessmentFormStateCopyWithImpl(this._self, this._then);
+
+  final _AssessmentFormState _self;
+  final $Res Function(_AssessmentFormState) _then;
+
+/// Create a copy of AssessmentFormState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? patientNameOrId = null,Object? age = null,Object? gestationalAge = null,Object? systolicBP = null,Object? diastolicBP = null,Object? heartRate = null,Object? fetalHeartRate = null,Object? bloodSugar = null,Object? bodyTemp = null,Object? weight = null,Object? height = null,Object? blurredVision = null,Object? vaginalBleeding = null,Object? severeSwelling = null,Object? reducedFetalMovement = null,Object? previousComplications = null,Object? preexistingDiabetes = null,Object? gestationalDiabetes = null,Object? hypertension = null,Object? mentalHealthStatus = null,Object? status = null,Object? errorMessage = freezed,}) {
+  return _then(_AssessmentFormState(
+patientNameOrId: null == patientNameOrId ? _self.patientNameOrId : patientNameOrId // ignore: cast_nullable_to_non_nullable
+as String,age: null == age ? _self.age : age // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,gestationalAge: null == gestationalAge ? _self.gestationalAge : gestationalAge // ignore: cast_nullable_to_non_nullable
+as String,systolicBP: null == systolicBP ? _self.systolicBP : systolicBP // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,diastolicBP: null == diastolicBP ? _self.diastolicBP : diastolicBP // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,heartRate: null == heartRate ? _self.heartRate : heartRate // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,fetalHeartRate: null == fetalHeartRate ? _self.fetalHeartRate : fetalHeartRate // ignore: cast_nullable_to_non_nullable
+as String,bloodSugar: null == bloodSugar ? _self.bloodSugar : bloodSugar // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,bodyTemp: null == bodyTemp ? _self.bodyTemp : bodyTemp // ignore: cast_nullable_to_non_nullable
+as NumericFieldFormz,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
+as String,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as String,blurredVision: null == blurredVision ? _self.blurredVision : blurredVision // ignore: cast_nullable_to_non_nullable
+as bool,vaginalBleeding: null == vaginalBleeding ? _self.vaginalBleeding : vaginalBleeding // ignore: cast_nullable_to_non_nullable
+as bool,severeSwelling: null == severeSwelling ? _self.severeSwelling : severeSwelling // ignore: cast_nullable_to_non_nullable
+as bool,reducedFetalMovement: null == reducedFetalMovement ? _self.reducedFetalMovement : reducedFetalMovement // ignore: cast_nullable_to_non_nullable
+as bool,previousComplications: null == previousComplications ? _self.previousComplications : previousComplications // ignore: cast_nullable_to_non_nullable
+as bool,preexistingDiabetes: null == preexistingDiabetes ? _self.preexistingDiabetes : preexistingDiabetes // ignore: cast_nullable_to_non_nullable
+as bool,gestationalDiabetes: null == gestationalDiabetes ? _self.gestationalDiabetes : gestationalDiabetes // ignore: cast_nullable_to_non_nullable
+as bool,hypertension: null == hypertension ? _self.hypertension : hypertension // ignore: cast_nullable_to_non_nullable
+as bool,mentalHealthStatus: null == mentalHealthStatus ? _self.mentalHealthStatus : mentalHealthStatus // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as FormzSubmissionStatus,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
 
 // dart format on

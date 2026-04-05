@@ -225,4 +225,39 @@ class AssessmentFormBloc
   ) {
     emit(state.copyWith(mentalHealthStatus: event.value));
   }
+
+  void _onSubmitted(_Submitted event, Emitter<AssessmentFormState> emit) {
+    if (state.status == FormzSubmissionStatus.inProgress) return;
+
+    // mark all required fields dirty to show errors
+    if (!state.isFormValid) {
+      emit(
+        state.copyWith(
+          age: NumericFieldFormz.dirty(state.age.value),
+          systolicBP: NumericFieldFormz.dirty(state.systolicBP.value),
+          diastolicBP: NumericFieldFormz.dirty(state.diastolicBP.value),
+          heartRate: NumericFieldFormz.dirty(state.heartRate.value),
+          bloodSugar: NumericFieldFormz.dirty(state.bloodSugar.value),
+          bodyTemp: NumericFieldFormz.dirty(state.bodyTemp.value),
+          errorMessage: 'Please fill in all required fields correctly.',
+        ),
+      );
+      return;
+    }
+    emit(
+      state.copyWith(
+        status: FormzSubmissionStatus.inProgress,
+        errorMessage: null,
+      ),
+    );
+
+    final record = state.toPatientRecord();
+    _assessmentBloc.add(AssessmentEvent.runAssessment(record));
+    logInfo('Assessment submitted for patient: ${record.patientNameOrId}');
+    emit(state.copyWith(status: FormzSubmissionStatus.success));
+  }
+
+  void _onCleared(_Cleared event, Emitter<AssessmentFormState> emit) {
+    emit(const AssessmentFormState());
+  }
 }
