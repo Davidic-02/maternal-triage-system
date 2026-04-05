@@ -42,7 +42,19 @@ def normalize_features(
 
     min_vals = X_train.min(axis=0)
     max_vals = X_train.max(axis=0)
-    scale    = np.where(max_vals - min_vals == 0, 1.0, max_vals - min_vals)
+
+    # Validate that no feature has min == max, which indicates corrupted/constant
+    # training data (e.g. all rows have the same value for a feature).
+    degenerate = np.where(max_vals == min_vals)[0]
+    if len(degenerate) > 0:
+        raise ValueError(
+            f"[normalize_features] Features at indices {degenerate.tolist()} have "
+            f"min == max. Check preprocessing — constant columns indicate bad encoding "
+            f"(e.g. MentalHealthStatus filled with a sentinel value like -1 instead of "
+            f"the correct ordinal range 0-3)."
+        )
+
+    scale = max_vals - min_vals
 
     X_train_norm = (X_train - min_vals) / scale
     X_test_norm  = (X_test  - min_vals) / scale
