@@ -64,6 +64,8 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
       final inferenceResult = _inferenceService.predict(auditedRecord);
       final riskClass = inferenceResult['riskClass'] as int;
       final probs = inferenceResult['probabilities'] as List<double>;
+      final recordWithRisk = auditedRecord.copyWith(riskClass: riskClass);
+      await _firebaseService.saveRecord(recordWithRisk);
 
       List<ShapFeature> shapFeatures = [];
       if (_shapService.isLoaded) {
