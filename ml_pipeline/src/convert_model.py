@@ -1,107 +1,77 @@
 """
 convert_model.py
 ----------------
-Convert the trained stacking ensemble to TensorFlow Lite format.
+Convert the trained stacking ensemble to ONNX format for use with
+Flutter's ONNX Runtime integration.
 """
 
 from __future__ import annotations
 
 import os
 
-import numpy as np
 
-
-def convert_to_tflite(model, output_path: str, n_features: int = 13) -> None:
-    """Wrap the stacking pipeline in a TF computation graph and export TFLite.
-
-    The stacking model's ``predict_proba`` is traced as a TensorFlow
-    ``tf.function`` so that the resulting SavedModel can be converted
-    with optional dynamic-range quantisation.
+def convert_to_onnx(model_path: str, output_path: str, n_features: int = 13) -> None:
+    """Convert a fitted sklearn stacking model to ONNX format.
 
     Parameters
     ----------
-    model : fitted StackingClassifier (or any sklearn estimator with
-        ``predict_proba``)
+    model_path : str
+        Path to the serialised sklearn model (``.pkl`` file).
     output_path : str
-        Destination path for the ``.tflite`` file
-        (e.g. ``'models/maternal_triage_model.tflite'``).
+        Destination path for the ``.onnx`` file
+        (e.g. ``'models/stacking_model.onnx'``).
     n_features : int
         Number of input features expected by the model (default 13 to
         match the feature union used in this project).
     """
     try:
-        import tensorflow as tf
+        from skl2onnx import convert_sklearn
+        from skl2onnx.common.data_types import FloatTensorType
     except ImportError as exc:
         raise ImportError(
-            "TensorFlow is required for TFLite conversion. "
-            "Install it with: pip install tensorflow"
+            "skl2onnx is required for ONNX conversion. "
+            "Install it with: pip install skl2onnx onnx onnxruntime"
         ) from exc
 
-    # ------------------------------------------------------------------
-    # Wrap sklearn model as a TF module
-    # ------------------------------------------------------------------
-    class _SklearnWrapper(tf.Module):
-        def __init__(self, sklearn_model):
-            super().__init__()
-            self._model = sklearn_model
+    import pickle
 
-        @tf.function(
-            input_signature=[
-                tf.TensorSpec(shape=[None, n_features], dtype=tf.float32)
-            ]
-        )
-        def predict(self, x: tf.Tensor) -> tf.Tensor:
-            probas = tf.py_function(
-                func=lambda inp: self._model.predict_proba(inp.numpy()).astype(
-                    np.float32
-                ),
-                inp=[x],
-                Tout=tf.float32,
-            )
-            probas.set_shape([None, 3])
-            return probas
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
 
-    wrapper = _SklearnWrapper(model)
+    # Define input type: batch of n_features floats
+    initial_type = [("float_input", FloatTensorType([None, n_features]))]
 
-    # ------------------------------------------------------------------
-    # Convert to TFLite with dynamic-range quantisation
-    # ------------------------------------------------------------------
-    converter = tf.lite.TFLiteConverter.from_concrete_functions(
-        [wrapper.predict.get_concrete_function()],
-        wrapper,
-    )
-    converter.optimizations = [tf.lite.Optimize.DEFAULT]
-    tflite_model = converter.convert()
+    # Convert to ONNX
+    onnx_model = convert_sklearn(model, initial_types=initial_type)
 
     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
-    with open(output_path, "wb") as fh:
-        fh.write(tflite_model)
-    print(f"TFLite model saved to {output_path} ({len(tflite_model) / 1024:.1f} KB)")
+    with open(output_path, "wb") as f:
+        f.write(onnx_model.SerializeToString())
+
+    print(f"  Model converted to ONNX → {output_path}")
 
 
 # ---------------------------------------------------------------------------
 # Smoke-test:  python3 -m src.convert_model
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
-    import joblib
-    from src.feature_engineering import run_feature_engineering
-    from src.balancing import apply_smote
-    from src.train import normalize_features
+    import os
 
-    print("-- Loading pipeline data ---")
-    X_train, X_test, y_train, y_test = run_feature_engineering()
-    X_res, y_res = apply_smote(X_train, y_train)
-    X_train_norm, X_test_norm = normalize_features(X_res, X_test)
+    model_pkl = "models/stacking_model.pkl"
+    output_onnx = "models/stacking_model.onnx"
 
-    print("-- Loading trained model ---")
-    model = joblib.load("models/stacking_model.pkl")
-    print("  Model loaded from models/stacking_model.pkl")
+    if not os.path.exists(model_pkl):
+        raise FileNotFoundError(
+            f"Trained model not found at '{model_pkl}'. "
+            "Run 'python -m src.train' first to generate the model."
+        )
 
-    print("\n-- Converting to TFLite ---")
-    convert_to_tflite(
-        model,
-        output_path="models/maternal_triage_model.tflite",
-        n_features=X_test_norm.shape[1],
-    )
+    print("-- Converting stacking model to ONNX ---")
+    convert_to_onnx(model_path=model_pkl, output_path=output_onnx, n_features=13)
 
+    if not os.path.exists(output_onnx):
+        raise RuntimeError(f"ONNX file was not created at '{output_onnx}'.")
+
+    size_kb = os.path.getsize(output_onnx) / 1024
+    print(f"  ONNX model verified at {output_onnx} ({size_kb:.1f} KB)")
     print("\n-- Done! ---")
