@@ -178,7 +178,7 @@ def encode_ordinal(df: pd.DataFrame, column: str = "MentalHealthStatus") -> pd.D
         .str.strip()
         .str.lower()
         .map(mapping)
-        .fillna(-1)
+        .fillna(0)
         .astype(int)
     )
     return df
