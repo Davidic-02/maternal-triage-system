@@ -47,9 +47,8 @@ abstract class TriageState with _$TriageState {
             r.createdAt.toString().contains(query);
       }).toList();
     }
-    final sorted = List<PatientRecord>.from(records);
     records.sort((a, b) => b.riskClass.compareTo(a.riskClass));
-    return sorted;
+    return records;
   }
 
   // filtered resolved today
