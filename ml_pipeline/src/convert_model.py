@@ -3,12 +3,63 @@ convert_model.py
 ----------------
 Convert the trained stacking ensemble to ONNX format for use with
 Flutter's ONNX Runtime integration.
+
+Improvements over the original:
+- Registers the XGBoost → ONNX converter (via onnxmltools) before calling
+  skl2onnx, which prevents the conversion from hanging when a
+  StackingClassifier contains an XGBClassifier estimator.
+- Uses target_opset=12 for a simpler, faster ONNX graph.
+- Sets zipmap=False to avoid a slow ZipMap output node that is unnecessary
+  for Flutter inference.
+- Copies the finished ONNX file to the Flutter assets directory automatically
+  so no manual copy step is required.
 """
 
 from __future__ import annotations
 
 import os
+import pickle
+import shutil
 
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _register_xgboost_converter() -> None:
+    """Register the XGBoost → ONNX converter with skl2onnx.
+
+    Without this registration skl2onnx does not know how to convert
+    XGBClassifier nodes that appear inside a StackingClassifier, causing the
+    conversion to hang or raise an error.  The onnxmltools package provides
+    the required converter; if it is not installed the registration is silently
+    skipped (conversion may still succeed for non-XGBoost models).
+    """
+    try:
+        from onnxmltools.convert.xgboost.operator_converters.XGBoost import (
+            convert_xgboost,
+        )
+        from skl2onnx import update_registered_converter
+        from skl2onnx.common.shape_calculator import (
+            calculate_linear_classifier_output_shapes,
+        )
+        from xgboost import XGBClassifier
+
+        update_registered_converter(
+            XGBClassifier,
+            "XGBoostXGBClassifier",
+            calculate_linear_classifier_output_shapes,
+            convert_xgboost,
+            options={"nocl": [True, False], "zipmap": [True, False]},
+        )
+        print("  XGBoost converter registered via onnxmltools.")
+    except ImportError:
+        pass  # onnxmltools not installed; proceed without XGBoost registration
+
+
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
 
 def convert_to_onnx(model_path: str, output_path: str, n_features: int = 13) -> None:
     """Convert a fitted sklearn stacking model to ONNX format.
@@ -33,16 +84,28 @@ def convert_to_onnx(model_path: str, output_path: str, n_features: int = 13) -> 
             "Install it with: pip install skl2onnx onnx onnxruntime"
         ) from exc
 
-    import pickle
-
+    print("  Loading model from pickle …")
     with open(model_path, "rb") as f:
         model = pickle.load(f)
 
-    # Define input type: batch of n_features floats
+    # Register XGBoost converter so StackingClassifier + XGBClassifier works.
+    _register_xgboost_converter()
+
+    # Define input type: batch of n_features floats.
     initial_type = [("float_input", FloatTensorType([None, n_features]))]
 
-    # Convert to ONNX
-    onnx_model = convert_sklearn(model, initial_types=initial_type)
+    # target_opset=12 produces a simpler graph that converts faster.
+    # zipmap=False removes the slow ZipMap output node; Flutter reads the raw
+    # probability array directly.
+    options = {type(model): {"zipmap": False}}
+
+    print("  Running skl2onnx conversion (target_opset=12, zipmap=False) …")
+    onnx_model = convert_sklearn(
+        model,
+        initial_types=initial_type,
+        target_opset=12,
+        options=options,
+    )
 
     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
     with open(output_path, "wb") as f:
@@ -51,12 +114,53 @@ def convert_to_onnx(model_path: str, output_path: str, n_features: int = 13) -> 
     print(f"  Model converted to ONNX → {output_path}")
 
 
+def copy_to_flutter_assets(
+    onnx_path: str,
+    flutter_models_dir: str | None = None,
+    dest_filename: str = "maternal_triage_model.onnx",
+) -> None:
+    """Copy the ONNX model into the Flutter assets/models directory.
+
+    Parameters
+    ----------
+    onnx_path : str
+        Path to the source ``.onnx`` file.
+    flutter_models_dir : str | None
+        Absolute path to the Flutter ``assets/models`` directory.
+        Defaults to ``<repo_root>/flutter_app/assets/models``, resolved
+        relative to this source file's location.
+    dest_filename : str
+        Name to give the file inside the Flutter assets directory.
+        Defaults to ``maternal_triage_model.onnx`` (the name referenced in
+        ``flutter_app/lib/utils/constants.dart``).
+    """
+    if flutter_models_dir is None:
+        # This file lives at ml_pipeline/src/convert_model.py; the Flutter
+        # assets directory is two levels up, then into flutter_app.
+        src_dir = os.path.dirname(os.path.abspath(__file__))
+        flutter_models_dir = os.path.normpath(
+            os.path.join(src_dir, "..", "..", "flutter_app", "assets", "models")
+        )
+
+    dst = os.path.join(flutter_models_dir, dest_filename)
+    os.makedirs(flutter_models_dir, exist_ok=True)
+    shutil.copy2(onnx_path, dst)
+
+    src_size = os.path.getsize(onnx_path)
+    dst_size = os.path.getsize(dst)
+    if src_size != dst_size:
+        raise RuntimeError(
+            f"Copy verification failed: source size {src_size} B != "
+            f"destination size {dst_size} B"
+        )
+
+    print(f"  ONNX model copied to Flutter assets → {dst} ({dst_size / 1024:.1f} KB)")
+
+
 # ---------------------------------------------------------------------------
-# Smoke-test:  python3 -m src.convert_model
+# Entry-point:  python -m src.convert_model
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
-    import os
-
     model_pkl = "models/stacking_model.pkl"
     output_onnx = "models/stacking_model.onnx"
 
@@ -74,4 +178,10 @@ if __name__ == "__main__":
 
     size_kb = os.path.getsize(output_onnx) / 1024
     print(f"  ONNX model verified at {output_onnx} ({size_kb:.1f} KB)")
+
+    print("\n-- Copying ONNX model to Flutter assets ---")
+    copy_to_flutter_assets(output_onnx)
+
     print("\n-- Done! ---")
+    print("  Next steps:")
+    print("    cd ../flutter_app && flutter clean && flutter pub get && flutter run")
