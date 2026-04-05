@@ -117,7 +117,6 @@ _ALL_FEATURE_COLUMNS = [
     "Age", "SystolicBP", "DiastolicBP", "BloodSugar", "BodyTemp",
     "BMI", "HeartRate", "Weight", "Height",
     "PreviousComplications", "PreexistingDiabetes", "GestationalDiabetes",
-    "MentalHealthStatus",
 ]
 
 
@@ -273,9 +272,6 @@ def run_preprocessing(base_path: str = "data/raw") -> tuple:
     print("── Encoding binary columns ───────────────────────────")
     binary_cols = ["PreviousComplications", "PreexistingDiabetes", "GestationalDiabetes"]
     df = encode_binary(df, binary_cols)
-
-    print("── Encoding ordinal columns ──────────────────────────")
-    df = encode_ordinal(df)
 
     print("── Encoding risk label ───────────────────────────────")
     df = encode_risk_label(df)

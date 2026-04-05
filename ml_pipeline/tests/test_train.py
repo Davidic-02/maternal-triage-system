@@ -18,7 +18,7 @@ from src.train import normalize_features
 class TestNormalizeFeatures:
     """normalize_features should raise when any feature has min == max."""
 
-    def _create_feature_matrix(self, n_features: int = 14, n_samples: int = 20):
+    def _create_feature_matrix(self, n_features: int = 13, n_samples: int = 20):
         rng = np.random.default_rng(42)
         X = rng.uniform(0.0, 1.0, (n_samples, n_features))
         return X
@@ -34,8 +34,8 @@ class TestNormalizeFeatures:
             params = json.load(f)
 
         assert "min" in params and "max" in params
-        assert len(params["min"]) == 14
-        assert len(params["max"]) == 14
+        assert len(params["min"]) == 13
+        assert len(params["max"]) == 13
 
         # All values should be within [0, 1] after normalisation
         assert X_tr_norm.min() >= -1e-9
@@ -44,12 +44,13 @@ class TestNormalizeFeatures:
     def test_raises_when_feature_is_constant(self, tmp_path):
         """normalize_features must raise ValueError when min == max for any feature.
 
-        This replicates the root cause: MentalHealthStatus was all -1 in training
-        data because encode_ordinal used fillna(-1) for missing values.
+        This replicates the root cause: MentalHealthStatus was all 0 in training
+        data because ~51% of rows came from Mendeley and the rest had it filled
+        with 'none' → 0, creating a near-constant column.
         """
-        X = self._create_feature_matrix(n_features=14, n_samples=20)
-        # Force feature 12 (MentalHealthStatus) to be constant (all -1)
-        X[:, 12] = -1.0
+        X = self._create_feature_matrix(n_features=13, n_samples=20)
+        # Force feature 12 (PulsePressure) to be constant
+        X[:, 12] = 0.0
         X_train, X_test = X[:15], X[15:]
         params_path = str(tmp_path / "scaler_params.json")
 
@@ -58,8 +59,8 @@ class TestNormalizeFeatures:
 
     def test_raises_includes_degenerate_feature_indices(self, tmp_path):
         """Error message must identify which feature indices are degenerate."""
-        X = self._create_feature_matrix(n_features=14, n_samples=20)
-        X[:, 12] = 0.0   # MentalHealthStatus constant
+        X = self._create_feature_matrix(n_features=13, n_samples=20)
+        X[:, 12] = 0.0   # PulsePressure constant
         X_train, X_test = X[:15], X[15:]
         params_path = str(tmp_path / "scaler_params.json")
 
@@ -68,8 +69,8 @@ class TestNormalizeFeatures:
 
     def test_no_params_file_written_on_error(self, tmp_path):
         """If validation fails, scaler_params.json must not be written."""
-        X = self._create_feature_matrix(n_features=14, n_samples=20)
-        X[:, 12] = -1.0
+        X = self._create_feature_matrix(n_features=13, n_samples=20)
+        X[:, 12] = 0.0
         X_train, X_test = X[:15], X[15:]
         params_path = str(tmp_path / "scaler_params.json")
 
