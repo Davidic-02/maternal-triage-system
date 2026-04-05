@@ -10,8 +10,8 @@ import '../utils/constants.dart';
 /// Service that loads the ONNX model and runs inference.
 class InferenceService {
   OrtSession? _session;
-  List<double> _minVals = List.filled(14, 0.0);
-  List<double> _maxVals = List.filled(14, 1.0);
+  List<double> _minVals = List.filled(13, 0.0);
+  List<double> _maxVals = List.filled(13, 1.0);
 
   /// Loads the ONNX model and scaler params from assets.
   /// Call once during app startup.
@@ -50,7 +50,7 @@ class InferenceService {
     }
 
     final input = _buildInputTensor(record);
-    final inputOrt = OrtValueTensor.createTensorWithDataList(input, [1, 14]);
+    final inputOrt = OrtValueTensor.createTensorWithDataList(input, [1, 13]);
     final runOptions = OrtRunOptions();
     final outputs = _session!.run(runOptions, {'float_input': inputOrt});
 
@@ -101,30 +101,16 @@ class InferenceService {
       record.previousComplications ? 1.0 : 0.0,
       record.preexistingDiabetes ? 1.0 : 0.0,
       record.gestationalDiabetes ? 1.0 : 0.0,
-      _encodeMentalHealth(record.mentalHealthStatus),
       record.systolicBP - record.diastolicBP, // PulsePressure
     ];
 
-    final normalised = Float32List(14);
-    for (int i = 0; i < 14; i++) {
+    final normalised = Float32List(13);
+    for (int i = 0; i < 13; i++) {
       final scale = _maxVals[i] - _minVals[i];
       normalised[i] = scale == 0
           ? 0.0
           : ((raw[i] - _minVals[i]) / scale).clamp(0.0, 1.0);
     }
     return normalised;
-  }
-
-  double _encodeMentalHealth(String status) {
-    switch (status.toLowerCase()) {
-      case 'mild':
-        return 1.0;
-      case 'moderate':
-        return 2.0;
-      case 'severe':
-        return 3.0;
-      default:
-        return 0.0;
-    }
   }
 }

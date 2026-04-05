@@ -181,7 +181,7 @@ if __name__ == "__main__":
     #   3  BloodSugar          8  Height
     #   4  BodyTemp            9  PreviousComplications
     #  10  PreexistingDiabetes 11 GestationalDiabetes
-    #  12  MentalHealthStatus  13 PulsePressure
+    #  12  PulsePressure
     X_train_norm, X_test_norm = normalize_features(X_res, X_test)
 
     print("\n-- Training stacking ensemble (this may take ~2 min) ---")
