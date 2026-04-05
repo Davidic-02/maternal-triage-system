@@ -22,9 +22,11 @@ class InferenceService {
     final scalerJson = await rootBundle.loadString(kScalerAsset);
     final scalerMap = jsonDecode(scalerJson) as Map<String, dynamic>;
     _minVals = List<double>.from(
-        (scalerMap['min'] as List).map((v) => (v as num).toDouble()));
+      (scalerMap['min'] as List).map((v) => (v as num).toDouble()),
+    );
     _maxVals = List<double>.from(
-        (scalerMap['max'] as List).map((v) => (v as num).toDouble()));
+      (scalerMap['max'] as List).map((v) => (v as num).toDouble()),
+    );
 
     // Load ONNX model from assets
     final modelBytes = await rootBundle.load(kModelAsset);
@@ -83,7 +85,8 @@ class InferenceService {
   Float32List _buildInputTensor(PatientRecord record) {
     final w = record.weight ?? 0.0;
     final h = record.height ?? 0.0;
-    final bmi = (w > 0 && h > 0) ? w / (h * h) : 0.0;
+    final heightInMeters = h / 100;
+    final bmi = (w > 0 && h > 0) ? w / (heightInMeters * heightInMeters) : 0.0;
 
     final raw = <double>[
       record.age,
@@ -105,8 +108,9 @@ class InferenceService {
     final normalised = Float32List(14);
     for (int i = 0; i < 14; i++) {
       final scale = _maxVals[i] - _minVals[i];
-      normalised[i] =
-          scale == 0 ? 0.0 : ((raw[i] - _minVals[i]) / scale).clamp(0.0, 1.0);
+      normalised[i] = scale == 0
+          ? 0.0
+          : ((raw[i] - _minVals[i]) / scale).clamp(0.0, 1.0);
     }
     return normalised;
   }

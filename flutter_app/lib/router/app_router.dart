@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
+import 'package:maternal_triage/bloc/assessment_form/assessment_form_bloc.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
 import 'package:maternal_triage/bloc/sign_up/sign_up_bloc.dart';
 import 'package:maternal_triage/bloc/triage/triage_bloc.dart';
@@ -119,7 +120,12 @@ class AppRouter {
           GoRoute(
             path: '/assessment',
             name: 'assessment',
-            builder: (context, state) => const DataEntryScreen(),
+            builder: (context, state) => BlocProvider(
+              create: (context) => AssessmentFormBloc(
+                assessmentBloc: context.read<AssessmentBloc>(),
+              ),
+              child: const DataEntryScreen(),
+            ),
           ),
           GoRoute(
             path: '/resources',
@@ -152,7 +158,6 @@ class AppRouter {
         (authBloc.state.status == FormzSubmissionStatus.success &&
             authBloc.state.userEmail != null) ||
         persistedSignIn;
-
     final location = state.matchedLocation;
     final onSplash = location == '/';
     final onOnboarding = location == '/onboarding';
