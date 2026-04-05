@@ -78,13 +78,17 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
         probabilities: probs,
         shapFeatures: shapFeatures,
       );
-      await _firebaseService.saveRecord(auditedRecord);
+
+      // Persist record with the predicted riskClass so the triage queue
+      // correctly reflects risk level rather than the default (0 / LOW).
+      final recordWithRisk = auditedRecord.copyWith(riskClass: riskClass);
+      await _firebaseService.saveRecord(recordWithRisk);
 
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.success,
           result: riskResult,
-          record: auditedRecord,
+          record: recordWithRisk,
           errorMessage: null,
         ),
       );

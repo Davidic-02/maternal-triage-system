@@ -76,13 +76,17 @@ def build_stacking_ensemble() -> StackingClassifier:
 
     Base learners : RandomForest, XGBoost, SVM(rbf)
     Meta-learner  : LogisticRegression(L2)
+
+    class_weight='balanced' is applied to RF, SVM, and the meta-learner so
+    that under-represented risk classes (e.g. MID) are not overwhelmed by the
+    majority class during training.
     """
     base_learners = [
-        ("rf",  RandomForestClassifier(n_estimators=100, random_state=42)),
+        ("rf",  RandomForestClassifier(n_estimators=100, random_state=42, class_weight="balanced")),
         ("xgb", XGBClassifier(eval_metric="mlogloss", random_state=42)),
-        ("svm", SVC(probability=True, kernel="rbf", random_state=42)),
+        ("svm", SVC(probability=True, kernel="rbf", random_state=42, class_weight="balanced")),
     ]
-    meta_learner = LogisticRegression(penalty="l2", max_iter=1000, random_state=42)
+    meta_learner = LogisticRegression(penalty="l2", max_iter=1000, random_state=42, class_weight="balanced")
     return StackingClassifier(
         estimators=base_learners,
         final_estimator=meta_learner,

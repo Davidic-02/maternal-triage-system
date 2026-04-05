@@ -19,7 +19,16 @@ abstract class TriageState with _$TriageState {
   int get stableCount => activeQueue.where((r) => r.riskClass == 0).length;
 
   List<PatientRecord> get filteredQueue {
-    var records = List<PatientRecord>.from(activeQueue);
+    // Deduplicate by record ID to prevent duplicate entries caused by
+    // stream firing multiple updates for the same record.
+    final seen = <String>{};
+    var records = <PatientRecord>[];
+    for (final r in activeQueue) {
+      final key = r.id ?? '${r.createdAt.millisecondsSinceEpoch}_${r.assessedBy}_${r.age}';
+      if (seen.add(key)) {
+        records.add(r);
+      }
+    }
 
     switch (filter) {
       case TriageFilter.high:
