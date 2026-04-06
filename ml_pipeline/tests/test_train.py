@@ -1,18 +1,20 @@
 """
-Tests for ml_pipeline/src/train.py  — normalize_features validation.
+Tests for ml_pipeline/src/train.py  — normalize_features validation and
+save_model persistence.
 """
 
 import json
 import os
 import sys
 import tempfile
+from unittest.mock import patch, call
 
 import numpy as np
 import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from src.train import normalize_features
+from src.train import normalize_features, save_model
 
 
 class TestNormalizeFeatures:
@@ -82,3 +84,56 @@ class TestNormalizeFeatures:
         assert not os.path.exists(params_path), (
             "scaler_params.json must not be created when validation fails"
         )
+
+
+class TestSaveModel:
+    """save_model must write the file and call os.fsync to flush OS buffers."""
+
+    def test_file_is_created(self, tmp_path):
+        """save_model must create a non-empty file at the given path."""
+        import joblib
+        from sklearn.linear_model import LogisticRegression
+        import numpy as np
+
+        model = LogisticRegression()
+        model.fit(np.array([[0], [1]]), np.array([0, 1]))
+
+        path = str(tmp_path / "model.pkl")
+        save_model(model, path)
+
+        assert os.path.exists(path), "Model file was not created."
+        assert os.path.getsize(path) > 0, "Model file is empty."
+
+    def test_fsync_is_called(self, tmp_path):
+        """save_model must call os.fsync after writing so the file is fully
+        flushed to disk before any reader can access it."""
+        import joblib
+        from sklearn.linear_model import LogisticRegression
+        import numpy as np
+
+        model = LogisticRegression()
+        model.fit(np.array([[0], [1]]), np.array([0, 1]))
+
+        path = str(tmp_path / "model.pkl")
+        with patch("os.fsync") as mock_fsync:
+            save_model(model, path)
+            mock_fsync.assert_called_once()
+
+    def test_file_content_loadable_after_save(self, tmp_path):
+        """The file written by save_model must be loadable with joblib."""
+        import joblib
+        from sklearn.linear_model import LogisticRegression
+        import numpy as np
+
+        model = LogisticRegression()
+        X = np.array([[0], [1], [2]])
+        y = np.array([0, 1, 0])
+        model.fit(X, y)
+
+        path = str(tmp_path / "model.pkl")
+        save_model(model, path)
+
+        loaded = joblib.load(path)
+        original_pred = model.predict(X)
+        loaded_pred = loaded.predict(X)
+        np.testing.assert_array_equal(original_pred, loaded_pred)
