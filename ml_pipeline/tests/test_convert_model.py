@@ -3,7 +3,7 @@ Tests for ml_pipeline/src/convert_model.py
 
 Covers the pickle-corruption fix:
 - File size validation rejects suspiciously small files.
-- Retry logic retries on UnpicklingError / EOFError and ultimately
+- Retry logic retries on loading errors and ultimately
   re-raises when all attempts are exhausted.
 - Successful load on a later attempt does not raise.
 """
@@ -14,7 +14,7 @@ import os
 import pickle
 import sys
 import tempfile
-from unittest.mock import patch, mock_open, MagicMock
+from unittest.mock import patch, MagicMock
 
 import pytest
 
@@ -89,13 +89,13 @@ class TestFileSizeValidation:
 # ---------------------------------------------------------------------------
 
 class TestRetryLogic:
-    """convert_to_onnx must retry on UnpicklingError / EOFError."""
+    """convert_to_onnx must retry on loading errors."""
 
     def test_reraises_after_all_retries_exhausted_unpickling_error(self, tmp_path):
-        """If every attempt raises UnpicklingError, the exception propagates."""
+        """If every attempt raises UnpicklingError (joblib internal pickle error), the exception propagates."""
         path = _make_large_file(tmp_path)
 
-        with patch("pickle.load", side_effect=pickle.UnpicklingError("bad data")):
+        with patch("joblib.load", side_effect=pickle.UnpicklingError("bad data")):
             with patch("time.sleep"):  # don't actually wait
                 with pytest.raises(pickle.UnpicklingError):
                     convert_to_onnx(
@@ -108,7 +108,7 @@ class TestRetryLogic:
         """If every attempt raises EOFError, the exception propagates."""
         path = _make_large_file(tmp_path)
 
-        with patch("pickle.load", side_effect=EOFError("unexpected end")):
+        with patch("joblib.load", side_effect=EOFError("unexpected end")):
             with patch("time.sleep"):
                 with pytest.raises(EOFError):
                     convert_to_onnx(
@@ -121,7 +121,7 @@ class TestRetryLogic:
         """time.sleep(2) must be called between failed attempts."""
         path = _make_large_file(tmp_path)
 
-        with patch("pickle.load", side_effect=pickle.UnpicklingError("bad")):
+        with patch("joblib.load", side_effect=pickle.UnpicklingError("bad")):
             with patch("time.sleep") as mock_sleep:
                 with pytest.raises(pickle.UnpicklingError):
                     convert_to_onnx(
@@ -137,7 +137,7 @@ class TestRetryLogic:
         """With retries=1 (no retry), sleep must never be called."""
         path = _make_large_file(tmp_path)
 
-        with patch("pickle.load", side_effect=pickle.UnpicklingError("bad")):
+        with patch("joblib.load", side_effect=pickle.UnpicklingError("bad")):
             with patch("time.sleep") as mock_sleep:
                 with pytest.raises(pickle.UnpicklingError):
                     convert_to_onnx(
@@ -162,7 +162,7 @@ class TestRetryLogic:
         # First call raises UnpicklingError; second call returns the real model.
         side_effects = [pickle.UnpicklingError("first attempt bad"), real_model]
 
-        with patch("pickle.load", side_effect=side_effects):
+        with patch("joblib.load", side_effect=side_effects):
             with patch("time.sleep"):
                 with patch("src.convert_model._register_xgboost_converter"):
                     with patch.dict("sys.modules", _mock_skl2onnx_modules()):

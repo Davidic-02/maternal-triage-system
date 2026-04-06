@@ -22,6 +22,8 @@ import pickle
 import shutil
 import time
 
+import joblib
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -81,7 +83,7 @@ def convert_to_onnx(
         Number of input features expected by the model (default 13 to
         match the feature union used in this project).
     retries : int
-        Number of attempts to load the pickle file before giving up.
+        Number of attempts to load the model file before giving up.
         Each failed attempt waits 2 seconds before retrying, which
         handles the race condition where the file is still being written
         (or its OS buffers have not yet been flushed) when this function
@@ -106,10 +108,9 @@ def convert_to_onnx(
     model = None
     for attempt in range(retries):
         try:
-            with open(model_path, "rb") as f:
-                model = pickle.load(f)
+            model = joblib.load(model_path)
             break  # success — exit retry loop
-        except (pickle.UnpicklingError, EOFError) as exc:
+        except (EOFError, pickle.UnpicklingError, ValueError) as exc:
             if attempt < retries - 1:
                 print(
                     f"  Attempt {attempt + 1} failed ({exc}), "
