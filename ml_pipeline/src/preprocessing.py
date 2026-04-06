@@ -277,8 +277,13 @@ def run_preprocessing(base_path: str = "data/raw") -> tuple:
     df = encode_risk_label(df)
     df = df.dropna(subset=["RiskLevel"]).reset_index(drop=True)
 
-    # Drop non-feature columns before split
-    drop_cols = [c for c in ["source"] if c in df.columns]
+    # Drop non-feature columns before split.
+    # MentalHealthStatus is intentionally excluded from the model (not in
+    # _ALL_FEATURE_COLUMNS) so it must be dropped here; otherwise it is
+    # preserved as an "extra" column by harmonize_features() and would
+    # silently inflate the feature count to 14 instead of the expected 13
+    # (12 base features + PulsePressure from feature engineering).
+    drop_cols = [c for c in ["source", "MentalHealthStatus"] if c in df.columns]
     df = df.drop(columns=drop_cols)
 
     print("── Splitting 70/30 ───────────────────────────────────")

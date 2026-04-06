@@ -196,54 +196,12 @@ if __name__ == "__main__":
     from src.balancing import apply_smote
     from src.train import normalize_features
 
+    # 13 features: 12 base + PulsePressure (MentalHealthStatus excluded)
     FEATURE_NAMES = [
         "Age", "SystolicBP", "DiastolicBP", "BloodSugar", "BodyTemp",
         "BMI", "HeartRate", "Weight", "Height",
         "PreviousComplications", "PreexistingDiabetes", "GestationalDiabetes",
-        "MentalHealthStatus", "PulsePressure",
-    ]
-
-    print("-- Loading pipeline data ---")
-    X_train, X_test, y_train, y_test = run_feature_engineering()
-    X_res, y_res = apply_smote(X_train, y_train)
-    X_train_norm, X_test_norm = normalize_features(X_res, X_test)
-
-    print("-- Loading trained model ---")
-    model = joblib.load("models/stacking_model.pkl")
-    print("  Model loaded from models/stacking_model.pkl")
-
-    N = 50
-    X_explain = X_test_norm[:N]
-    print(f"\n-- Computing SHAP values on first {N} test samples ---")
-    shap_values = compute_shap_values(model, X_train_norm, X_explain, background_samples=50)
-
-    print("\n-- Saving SHAP summary plot ---")
-    plot_shap_summary(shap_values, X_explain, feature_names=FEATURE_NAMES)
-
-    print("\n-- Saving SHAP values JSON ---")
-    save_shap_values(shap_values, "models/shap_values.json", feature_names=FEATURE_NAMES)
-
-    print("\n-- Local explanation for sample 0 ---")
-    explanation = get_local_shap_explanation(shap_values, index=0, feature_names=FEATURE_NAMES)
-    for e in explanation:
-        print(f"  {e['feature']:25s}  SHAP={e['shap_value']:+.4f}  ({e['direction']})")
-
-    print("\n-- Done! ---")
-
-# ---------------------------------------------------------------------------
-# Smoke-test:  python3 -m src.explainability
-# ---------------------------------------------------------------------------
-if __name__ == "__main__":
-    import joblib
-    from src.feature_engineering import run_feature_engineering
-    from src.balancing import apply_smote
-    from src.train import normalize_features
-
-    FEATURE_NAMES = [
-        "Age", "SystolicBP", "DiastolicBP", "BloodSugar", "BodyTemp",
-        "BMI", "HeartRate", "Weight", "Height",
-        "PreviousComplications", "PreexistingDiabetes", "GestationalDiabetes",
-        "MentalHealthStatus", "PulsePressure",
+        "PulsePressure",
     ]
 
     print("-- Loading pipeline data ---")
