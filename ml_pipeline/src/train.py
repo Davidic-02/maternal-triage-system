@@ -152,9 +152,21 @@ def train_model(
 # ---------------------------------------------------------------------------
 
 def save_model(model: Any, path: str) -> None:
-    """Serialise model to path using joblib."""
+    """Serialise model to path using joblib.
+
+    After writing, the file is explicitly fsync-ed so the OS flushes all
+    buffered data to storage before this function returns.  This prevents
+    a subsequent process (e.g. convert_model.py) from reading a partially-
+    written pickle and raising _pickle.UnpicklingError.
+    """
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     joblib.dump(model, path)
+    # Flush OS-level write buffers to disk so the file is complete before
+    # any other process attempts to read it.  Opening with "r+b" gives a
+    # writable descriptor without truncating the file.
+    with open(path, "r+b") as fh:
+        fh.flush()
+        os.fsync(fh.fileno())
     print(f"  Model saved -> {path}")
 
 

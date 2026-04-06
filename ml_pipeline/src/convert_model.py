@@ -20,6 +20,7 @@ from __future__ import annotations
 import os
 import pickle
 import shutil
+import time
 
 
 # ---------------------------------------------------------------------------
@@ -61,7 +62,12 @@ def _register_xgboost_converter() -> None:
 # Public API
 # ---------------------------------------------------------------------------
 
-def convert_to_onnx(model_path: str, output_path: str, n_features: int = 13) -> None:
+def convert_to_onnx(
+    model_path: str,
+    output_path: str,
+    n_features: int = 13,
+    retries: int = 3,
+) -> None:
     """Convert a fitted sklearn stacking model to ONNX format.
 
     Parameters
@@ -74,7 +80,49 @@ def convert_to_onnx(model_path: str, output_path: str, n_features: int = 13) -> 
     n_features : int
         Number of input features expected by the model (default 13 to
         match the feature union used in this project).
+    retries : int
+        Number of attempts to load the pickle file before giving up.
+        Each failed attempt waits 2 seconds before retrying, which
+        handles the race condition where the file is still being written
+        (or its OS buffers have not yet been flushed) when this function
+        is called.
     """
+    # -----------------------------------------------------------------------
+    # File validation — guard against truncated / still-being-written files.
+    # This check runs before any expensive imports so failures are immediate.
+    # -----------------------------------------------------------------------
+    _MIN_VALID_BYTES = 1_000_000  # 1 MB; a real stacking ensemble is much larger
+    file_size = os.path.getsize(model_path)
+    if file_size < _MIN_VALID_BYTES:
+        raise ValueError(
+            f"Model file is suspiciously small ({file_size} bytes). "
+            "It may be incomplete — re-run 'python -m src.train' first."
+        )
+
+    # -----------------------------------------------------------------------
+    # Load with retry to tolerate any residual OS-buffer timing issues.
+    # -----------------------------------------------------------------------
+    print("  Loading model from pickle …")
+    model = None
+    for attempt in range(retries):
+        try:
+            with open(model_path, "rb") as f:
+                model = pickle.load(f)
+            break  # success — exit retry loop
+        except (pickle.UnpicklingError, EOFError) as exc:
+            if attempt < retries - 1:
+                print(
+                    f"  Attempt {attempt + 1} failed ({exc}), "
+                    "waiting 2 seconds before retrying …"
+                )
+                time.sleep(2)
+            else:
+                raise
+
+    # -----------------------------------------------------------------------
+    # ONNX conversion — imported here so the heavy dependency is only loaded
+    # when the file and model are confirmed to be good.
+    # -----------------------------------------------------------------------
     try:
         from skl2onnx import convert_sklearn
         from skl2onnx.common.data_types import FloatTensorType
@@ -83,10 +131,6 @@ def convert_to_onnx(model_path: str, output_path: str, n_features: int = 13) -> 
             "skl2onnx is required for ONNX conversion. "
             "Install it with: pip install skl2onnx onnx onnxruntime"
         ) from exc
-
-    print("  Loading model from pickle …")
-    with open(model_path, "rb") as f:
-        model = pickle.load(f)
 
     # Register XGBoost converter so StackingClassifier + XGBClassifier works.
     _register_xgboost_converter()
