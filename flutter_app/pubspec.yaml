@@ -41,6 +41,7 @@ dependencies:
   lottie: ^3.3.2
   flutter_svg: ^2.0.17
   timeago: ^3.7.1
+  flutter_dotenv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -55,7 +56,9 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/models/
     - assets/shap/
     - assets/scaler/
     - assets/animations/
+    

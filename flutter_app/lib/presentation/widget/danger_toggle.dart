@@ -32,7 +32,7 @@ class DangerToggle extends StatelessWidget {
           Switch(
             value: value,
             onChanged: (_) => onToggle(),
-            activeColor: AppColors.danger,
+            activeThumbColor: AppColors.danger,
           ),
         ],
       ),
