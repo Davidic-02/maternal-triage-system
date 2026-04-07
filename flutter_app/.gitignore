@@ -44,3 +44,14 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 .DS_Store
+
+# Ignore entire config folder
+lib/config/
+
+
+# .gitignore
+.env
+
+# .gitignore
+.env              ← Add this line
+.env.local

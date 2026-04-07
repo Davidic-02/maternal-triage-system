@@ -10,6 +10,27 @@ class GeminiService {
 
   GeminiService({required String apiKey}) : _apiKey = apiKey;
 
+  String _buildPrompt(PatientRecord record, RiskResult result) {
+    final shapContext = result.shapFeatures
+        .take(3)
+        .map((f) => '${f.featureName} (+${f.shapValue.toStringAsFixed(2)})')
+        .join(', ');
+
+    return '''
+Explain why this maternal patient is classified as ${result.riskLabel} risk.
+
+Vitals:
+SBP: ${record.systolicBP.toInt()} | DBP: ${record.diastolicBP.toInt()} | HR: ${record.heartRate.toInt()} | Sugar: ${record.bloodSugar.toStringAsFixed(1)} | Temp: ${record.bodyTemp.toStringAsFixed(1)}
+Age: ${record.age.toInt()} | GA: ${record.gestationalAge?.toInt() ?? 'N/A'} weeks
+${record.blurredVision ? 'Danger: Blurred Vision' : ''}
+${record.vaginalBleeding ? 'Danger: Vaginal Bleeding' : ''}
+
+Top factors: $shapContext
+
+In 2-9 lines, explain the clinical reasoning. Be conversational, direct. Speak like a colleague explaining to another doctor.
+''';
+  }
+
   Future<String> generateClinicalExplanation({
     required PatientRecord record,
     required RiskResult result,
@@ -27,7 +48,10 @@ class GeminiService {
             ],
           },
         ],
-        'generationConfig': {'temperature': 0.4, 'maxOutputTokens': 500},
+        'generationConfig': {
+          'temperature': 0.4,
+          'maxOutputTokens': 2028, // ← INCREASED from 500 to 1024
+        },
       }),
     );
     if (response.statusCode != 200) {
@@ -36,66 +60,13 @@ class GeminiService {
 
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     final text = data['candidates'][0]['content']['parts'][0]['text'] as String;
+    print('📝 Gemini response length: ${text.length} characters');
+    print('📝 Full response:\n$text');
+    print('📝 Usage: ${data['usageMetadata']}');
 
     _validateExplanationAlignment(text, result.riskLabel);
 
     return text.trim();
-  }
-
-  String _buildPrompt(PatientRecord record, RiskResult result) {
-    // Extract top SHAP features
-    final shapContext = result.shapFeatures
-        .take(3)
-        .map((f) => '${f.featureName}: SHAP=${f.shapValue.toStringAsFixed(3)}')
-        .join(', ');
-
-    return '''
-You are a clinical AI assistant explaining a maternal triage assessment result 
-to a frontline healthcare worker in a conversational, clear way.
-
-⚠️ IMPORTANT DIRECTIVE:
-The AI model has determined this patient is at: ${result.riskLabel} RISK
-Model confidence: ${(result.probabilities[result.riskClass] * 100).toStringAsFixed(1)}%
-
-Your role is to EXPLAIN the clinical reasoning behind this assessment.
-Do NOT question, contradict, or re-evaluate the risk level.
-You are providing context, not a second opinion.
-
-Patient Details:
-- Age: ${record.age.toInt()} years
-- Gestational age: ${record.gestationalAge?.toInt() ?? 'unknown'} weeks
-- Systolic BP: ${record.systolicBP.toInt()} mmHg
-- Diastolic BP: ${record.diastolicBP.toInt()} mmHg  
-- Heart Rate: ${record.heartRate.toInt()} bpm
-- Blood Sugar: ${record.bloodSugar.toStringAsFixed(1)} mmol/L
-- Body Temperature: ${record.bodyTemp.toStringAsFixed(1)} °C
-${record.weight != null ? '- Weight: ${record.weight!.toStringAsFixed(1)} kg' : ''}
-${record.bmi != null ? '- BMI: ${record.bmi!.toStringAsFixed(1)}' : ''}
-- Pulse Pressure: ${record.pulsePressure.toStringAsFixed(0)} mmHg
-- Previous Complications: ${record.previousComplications ? 'Yes' : 'No'}
-- Preexisting Diabetes: ${record.preexistingDiabetes ? 'Yes' : 'No'}
-- Gestational Diabetes: ${record.gestationalDiabetes ? 'Yes' : 'No'}
-- Hypertension: ${record.hypertension ? 'Yes' : 'No'}
-- Mental Health Status: ${record.mentalHealthStatus}
-${record.blurredVision ? '- ⚠️ DANGER SIGN: Blurred Vision/Headache present' : ''}
-${record.vaginalBleeding ? '- ⚠️ DANGER SIGN: Vaginal Bleeding present' : ''}
-${record.severeSwelling ? '- ⚠️ DANGER SIGN: Severe Swelling present' : ''}
-${record.reducedFetalMovement ? '- ⚠️ DANGER SIGN: Reduced Fetal Movement present' : ''}
-
-Key Factors Driving This Assessment (Model Analysis):
-$shapContext
-
-TASK:
-In 3-4 short paragraphs, explain:
-1. What the key clinical findings mean
-2. Why these findings led to a ${result.riskLabel} risk assessment
-3. What the healthcare worker should prioritize monitoring or action items
-
-Write conversationally like a knowledgeable colleague.
-Use actual values from the patient data.
-Avoid jargon where possible.
-Do NOT use bullet points or markdown — write in plain flowing paragraphs.
-''';
   }
 
   void _validateExplanationAlignment(

@@ -8,6 +8,9 @@ import 'package:maternal_triage/constant/app_spacing.dart';
 import 'package:maternal_triage/models/patient_record.dart';
 import 'package:maternal_triage/models/risk_result.dart';
 import 'package:maternal_triage/presentation/widget/button.dart';
+import 'package:maternal_triage/presentation/widget/custom_top_bar.dart';
+import 'package:maternal_triage/presentation/widget/recommendation_card.dart';
+import 'package:maternal_triage/presentation/widget/risk_badge.dart';
 
 class ResultScreen extends HookWidget {
   static const routeName = '/results';
@@ -50,10 +53,9 @@ class ResultScreen extends HookWidget {
           body: SafeArea(
             child: Column(
               children: [
-                // ── top bar ──────────────────────────────────
-                _TopBar(record: record),
+                const CustomTopBar(title: 'record'),
 
-                // ── scrollable content ────────────────────────
+                //  _TopBar(record: record),
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
@@ -63,28 +65,28 @@ class ResultScreen extends HookWidget {
                       children: [
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── risk badge with confidence ────────
-                        _RiskBadge(result: result),
+                        RiskBadge(result: result),
 
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── patient vitals summary ────────────
                         _VitalsSummary(record: record),
 
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── clinical reasoning (Gemini explanation) ──
                         _ClinicalReasoningSection(state: state),
 
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── probability breakdown (optional) ───
+                        if (result.shapFeatures.isNotEmpty)
+                          _ShapGraphSection(result: result),
+
+                        AppSpacing.verticalSpaceMedium,
+
                         _ProbabilitySection(result: result),
 
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── recommendation ────────────────────
-                        _RecommendationCard(result: result),
+                        RecommendationCard(result: result),
 
                         AppSpacing.verticalSpaceLarge,
                       ],
@@ -121,127 +123,6 @@ class ResultScreen extends HookWidget {
           ),
         );
       },
-    );
-  }
-}
-
-// ── Top Bar ──────────────────────────────────────────────────
-
-class _TopBar extends StatelessWidget {
-  final PatientRecord record;
-  const _TopBar({required this.record});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () => context.go('/assessment'),
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.shadowColor,
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const Icon(Icons.arrow_back_ios_new, size: 16),
-            ),
-          ),
-          const Expanded(
-            child: Text(
-              'AI Assessment Result',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: AppColors.primaryGreen.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              record.patientNameOrId ?? 'Patient',
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primaryGreen,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Risk Badge ───────────────────────────────────────────────
-
-class _RiskBadge extends StatelessWidget {
-  final RiskResult result;
-  const _RiskBadge({required this.result});
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _riskColor(result.riskClass);
-    final icon = _riskIcon(result.riskClass);
-    final confidence = (result.probabilities[result.riskClass] * 100)
-        .toStringAsFixed(0);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.12),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: color, size: 36),
-          ),
-          AppSpacing.verticalSpaceMedium,
-          Text(
-            '$confidence%',
-            style: TextStyle(
-              fontSize: 48,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          AppSpacing.verticalSpaceTiny,
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              '${result.riskLabel.toUpperCase()} RISK DETECTED',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: color,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -407,6 +288,8 @@ class _DangerChip extends StatelessWidget {
 
 // ── CLINICAL REASONING SECTION (Gemini Explanation) ──────────
 
+// ── CLINICAL REASONING SECTION (Gemini Explanation) ──────────
+
 class _ClinicalReasoningSection extends StatelessWidget {
   final AssessmentState state;
   const _ClinicalReasoningSection({required this.state});
@@ -418,7 +301,7 @@ class _ClinicalReasoningSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AppColors.shadowColor,
             blurRadius: 8,
@@ -428,6 +311,7 @@ class _ClinicalReasoningSection extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // ← ADD THIS
         children: [
           // Header
           Row(
@@ -470,12 +354,11 @@ class _ClinicalReasoningSection extends StatelessWidget {
 
           AppSpacing.verticalSpaceMedium,
 
-          // Content
+          // Content — now uses SelectableText for full visibility
           if (state.isGeneratingExplanation)
-            // Loading state
             Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(
@@ -494,8 +377,8 @@ class _ClinicalReasoningSection extends StatelessWidget {
             )
           else if (state.clinicalExplanation != null &&
               state.clinicalExplanation!.isNotEmpty)
-            // Conversational explanation from Gemini
-            Text(
+            // Full text explanation — no cutting
+            SelectableText(
               state.clinicalExplanation!,
               style: const TextStyle(
                 fontSize: 14,
@@ -503,74 +386,253 @@ class _ClinicalReasoningSection extends StatelessWidget {
                 color: AppColors.primaryGreen,
               ),
             )
-          else if (state.result?.shapFeatures.isNotEmpty ?? false)
-            // Fallback: Show SHAP if no Gemini explanation
-            _ShapFallback(result: state.result!),
+          else
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.greyColor.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: AppColors.greyColor,
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'See SHAP explanation below for factor analysis',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.greyColor,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+// ── SHAP Explanation as Graph ────────────────────────────────
+
+class _ShapGraphSection extends StatelessWidget {
+  final RiskResult result;
+  const _ShapGraphSection({required this.result});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowColor,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.bar_chart_rounded,
+                  color: Colors.orange,
+                  size: 18,
+                ),
+              ),
+              AppSpacing.horizontalSpaceSmall,
+              const Text(
+                'Key Risk Factors',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  'SHAP',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.orange,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          AppSpacing.verticalSpaceSmall,
+
+          const Text(
+            'Features with highest impact on prediction',
+            style: TextStyle(fontSize: 12, color: AppColors.greyColor),
+          ),
+
+          AppSpacing.verticalSpaceMedium,
+
+          // SHAP bars (graph form)
+          ...result.shapFeatures
+              .take(5)
+              .map(
+                (feature) => Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: _ShapGraphBar(feature: feature),
+                ),
+              ),
         ],
       ),
     );
   }
 }
 
-// Fallback SHAP display if Gemini fails
-class _ShapFallback extends StatelessWidget {
-  final RiskResult result;
-  const _ShapFallback({required this.result});
+class _ShapGraphBar extends HookWidget {
+  final ShapFeature feature;
+  const _ShapGraphBar({required this.feature});
 
   @override
   Widget build(BuildContext context) {
+    final controller = useAnimationController(
+      duration: const Duration(milliseconds: 700),
+    );
+    final animation = useAnimation(
+      CurvedAnimation(parent: controller, curve: Curves.easeOutCubic),
+    );
+
+    useEffect(() {
+      controller.forward();
+      return null;
+    }, const []);
+
+    final isPositive = feature.isPositive;
+    final color = isPositive ? AppColors.danger : AppColors.accentGreen;
+    final absValue = feature.shapValue.abs();
+    final displayValue = absValue.clamp(0.0, 1.0);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Key Risk Factors:',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: AppColors.greyColor,
-          ),
-        ),
-        AppSpacing.verticalSpaceSmall,
-        ...result.shapFeatures
-            .take(3)
-            .map(
-              (feature) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: feature.isPositive
-                            ? AppColors.danger
-                            : AppColors.accentGreen,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    AppSpacing.horizontalSpaceSmall,
-                    Expanded(
-                      child: Text(
-                        _formatFeatureName(feature.featureName),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      '${feature.isPositive ? '+' : '-'}${feature.shapValue.abs().toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: feature.isPositive
-                            ? AppColors.danger
-                            : AppColors.accentGreen,
-                      ),
-                    ),
-                  ],
+        // Feature name + value
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                _formatFeatureName(feature.featureName),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                '${isPositive ? '+' : '-'}${absValue.toStringAsFixed(3)}',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        AppSpacing.verticalSpaceSmall,
+
+        // Horizontal bar graph
+        Row(
+          children: [
+            // Negative bar (green, left side)
+            Expanded(
+              child: isPositive
+                  ? const SizedBox()
+                  : Align(
+                      alignment: Alignment.centerRight,
+                      child: FractionallySizedBox(
+                        widthFactor: displayValue * animation,
+                        child: Container(
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: color,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(6),
+                              bottomLeft: Radius.circular(6),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+            ),
+
+            // Center divider line
+            Container(
+              width: 2,
+              height: 14,
+              color: AppColors.greyColor.withOpacity(0.3),
+            ),
+
+            // Positive bar (red, right side)
+            Expanded(
+              child: isPositive
+                  ? FractionallySizedBox(
+                      widthFactor: displayValue * animation,
+                      child: Container(
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(6),
+                            bottomRight: Radius.circular(6),
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+            ),
+          ],
+        ),
+
+        // Direction indicator
+        Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Row(
+            children: [
+              Text(
+                isPositive ? 'Increases risk' : 'Decreases risk',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: color,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -602,11 +664,11 @@ class _ProbabilitySection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AppColors.shadowColor,
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -708,93 +770,4 @@ class _ProbBar extends HookWidget {
 
 // ── Recommendation Card ──────────────────────────────────────
 
-class _RecommendationCard extends StatelessWidget {
-  final RiskResult result;
-  const _RecommendationCard({required this.result});
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _riskColor(result.riskClass);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              Icons.medical_information_outlined,
-              color: color,
-              size: 20,
-            ),
-          ),
-          AppSpacing.horizontalSpaceSmall,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Recommended Action',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: color,
-                  ),
-                ),
-                AppSpacing.verticalSpaceTiny,
-                Text(
-                  result.recommendation,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    height: 1.5,
-                    color: AppColors.primaryGreen,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 // ── Helpers ──────────────────────────────────────────────────
-
-Color _riskColor(int riskClass) {
-  switch (riskClass) {
-    case 2:
-      return AppColors.danger;
-    case 1:
-      return Colors.orange;
-    case 0:
-      return AppColors.accentGreen;
-    default:
-      return AppColors.greyColor;
-  }
-}
-
-IconData _riskIcon(int riskClass) {
-  switch (riskClass) {
-    case 2:
-      return Icons.emergency_rounded;
-    case 1:
-      return Icons.warning_amber_rounded;
-    case 0:
-      return Icons.check_circle_rounded;
-    default:
-      return Icons.help_outline;
-  }
-}
