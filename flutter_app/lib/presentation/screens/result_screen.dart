@@ -20,7 +20,6 @@ class ResultScreen extends HookWidget {
         final result = state.result;
         final record = state.record;
 
-        // guard — should never happen but just in case
         if (result == null || record == null) {
           return Scaffold(
             body: SafeArea(
@@ -64,18 +63,8 @@ class ResultScreen extends HookWidget {
                       children: [
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── risk badge ────────────────────────
+                        // ── risk badge with confidence ────────
                         _RiskBadge(result: result),
-
-                        AppSpacing.verticalSpaceMedium,
-
-                        // ── recommendation ────────────────────
-                        _RecommendationCard(result: result),
-
-                        AppSpacing.verticalSpaceMedium,
-
-                        // ── probability bars ──────────────────
-                        _ProbabilitySection(result: result),
 
                         AppSpacing.verticalSpaceMedium,
 
@@ -84,9 +73,18 @@ class ResultScreen extends HookWidget {
 
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── shap explanation ──────────────────
-                        if (result.shapFeatures.isNotEmpty)
-                          _ShapSection(result: result),
+                        // ── clinical reasoning (Gemini explanation) ──
+                        _ClinicalReasoningSection(state: state),
+
+                        AppSpacing.verticalSpaceMedium,
+
+                        // ── probability breakdown (optional) ───
+                        _ProbabilitySection(result: result),
+
+                        AppSpacing.verticalSpaceMedium,
+
+                        // ── recommendation ────────────────────
+                        _RecommendationCard(result: result),
 
                         AppSpacing.verticalSpaceLarge,
                       ],
@@ -99,13 +97,11 @@ class ResultScreen extends HookWidget {
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                   child: Column(
                     children: [
-                      // add to triage queue
                       Button(
                         'Add to Triage Queue',
                         onPressed: () => context.go('/triage'),
                       ),
                       AppSpacing.verticalSpaceSmall,
-                      // new assessment
                       Button(
                         'New Assessment',
                         color: Colors.transparent,
@@ -148,11 +144,11 @@ class _TopBar extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 shape: BoxShape.circle,
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
                     color: AppColors.shadowColor,
                     blurRadius: 6,
-                    offset: Offset(0, 2),
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -161,12 +157,11 @@ class _TopBar extends StatelessWidget {
           ),
           const Expanded(
             child: Text(
-              'Assessment Result',
+              'AI Assessment Result',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
-          // patient id/name on the right
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
@@ -198,6 +193,8 @@ class _RiskBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = _riskColor(result.riskClass);
     final icon = _riskIcon(result.riskClass);
+    final confidence = (result.probabilities[result.riskClass] * 100)
+        .toStringAsFixed(0);
 
     return Container(
       width: double.infinity,
@@ -209,7 +206,6 @@ class _RiskBadge extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // animated icon
           Container(
             width: 72,
             height: 72,
@@ -221,100 +217,27 @@ class _RiskBadge extends StatelessWidget {
           ),
           AppSpacing.verticalSpaceMedium,
           Text(
-            '${result.riskLabel} Risk',
+            '$confidence%',
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 48,
               fontWeight: FontWeight.bold,
               color: color,
             ),
           ),
           AppSpacing.verticalSpaceTiny,
-          Text(
-            _riskSubtitle(result.riskClass),
-            style: const TextStyle(fontSize: 13, color: AppColors.greyColor),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _riskSubtitle(int riskClass) {
-    switch (riskClass) {
-      case 0:
-        return 'Routine care recommended';
-      case 1:
-        return 'Increased monitoring needed';
-      case 2:
-        return 'Immediate intervention required';
-      default:
-        return '';
-    }
-  }
-}
-
-// ── Recommendation Card ──────────────────────────────────────
-
-class _RecommendationCard extends StatelessWidget {
-  final RiskResult result;
-  const _RecommendationCard({required this.result});
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _riskColor(result.riskClass);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            color: AppColors.shadowColor,
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(20),
             ),
-            child: Icon(
-              Icons.medical_information_outlined,
-              color: color,
-              size: 20,
-            ),
-          ),
-          AppSpacing.horizontalSpaceSmall,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Clinical Recommendation',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.greyColor,
-                  ),
-                ),
-                AppSpacing.verticalSpaceTiny,
-                Text(
-                  result.recommendation,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    height: 1.4,
-                  ),
-                ),
-              ],
+            child: Text(
+              '${result.riskLabel.toUpperCase()} RISK DETECTED',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
             ),
           ),
         ],
@@ -323,27 +246,24 @@ class _RecommendationCard extends StatelessWidget {
   }
 }
 
-// ── Probability Bars ─────────────────────────────────────────
+// ── Patient Vitals Summary ───────────────────────────────────
 
-class _ProbabilitySection extends StatelessWidget {
-  final RiskResult result;
-  const _ProbabilitySection({required this.result});
+class _VitalsSummary extends StatelessWidget {
+  final PatientRecord record;
+  const _VitalsSummary({required this.record});
 
   @override
   Widget build(BuildContext context) {
-    final labels = ['Low Risk', 'Mid Risk', 'High Risk'];
-    final colors = [AppColors.accentGreen, Colors.orange, AppColors.danger];
-
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
             color: AppColors.shadowColor,
             blurRadius: 8,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -351,7 +271,350 @@ class _ProbabilitySection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Risk Probabilities',
+            'Patient Vitals',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+          ),
+          AppSpacing.verticalSpaceMedium,
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              _VitalChip(label: 'Age', value: '${record.age.toInt()} yrs'),
+              _VitalChip(
+                label: 'BP',
+                value:
+                    '${record.systolicBP.toInt()}/${record.diastolicBP.toInt()} mmHg',
+              ),
+              _VitalChip(label: 'HR', value: '${record.heartRate.toInt()} bpm'),
+              _VitalChip(
+                label: 'Blood Sugar',
+                value: '${record.bloodSugar.toStringAsFixed(1)} mmol/L',
+              ),
+              _VitalChip(
+                label: 'Temp',
+                value: '${record.bodyTemp.toStringAsFixed(1)} °C',
+              ),
+              if (record.weight != null)
+                _VitalChip(
+                  label: 'Weight',
+                  value: '${record.weight!.toStringAsFixed(1)} kg',
+                ),
+              if (record.bmi != null)
+                _VitalChip(label: 'BMI', value: record.bmi!.toStringAsFixed(1)),
+              _VitalChip(
+                label: 'Pulse Pressure',
+                value: '${record.pulsePressure.toStringAsFixed(0)} mmHg',
+              ),
+            ],
+          ),
+          // danger signs
+          if (_hasDangerSigns(record)) ...[
+            AppSpacing.verticalSpaceMedium,
+            const Text(
+              'Danger Signs Present',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: AppColors.danger,
+              ),
+            ),
+            AppSpacing.verticalSpaceSmall,
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                if (record.blurredVision)
+                  _DangerChip(label: 'Headache / Blurred Vision'),
+                if (record.vaginalBleeding)
+                  _DangerChip(label: 'Vaginal Bleeding'),
+                if (record.severeSwelling)
+                  _DangerChip(label: 'Severe Swelling'),
+                if (record.reducedFetalMovement)
+                  _DangerChip(label: 'Reduced Fetal Movement'),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  bool _hasDangerSigns(PatientRecord record) =>
+      record.blurredVision ||
+      record.vaginalBleeding ||
+      record.severeSwelling ||
+      record.reducedFetalMovement;
+}
+
+class _VitalChip extends StatelessWidget {
+  final String label;
+  final String value;
+  const _VitalChip({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.primaryGreen.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              color: AppColors.greyColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DangerChip extends StatelessWidget {
+  final String label;
+  const _DangerChip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.danger.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: AppColors.danger.withOpacity(0.2)),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 12,
+          color: AppColors.danger,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+// ── CLINICAL REASONING SECTION (Gemini Explanation) ──────────
+
+class _ClinicalReasoningSection extends StatelessWidget {
+  final AssessmentState state;
+  const _ClinicalReasoningSection({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowColor,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryGreen.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.psychology_outlined,
+                  color: AppColors.primaryGreen,
+                  size: 18,
+                ),
+              ),
+              AppSpacing.horizontalSpaceSmall,
+              const Text(
+                'Clinical Reasoning',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryGreen.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  'AI Powered',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primaryGreen,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          AppSpacing.verticalSpaceMedium,
+
+          // Content
+          if (state.isGeneratingExplanation)
+            // Loading state
+            Row(
+              children: [
+                SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.primaryGreen,
+                  ),
+                ),
+                AppSpacing.horizontalSpaceSmall,
+                const Expanded(
+                  child: Text(
+                    'Generating clinical explanation...',
+                    style: TextStyle(color: AppColors.greyColor, fontSize: 13),
+                  ),
+                ),
+              ],
+            )
+          else if (state.clinicalExplanation != null &&
+              state.clinicalExplanation!.isNotEmpty)
+            // Conversational explanation from Gemini
+            Text(
+              state.clinicalExplanation!,
+              style: const TextStyle(
+                fontSize: 14,
+                height: 1.6,
+                color: AppColors.primaryGreen,
+              ),
+            )
+          else if (state.result?.shapFeatures.isNotEmpty ?? false)
+            // Fallback: Show SHAP if no Gemini explanation
+            _ShapFallback(result: state.result!),
+        ],
+      ),
+    );
+  }
+}
+
+// Fallback SHAP display if Gemini fails
+class _ShapFallback extends StatelessWidget {
+  final RiskResult result;
+  const _ShapFallback({required this.result});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Key Risk Factors:',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: AppColors.greyColor,
+          ),
+        ),
+        AppSpacing.verticalSpaceSmall,
+        ...result.shapFeatures
+            .take(3)
+            .map(
+              (feature) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: feature.isPositive
+                            ? AppColors.danger
+                            : AppColors.accentGreen,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    AppSpacing.horizontalSpaceSmall,
+                    Expanded(
+                      child: Text(
+                        _formatFeatureName(feature.featureName),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '${feature.isPositive ? '+' : '-'}${feature.shapValue.abs().toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: feature.isPositive
+                            ? AppColors.danger
+                            : AppColors.accentGreen,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+      ],
+    );
+  }
+
+  String _formatFeatureName(String name) {
+    return name
+        .replaceAll('_', ' ')
+        .replaceAllMapped(RegExp(r'([A-Z])'), (m) => ' ${m.group(0)}')
+        .trim()
+        .split(' ')
+        .map((w) => w.isEmpty ? '' : '${w[0].toUpperCase()}${w.substring(1)}')
+        .join(' ');
+  }
+}
+
+// ── Probability Breakdown ─────────────────────────────────────
+
+class _ProbabilitySection extends StatelessWidget {
+  final RiskResult result;
+  const _ProbabilitySection({required this.result});
+
+  @override
+  Widget build(BuildContext context) {
+    final labels = ['Low Risk', 'Medium Risk', 'High Risk'];
+    final colors = [AppColors.accentGreen, Colors.orange, AppColors.danger];
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowColor,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Risk Probability Breakdown',
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
           ),
           AppSpacing.verticalSpaceMedium,
@@ -443,346 +706,68 @@ class _ProbBar extends HookWidget {
   }
 }
 
-// ── Vitals Summary ───────────────────────────────────────────
+// ── Recommendation Card ──────────────────────────────────────
 
-class _VitalsSummary extends StatelessWidget {
-  final PatientRecord record;
-  const _VitalsSummary({required this.record});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            color: AppColors.shadowColor,
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Patient Vitals',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-          ),
-          AppSpacing.verticalSpaceMedium,
-          // two column grid of vitals
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: [
-              _VitalChip(label: 'Age', value: '${record.age.toInt()} yrs'),
-              _VitalChip(
-                label: 'BP',
-                value:
-                    '${record.systolicBP.toInt()}/${record.diastolicBP.toInt()} mmHg',
-              ),
-              _VitalChip(label: 'HR', value: '${record.heartRate.toInt()} bpm'),
-              _VitalChip(
-                label: 'Blood Sugar',
-                value: '${record.bloodSugar.toStringAsFixed(1)} mmol/L',
-              ),
-              _VitalChip(
-                label: 'Temp',
-                value: '${record.bodyTemp.toStringAsFixed(1)} °C',
-              ),
-              if (record.weight != null)
-                _VitalChip(
-                  label: 'Weight',
-                  value: '${record.weight!.toStringAsFixed(1)} kg',
-                ),
-              if (record.bmi != null)
-                _VitalChip(label: 'BMI', value: record.bmi!.toStringAsFixed(1)),
-              _VitalChip(
-                label: 'Pulse Pressure',
-                value: '${record.pulsePressure.toStringAsFixed(0)} mmHg',
-              ),
-            ],
-          ),
-
-          // danger signs if any active
-          if (_hasDangerSigns(record)) ...[
-            AppSpacing.verticalSpaceMedium,
-            const Text(
-              'Danger Signs Present',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: AppColors.danger,
-              ),
-            ),
-            AppSpacing.verticalSpaceSmall,
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                if (record.blurredVision)
-                  const _DangerChip(label: 'Headache / Blurred Vision'),
-                if (record.vaginalBleeding)
-                  const _DangerChip(label: 'Vaginal Bleeding'),
-                if (record.severeSwelling)
-                  const _DangerChip(label: 'Severe Swelling'),
-                if (record.reducedFetalMovement)
-                  const _DangerChip(label: 'Reduced Fetal Movement'),
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  bool _hasDangerSigns(PatientRecord record) =>
-      record.blurredVision ||
-      record.vaginalBleeding ||
-      record.severeSwelling ||
-      record.reducedFetalMovement;
-}
-
-class _VitalChip extends StatelessWidget {
-  final String label;
-  final String value;
-  const _VitalChip({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.primaryGreen.withOpacity(0.06),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 11,
-              color: AppColors.greyColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DangerChip extends StatelessWidget {
-  final String label;
-  const _DangerChip({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.danger.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: AppColors.danger.withOpacity(0.2)),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 12,
-          color: AppColors.danger,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
-
-// ── SHAP Explanation ─────────────────────────────────────────
-
-class _ShapSection extends StatelessWidget {
+class _RecommendationCard extends StatelessWidget {
   final RiskResult result;
-  const _ShapSection({required this.result});
+  const _RecommendationCard({required this.result});
 
   @override
   Widget build(BuildContext context) {
+    final color = _riskColor(result.riskClass);
+
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            color: AppColors.shadowColor,
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const Text(
-                'Why this result?',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-              ),
-              AppSpacing.horizontalSpaceSmall,
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryGreen.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  'SHAP Explanation',
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.medical_information_outlined,
+              color: color,
+              size: 20,
+            ),
+          ),
+          AppSpacing.horizontalSpaceSmall,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Recommended Action',
                   style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: color,
+                  ),
+                ),
+                AppSpacing.verticalSpaceTiny,
+                Text(
+                  result.recommendation,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    height: 1.5,
                     color: AppColors.primaryGreen,
                   ),
                 ),
-              ),
-            ],
-          ),
-          AppSpacing.verticalSpaceTiny,
-          const Text(
-            'Top features that influenced this prediction',
-            style: TextStyle(fontSize: 12, color: AppColors.greyColor),
-          ),
-          AppSpacing.verticalSpaceMedium,
-          ...result.shapFeatures.map(
-            (feature) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _ShapBar(feature: feature),
+              ],
             ),
           ),
         ],
       ),
     );
-  }
-}
-
-class _ShapBar extends HookWidget {
-  final ShapFeature feature;
-  const _ShapBar({required this.feature});
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = useAnimationController(
-      duration: const Duration(milliseconds: 700),
-    );
-    final animation = useAnimation(
-      CurvedAnimation(parent: controller, curve: Curves.easeOutCubic),
-    );
-
-    useEffect(() {
-      controller.forward();
-      return null;
-    }, const []);
-
-    final isPositive = feature.isPositive;
-    final color = isPositive ? AppColors.danger : AppColors.accentGreen;
-    final absValue = feature.shapValue.abs();
-
-    // normalize for display — cap at 1.0
-    final displayValue = absValue.clamp(0.0, 1.0);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            // direction indicator
-            Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            ),
-            AppSpacing.horizontalSpaceTiny,
-            Expanded(
-              child: Text(
-                _formatFeatureName(feature.featureName),
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            Text(
-              '${isPositive ? '+' : '-'}${absValue.toStringAsFixed(3)}',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-        AppSpacing.verticalSpaceTiny,
-        Row(
-          children: [
-            // negative bar grows left (green — reduces risk)
-            Expanded(
-              child: isPositive
-                  ? const SizedBox()
-                  : Align(
-                      alignment: Alignment.centerRight,
-                      child: FractionallySizedBox(
-                        widthFactor: displayValue * animation,
-                        child: Container(
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: color,
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                        ),
-                      ),
-                    ),
-            ),
-            // centre line
-            Container(
-              width: 1,
-              height: 10,
-              color: AppColors.greyColor.withOpacity(0.3),
-            ),
-            // positive bar grows right (red — increases risk)
-            Expanded(
-              child: isPositive
-                  ? FractionallySizedBox(
-                      widthFactor: displayValue * animation,
-                      child: Container(
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                    )
-                  : const SizedBox(),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  String _formatFeatureName(String name) {
-    // convert snake_case / camelCase to readable
-    return name
-        .replaceAll('_', ' ')
-        .replaceAllMapped(RegExp(r'([A-Z])'), (m) => ' ${m.group(0)}')
-        .trim()
-        .split(' ')
-        .map((w) => w.isEmpty ? '' : '${w[0].toUpperCase()}${w.substring(1)}')
-        .join(' ');
   }
 }
 

@@ -4,11 +4,9 @@ part of 'assessment_bloc.dart';
 abstract class AssessmentEvent with _$AssessmentEvent {
   const factory AssessmentEvent() = _AssessmentEvent;
 
-
-
-
-
-
+  const factory AssessmentEvent.explanationGenerated(String explanation) =
+      _ExplanationGenerated;
+  const factory AssessmentEvent.explanationFailed() = _ExplanationFailed;
 
   const factory AssessmentEvent.runAssessment(PatientRecord patientRecord) =
       _RunAssessment;

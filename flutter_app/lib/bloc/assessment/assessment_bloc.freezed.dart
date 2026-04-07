@@ -55,11 +55,13 @@ extension AssessmentEventPatterns on AssessmentEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AssessmentEvent value)?  $default,{TResult Function( _RunAssessment value)?  runAssessment,TResult Function( _ClearAssessment value)?  clearAssessment,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AssessmentEvent value)?  $default,{TResult Function( _ExplanationGenerated value)?  explanationGenerated,TResult Function( _ExplanationFailed value)?  explanationFailed,TResult Function( _RunAssessment value)?  runAssessment,TResult Function( _ClearAssessment value)?  clearAssessment,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _AssessmentEvent() when $default != null:
-return $default(_that);case _RunAssessment() when runAssessment != null:
+return $default(_that);case _ExplanationGenerated() when explanationGenerated != null:
+return explanationGenerated(_that);case _ExplanationFailed() when explanationFailed != null:
+return explanationFailed(_that);case _RunAssessment() when runAssessment != null:
 return runAssessment(_that);case _ClearAssessment() when clearAssessment != null:
 return clearAssessment(_that);case _:
   return orElse();
@@ -79,11 +81,13 @@ return clearAssessment(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AssessmentEvent value)  $default,{required TResult Function( _RunAssessment value)  runAssessment,required TResult Function( _ClearAssessment value)  clearAssessment,}){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AssessmentEvent value)  $default,{required TResult Function( _ExplanationGenerated value)  explanationGenerated,required TResult Function( _ExplanationFailed value)  explanationFailed,required TResult Function( _RunAssessment value)  runAssessment,required TResult Function( _ClearAssessment value)  clearAssessment,}){
 final _that = this;
 switch (_that) {
 case _AssessmentEvent():
-return $default(_that);case _RunAssessment():
+return $default(_that);case _ExplanationGenerated():
+return explanationGenerated(_that);case _ExplanationFailed():
+return explanationFailed(_that);case _RunAssessment():
 return runAssessment(_that);case _ClearAssessment():
 return clearAssessment(_that);case _:
   throw StateError('Unexpected subclass');
@@ -102,11 +106,13 @@ return clearAssessment(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AssessmentEvent value)?  $default,{TResult? Function( _RunAssessment value)?  runAssessment,TResult? Function( _ClearAssessment value)?  clearAssessment,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AssessmentEvent value)?  $default,{TResult? Function( _ExplanationGenerated value)?  explanationGenerated,TResult? Function( _ExplanationFailed value)?  explanationFailed,TResult? Function( _RunAssessment value)?  runAssessment,TResult? Function( _ClearAssessment value)?  clearAssessment,}){
 final _that = this;
 switch (_that) {
 case _AssessmentEvent() when $default != null:
-return $default(_that);case _RunAssessment() when runAssessment != null:
+return $default(_that);case _ExplanationGenerated() when explanationGenerated != null:
+return explanationGenerated(_that);case _ExplanationFailed() when explanationFailed != null:
+return explanationFailed(_that);case _RunAssessment() when runAssessment != null:
 return runAssessment(_that);case _ClearAssessment() when clearAssessment != null:
 return clearAssessment(_that);case _:
   return null;
@@ -125,10 +131,12 @@ return clearAssessment(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function()?  $default,{TResult Function( PatientRecord patientRecord)?  runAssessment,TResult Function()?  clearAssessment,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function()?  $default,{TResult Function( String explanation)?  explanationGenerated,TResult Function()?  explanationFailed,TResult Function( PatientRecord patientRecord)?  runAssessment,TResult Function()?  clearAssessment,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AssessmentEvent() when $default != null:
-return $default();case _RunAssessment() when runAssessment != null:
+return $default();case _ExplanationGenerated() when explanationGenerated != null:
+return explanationGenerated(_that.explanation);case _ExplanationFailed() when explanationFailed != null:
+return explanationFailed();case _RunAssessment() when runAssessment != null:
 return runAssessment(_that.patientRecord);case _ClearAssessment() when clearAssessment != null:
 return clearAssessment();case _:
   return orElse();
@@ -148,10 +156,12 @@ return clearAssessment();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function()  $default,{required TResult Function( PatientRecord patientRecord)  runAssessment,required TResult Function()  clearAssessment,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function()  $default,{required TResult Function( String explanation)  explanationGenerated,required TResult Function()  explanationFailed,required TResult Function( PatientRecord patientRecord)  runAssessment,required TResult Function()  clearAssessment,}) {final _that = this;
 switch (_that) {
 case _AssessmentEvent():
-return $default();case _RunAssessment():
+return $default();case _ExplanationGenerated():
+return explanationGenerated(_that.explanation);case _ExplanationFailed():
+return explanationFailed();case _RunAssessment():
 return runAssessment(_that.patientRecord);case _ClearAssessment():
 return clearAssessment();case _:
   throw StateError('Unexpected subclass');
@@ -170,10 +180,12 @@ return clearAssessment();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function()?  $default,{TResult? Function( PatientRecord patientRecord)?  runAssessment,TResult? Function()?  clearAssessment,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function()?  $default,{TResult? Function( String explanation)?  explanationGenerated,TResult? Function()?  explanationFailed,TResult? Function( PatientRecord patientRecord)?  runAssessment,TResult? Function()?  clearAssessment,}) {final _that = this;
 switch (_that) {
 case _AssessmentEvent() when $default != null:
-return $default();case _RunAssessment() when runAssessment != null:
+return $default();case _ExplanationGenerated() when explanationGenerated != null:
+return explanationGenerated(_that.explanation);case _ExplanationFailed() when explanationFailed != null:
+return explanationFailed();case _RunAssessment() when runAssessment != null:
 return runAssessment(_that.patientRecord);case _ClearAssessment() when clearAssessment != null:
 return clearAssessment();case _:
   return null;
@@ -207,6 +219,104 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'AssessmentEvent()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ExplanationGenerated implements AssessmentEvent {
+  const _ExplanationGenerated(this.explanation);
+  
+
+ final  String explanation;
+
+/// Create a copy of AssessmentEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ExplanationGeneratedCopyWith<_ExplanationGenerated> get copyWith => __$ExplanationGeneratedCopyWithImpl<_ExplanationGenerated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExplanationGenerated&&(identical(other.explanation, explanation) || other.explanation == explanation));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,explanation);
+
+@override
+String toString() {
+  return 'AssessmentEvent.explanationGenerated(explanation: $explanation)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ExplanationGeneratedCopyWith<$Res> implements $AssessmentEventCopyWith<$Res> {
+  factory _$ExplanationGeneratedCopyWith(_ExplanationGenerated value, $Res Function(_ExplanationGenerated) _then) = __$ExplanationGeneratedCopyWithImpl;
+@useResult
+$Res call({
+ String explanation
+});
+
+
+
+
+}
+/// @nodoc
+class __$ExplanationGeneratedCopyWithImpl<$Res>
+    implements _$ExplanationGeneratedCopyWith<$Res> {
+  __$ExplanationGeneratedCopyWithImpl(this._self, this._then);
+
+  final _ExplanationGenerated _self;
+  final $Res Function(_ExplanationGenerated) _then;
+
+/// Create a copy of AssessmentEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? explanation = null,}) {
+  return _then(_ExplanationGenerated(
+null == explanation ? _self.explanation : explanation // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ExplanationFailed implements AssessmentEvent {
+  const _ExplanationFailed();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExplanationFailed);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AssessmentEvent.explanationFailed()';
 }
 
 
@@ -325,7 +435,7 @@ String toString() {
 /// @nodoc
 mixin _$AssessmentState {
 
- PatientRecord? get record; RiskResult? get result; FormzSubmissionStatus get status; String? get errorMessage;
+ PatientRecord? get record; RiskResult? get result; String? get clinicalExplanation; bool get isGeneratingExplanation; FormzSubmissionStatus get status; String? get errorMessage;
 /// Create a copy of AssessmentState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -336,16 +446,16 @@ $AssessmentStateCopyWith<AssessmentState> get copyWith => _$AssessmentStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AssessmentState&&(identical(other.record, record) || other.record == record)&&(identical(other.result, result) || other.result == result)&&(identical(other.status, status) || other.status == status)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AssessmentState&&(identical(other.record, record) || other.record == record)&&(identical(other.result, result) || other.result == result)&&(identical(other.clinicalExplanation, clinicalExplanation) || other.clinicalExplanation == clinicalExplanation)&&(identical(other.isGeneratingExplanation, isGeneratingExplanation) || other.isGeneratingExplanation == isGeneratingExplanation)&&(identical(other.status, status) || other.status == status)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,record,result,status,errorMessage);
+int get hashCode => Object.hash(runtimeType,record,result,clinicalExplanation,isGeneratingExplanation,status,errorMessage);
 
 @override
 String toString() {
-  return 'AssessmentState(record: $record, result: $result, status: $status, errorMessage: $errorMessage)';
+  return 'AssessmentState(record: $record, result: $result, clinicalExplanation: $clinicalExplanation, isGeneratingExplanation: $isGeneratingExplanation, status: $status, errorMessage: $errorMessage)';
 }
 
 
@@ -356,7 +466,7 @@ abstract mixin class $AssessmentStateCopyWith<$Res>  {
   factory $AssessmentStateCopyWith(AssessmentState value, $Res Function(AssessmentState) _then) = _$AssessmentStateCopyWithImpl;
 @useResult
 $Res call({
- PatientRecord? record, RiskResult? result, FormzSubmissionStatus status, String? errorMessage
+ PatientRecord? record, RiskResult? result, String? clinicalExplanation, bool isGeneratingExplanation, FormzSubmissionStatus status, String? errorMessage
 });
 
 
@@ -373,11 +483,13 @@ class _$AssessmentStateCopyWithImpl<$Res>
 
 /// Create a copy of AssessmentState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? record = freezed,Object? result = freezed,Object? status = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? record = freezed,Object? result = freezed,Object? clinicalExplanation = freezed,Object? isGeneratingExplanation = null,Object? status = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 record: freezed == record ? _self.record : record // ignore: cast_nullable_to_non_nullable
 as PatientRecord?,result: freezed == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
-as RiskResult?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as RiskResult?,clinicalExplanation: freezed == clinicalExplanation ? _self.clinicalExplanation : clinicalExplanation // ignore: cast_nullable_to_non_nullable
+as String?,isGeneratingExplanation: null == isGeneratingExplanation ? _self.isGeneratingExplanation : isGeneratingExplanation // ignore: cast_nullable_to_non_nullable
+as bool,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as FormzSubmissionStatus,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -488,10 +600,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PatientRecord? record,  RiskResult? result,  FormzSubmissionStatus status,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PatientRecord? record,  RiskResult? result,  String? clinicalExplanation,  bool isGeneratingExplanation,  FormzSubmissionStatus status,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AssessmentState() when $default != null:
-return $default(_that.record,_that.result,_that.status,_that.errorMessage);case _:
+return $default(_that.record,_that.result,_that.clinicalExplanation,_that.isGeneratingExplanation,_that.status,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -509,10 +621,10 @@ return $default(_that.record,_that.result,_that.status,_that.errorMessage);case 
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PatientRecord? record,  RiskResult? result,  FormzSubmissionStatus status,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PatientRecord? record,  RiskResult? result,  String? clinicalExplanation,  bool isGeneratingExplanation,  FormzSubmissionStatus status,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _AssessmentState():
-return $default(_that.record,_that.result,_that.status,_that.errorMessage);case _:
+return $default(_that.record,_that.result,_that.clinicalExplanation,_that.isGeneratingExplanation,_that.status,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -529,10 +641,10 @@ return $default(_that.record,_that.result,_that.status,_that.errorMessage);case 
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PatientRecord? record,  RiskResult? result,  FormzSubmissionStatus status,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PatientRecord? record,  RiskResult? result,  String? clinicalExplanation,  bool isGeneratingExplanation,  FormzSubmissionStatus status,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _AssessmentState() when $default != null:
-return $default(_that.record,_that.result,_that.status,_that.errorMessage);case _:
+return $default(_that.record,_that.result,_that.clinicalExplanation,_that.isGeneratingExplanation,_that.status,_that.errorMessage);case _:
   return null;
 
 }
@@ -544,11 +656,13 @@ return $default(_that.record,_that.result,_that.status,_that.errorMessage);case 
 
 
 class _AssessmentState extends AssessmentState {
-  const _AssessmentState({this.record, this.result, this.status = FormzSubmissionStatus.initial, this.errorMessage}): super._();
+  const _AssessmentState({this.record, this.result, this.clinicalExplanation, this.isGeneratingExplanation = false, this.status = FormzSubmissionStatus.initial, this.errorMessage}): super._();
   
 
 @override final  PatientRecord? record;
 @override final  RiskResult? result;
+@override final  String? clinicalExplanation;
+@override@JsonKey() final  bool isGeneratingExplanation;
 @override@JsonKey() final  FormzSubmissionStatus status;
 @override final  String? errorMessage;
 
@@ -562,16 +676,16 @@ _$AssessmentStateCopyWith<_AssessmentState> get copyWith => __$AssessmentStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AssessmentState&&(identical(other.record, record) || other.record == record)&&(identical(other.result, result) || other.result == result)&&(identical(other.status, status) || other.status == status)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AssessmentState&&(identical(other.record, record) || other.record == record)&&(identical(other.result, result) || other.result == result)&&(identical(other.clinicalExplanation, clinicalExplanation) || other.clinicalExplanation == clinicalExplanation)&&(identical(other.isGeneratingExplanation, isGeneratingExplanation) || other.isGeneratingExplanation == isGeneratingExplanation)&&(identical(other.status, status) || other.status == status)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,record,result,status,errorMessage);
+int get hashCode => Object.hash(runtimeType,record,result,clinicalExplanation,isGeneratingExplanation,status,errorMessage);
 
 @override
 String toString() {
-  return 'AssessmentState(record: $record, result: $result, status: $status, errorMessage: $errorMessage)';
+  return 'AssessmentState(record: $record, result: $result, clinicalExplanation: $clinicalExplanation, isGeneratingExplanation: $isGeneratingExplanation, status: $status, errorMessage: $errorMessage)';
 }
 
 
@@ -582,7 +696,7 @@ abstract mixin class _$AssessmentStateCopyWith<$Res> implements $AssessmentState
   factory _$AssessmentStateCopyWith(_AssessmentState value, $Res Function(_AssessmentState) _then) = __$AssessmentStateCopyWithImpl;
 @override @useResult
 $Res call({
- PatientRecord? record, RiskResult? result, FormzSubmissionStatus status, String? errorMessage
+ PatientRecord? record, RiskResult? result, String? clinicalExplanation, bool isGeneratingExplanation, FormzSubmissionStatus status, String? errorMessage
 });
 
 
@@ -599,11 +713,13 @@ class __$AssessmentStateCopyWithImpl<$Res>
 
 /// Create a copy of AssessmentState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? record = freezed,Object? result = freezed,Object? status = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? record = freezed,Object? result = freezed,Object? clinicalExplanation = freezed,Object? isGeneratingExplanation = null,Object? status = null,Object? errorMessage = freezed,}) {
   return _then(_AssessmentState(
 record: freezed == record ? _self.record : record // ignore: cast_nullable_to_non_nullable
 as PatientRecord?,result: freezed == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
-as RiskResult?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as RiskResult?,clinicalExplanation: freezed == clinicalExplanation ? _self.clinicalExplanation : clinicalExplanation // ignore: cast_nullable_to_non_nullable
+as String?,isGeneratingExplanation: null == isGeneratingExplanation ? _self.isGeneratingExplanation : isGeneratingExplanation // ignore: cast_nullable_to_non_nullable
+as bool,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as FormzSubmissionStatus,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

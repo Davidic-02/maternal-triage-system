@@ -6,6 +6,7 @@ import 'package:maternal_triage/models/risk_result.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maternal_triage/services/firebase_patient_service.dart';
+import 'package:maternal_triage/services/gemini_service.dart';
 import 'package:maternal_triage/services/inference_service.dart';
 import 'package:maternal_triage/services/shap_service.dart';
 
@@ -18,9 +19,11 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
   final ShapService _shapService;
   final FirebaseService _firebaseService;
   final AuthBloc _authBloc;
+  final GeminiService _geminiService;
 
   AssessmentBloc({
     required AuthBloc authBloc,
+    required GeminiService geminiService,
     InferenceService? inferenceService,
     ShapService? shapService,
     FirebaseService? firebaseService,
@@ -28,9 +31,12 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
        _inferenceService = inferenceService ?? InferenceService(),
        _shapService = shapService ?? ShapService(),
        _firebaseService = firebaseService ?? FirebaseService(),
+       _geminiService = geminiService,
        super(const AssessmentState()) {
     on<_RunAssessment>(_onRunAssessment);
     on<_ClearAssessment>(_onClearAssessment);
+    on<_ExplanationGenerated>(_onExplanationGenerated);
+    on<_ExplanationFailed>(_onExplanationFailed);
   }
 
   Future<void> initialise() async {
@@ -90,9 +96,11 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
           status: FormzSubmissionStatus.success,
           result: riskResult,
           record: recordWithRisk,
+          isGeneratingExplanation: true,
           errorMessage: null,
         ),
       );
+      _generateExplanation(recordWithRisk, riskResult);
     } catch (e) {
       emit(
         state.copyWith(
@@ -101,6 +109,41 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
         ),
       );
     }
+  }
+
+  Future<void> _generateExplanation(
+    PatientRecord record,
+    RiskResult result,
+  ) async {
+    try {
+      final explanation = await _geminiService.generateClinicalExplanation(
+        record: record,
+        result: result,
+      );
+      add(AssessmentEvent.explanationGenerated(explanation));
+    } catch (e) {
+      print('Error generating explanation: $e');
+      add(const AssessmentEvent.explanationFailed());
+    }
+  }
+
+  void _onExplanationGenerated(
+    _ExplanationGenerated event,
+    Emitter<AssessmentState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        clinicalExplanation: event.explanation,
+        isGeneratingExplanation: false,
+      ),
+    );
+  }
+
+  void _onExplanationFailed(
+    _ExplanationFailed event,
+    Emitter<AssessmentState> emit,
+  ) {
+    emit(state.copyWith(isGeneratingExplanation: false));
   }
 
   void _onClearAssessment(
