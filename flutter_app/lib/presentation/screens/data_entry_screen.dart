@@ -477,11 +477,11 @@ class DataEntryScreen extends HookWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                   color: AppColors.shadowColor,
                                   blurRadius: 8,
-                                  offset: const Offset(0, 2),
+                                  offset: Offset(0, 2),
                                 ),
                               ],
                             ),
@@ -495,7 +495,7 @@ class DataEntryScreen extends HookWidget {
                                         const AssessmentFormEvent.previousComplicationsToggled(),
                                       ),
                                 ),
-                                Divider(),
+                                const Divider(),
                                 HistoryToggle(
                                   label: 'Diabetes History',
                                   value: state.preexistingDiabetes,
@@ -504,7 +504,7 @@ class DataEntryScreen extends HookWidget {
                                         const AssessmentFormEvent.preexistingDiabetesToggled(),
                                       ),
                                 ),
-                                Divider(),
+                                const Divider(),
                                 HistoryToggle(
                                   label: 'Gestational Diabetes',
                                   value: state.gestationalDiabetes,
@@ -513,7 +513,7 @@ class DataEntryScreen extends HookWidget {
                                         const AssessmentFormEvent.gestationalDiabetesToggled(),
                                       ),
                                 ),
-                                Divider(),
+                                const Divider(),
                                 HistoryToggle(
                                   label: 'Hypertension',
                                   value: state.hypertension,
@@ -522,7 +522,7 @@ class DataEntryScreen extends HookWidget {
                                         const AssessmentFormEvent.hypertensionToggled(),
                                       ),
                                 ),
-                                Divider(),
+                                const Divider(),
                                 // mental health dropdown
                                 Padding(
                                   padding: const EdgeInsets.symmetric(

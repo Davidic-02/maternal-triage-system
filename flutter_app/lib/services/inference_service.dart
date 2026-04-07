@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:onnxruntime/onnxruntime.dart';
@@ -52,33 +53,52 @@ class InferenceService {
     final input = _buildInputTensor(record);
     final inputOrt = OrtValueTensor.createTensorWithDataList(input, [1, 13]);
     final runOptions = OrtRunOptions();
-    final outputs = _session!.run(runOptions, {'float_input': inputOrt});
 
-    inputOrt.release();
-    runOptions.release();
+    try {
+      log("🧠 INPUT SHAPE: [1, 13]");
+      log("🧠 INPUT DATA: ${input.toList()}");
 
-    // outputs[0] = predicted label (int64 scalar or [1])
-    // outputs[1] = probability map or float array [1, 3]
-    final labelVal = outputs[0]?.value;
-    int riskClass = 0;
-    if (labelVal is List) {
-      riskClass = (labelVal[0] as num).toInt();
-    } else if (labelVal is int) {
-      riskClass = labelVal;
+      final outputs = _session!.run(runOptions, {'float_input': inputOrt});
+
+      log("✅ RAW OUTPUTS: $outputs");
+
+      // ✅ Parse outputs
+      final labelVal = outputs[0]?.value;
+      int riskClass = 0;
+
+      if (labelVal is List) {
+        riskClass = (labelVal[0] as num).toInt();
+      } else if (labelVal is int) {
+        riskClass = labelVal;
+      }
+
+      final probaVal = outputs[1]?.value;
+      List<double> probs = [0.0, 0.0, 0.0];
+
+      if (probaVal is List) {
+        final flat = (probaVal.first is List)
+            ? (probaVal[0] as List)
+            : probaVal;
+
+        probs = flat.map<double>((v) => (v as num).toDouble()).toList();
+      }
+
+      // ✅ Release outputs
+      for (final o in outputs) {
+        o?.release();
+      }
+
+      return {'riskClass': riskClass, 'probabilities': probs};
+    } catch (e, stackTrace) {
+      log("❌ ONNX ERROR: $e");
+      log("📍 STACK TRACE: $stackTrace");
+
+      rethrow;
+    } finally {
+      // ✅ ALWAYS runs (success or failure)
+      inputOrt.release();
+      runOptions.release();
     }
-
-    final probaVal = outputs[1]?.value;
-    List<double> probs = [0.0, 0.0, 0.0];
-    if (probaVal is List) {
-      final flat = (probaVal.first is List) ? (probaVal[0] as List) : probaVal;
-      probs = flat.map<double>((v) => (v as num).toDouble()).toList();
-    }
-
-    for (final o in outputs) {
-      o?.release();
-    }
-
-    return {'riskClass': riskClass, 'probabilities': probs};
   }
 
   /// Builds a normalised [Float32List] input tensor from [record].

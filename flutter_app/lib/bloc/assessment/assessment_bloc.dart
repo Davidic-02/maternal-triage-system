@@ -64,7 +64,11 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
       final inferenceResult = _inferenceService.predict(auditedRecord);
       final riskClass = inferenceResult['riskClass'] as int;
       final probs = inferenceResult['probabilities'] as List<double>;
+
+      // ✅ Create with risk once
       final recordWithRisk = auditedRecord.copyWith(riskClass: riskClass);
+
+      // ✅ Save once
       await _firebaseService.saveRecord(recordWithRisk);
 
       List<ShapFeature> shapFeatures = [];
@@ -80,11 +84,6 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
         probabilities: probs,
         shapFeatures: shapFeatures,
       );
-
-      // Persist record with the predicted riskClass so the triage queue
-      // correctly reflects risk level rather than the default (0 / LOW).
-      final recordWithRisk = auditedRecord.copyWith(riskClass: riskClass);
-      await _firebaseService.saveRecord(recordWithRisk);
 
       emit(
         state.copyWith(

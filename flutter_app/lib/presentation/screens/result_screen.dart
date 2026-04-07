@@ -148,11 +148,11 @@ class _TopBar extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 shape: BoxShape.circle,
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: AppColors.shadowColor,
                     blurRadius: 6,
-                    offset: const Offset(0, 2),
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
@@ -269,11 +269,11 @@ class _RecommendationCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AppColors.shadowColor,
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -339,11 +339,11 @@ class _ProbabilitySection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AppColors.shadowColor,
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -456,11 +456,11 @@ class _VitalsSummary extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AppColors.shadowColor,
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -523,13 +523,13 @@ class _VitalsSummary extends StatelessWidget {
               runSpacing: 8,
               children: [
                 if (record.blurredVision)
-                  _DangerChip(label: 'Headache / Blurred Vision'),
+                  const _DangerChip(label: 'Headache / Blurred Vision'),
                 if (record.vaginalBleeding)
-                  _DangerChip(label: 'Vaginal Bleeding'),
+                  const _DangerChip(label: 'Vaginal Bleeding'),
                 if (record.severeSwelling)
-                  _DangerChip(label: 'Severe Swelling'),
+                  const _DangerChip(label: 'Severe Swelling'),
                 if (record.reducedFetalMovement)
-                  _DangerChip(label: 'Reduced Fetal Movement'),
+                  const _DangerChip(label: 'Reduced Fetal Movement'),
               ],
             ),
           ],
@@ -617,11 +617,11 @@ class _ShapSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AppColors.shadowColor,
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),

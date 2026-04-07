@@ -28,7 +28,7 @@ class HistoryToggle extends StatelessWidget {
           Switch(
             value: value,
             onChanged: (_) => onToggle(),
-            activeColor: AppColors.primaryGreen,
+            activeThumbColor: AppColors.primaryGreen,
           ),
         ],
       ),

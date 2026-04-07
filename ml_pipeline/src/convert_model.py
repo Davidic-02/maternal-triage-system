@@ -148,7 +148,7 @@ def convert_to_onnx(
     onnx_model = convert_sklearn(
         model,
         initial_types=initial_type,
-        target_opset=12,
+   target_opset={"": 12, "ai.onnx.ml": 3},
         options=options,
     )
 
