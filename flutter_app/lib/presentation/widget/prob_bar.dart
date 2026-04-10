@@ -17,6 +17,7 @@ class ProbBar extends HookWidget {
     required this.value,
     required this.color,
     required this.isSelected,
+    super.key,
   });
 
   @override

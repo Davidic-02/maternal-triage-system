@@ -107,32 +107,39 @@ class TriageScreen extends HookWidget {
                   ),
 
                 // ── empty active queue ───────────────────────────
-                if (state.status == TriageStatus.loaded &&
-                    state.filteredQueue.isEmpty)
-                  const SliverToBoxAdapter(
-                    child: EmptyState(
-                      message: 'No active patients in queue',
-                      icon: Icons.check_circle_outline,
-                    ),
+                SliverToBoxAdapter(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    child:
+                        (state.status == TriageStatus.loaded &&
+                            state.filteredQueue.isEmpty)
+                        ? const EmptyState(
+                            key: ValueKey('empty'),
+                            message: 'No active patients in queue',
+                            icon: Icons.check_circle_outline,
+                          )
+                        : const SizedBox(key: ValueKey('not_empty')),
                   ),
+                ),
 
                 // ── active queue list ────────────────────────────
-                SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final record = state.filteredQueue[index];
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-                      child: PatientCard(
-                        record: record,
-                        isResolved: false,
-                        onTap: () => context.go('/triage/${record.id}'),
-                        onResolve: () => context.read<TriageBloc>().add(
-                          TriageEvent.resolvePatient(record.id!),
+                if (state.filteredQueue.isNotEmpty)
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final record = state.filteredQueue[index];
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                        child: PatientCard(
+                          record: record,
+                          isResolved: false,
+                          onTap: () => context.go('/triage/${record.id}'),
+                          onResolve: () => context.read<TriageBloc>().add(
+                            TriageEvent.resolvePatient(record.id!),
+                          ),
                         ),
-                      ),
-                    );
-                  }, childCount: state.filteredQueue.length),
-                ),
+                      );
+                    }, childCount: state.filteredQueue.length),
+                  ),
 
                 // ── resolved today ───────────────────────────────
                 if (state.filteredResolved.isNotEmpty) ...[

@@ -17,7 +17,7 @@ dependencies:
 
   # AI / Data
   onnxruntime: ^1.4.1
-  fl_chart: ^0.66.2
+  fl_chart: ^1.2.0
 
   # Navigation & Connectivity
   go_router: ^13.0.1
@@ -42,6 +42,7 @@ dependencies:
   flutter_svg: ^2.0.17
   timeago: ^3.7.1
   flutter_dotenv: ^6.0.0
+
 
 dev_dependencies:
   flutter_test:
