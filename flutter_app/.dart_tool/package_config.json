@@ -362,16 +362,10 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "hive_flutter_io",
-      "rootUri": "file:///Users/mac/.pub-cache/hosted/pub.dev/hive_flutter_io-3.2.2",
+      "name": "hive_flutter",
+      "rootUri": "file:///Users/mac/.pub-cache/hosted/pub.dev/hive_flutter-1.1.0",
       "packageUri": "lib/",
-      "languageVersion": "3.8"
-    },
-    {
-      "name": "hive_io",
-      "rootUri": "file:///Users/mac/.pub-cache/hosted/pub.dev/hive_io-3.2.2",
-      "packageUri": "lib/",
-      "languageVersion": "3.8"
+      "languageVersion": "2.12"
     },
     {
       "name": "hooks",
