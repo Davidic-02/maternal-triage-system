@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/constant/app_colors.dart';
 import 'package:maternal_triage/constant/app_spacing.dart';
@@ -71,12 +72,20 @@ class ClinicalReasoningSection extends StatelessWidget {
           if (state.isGeneratingExplanation)
             Row(
               children: [
-                const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: AppColors.primaryGreen,
+                SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.9, end: 1.0),
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeOut,
+                    builder: (context, scale, child) {
+                      return Transform.scale(scale: scale, child: child);
+                    },
+                    child: Lottie.asset(
+                      'assets/animations/chatbot.json',
+                      //height: 180,
+                    ),
                   ),
                 ),
                 AppSpacing.horizontalSpaceSmall,

@@ -34,7 +34,6 @@ class PendingApprovalScreen extends StatelessWidget {
           context.go('/login');
         }
       },
-
       child: Scaffold(
         body: SafeArea(
           child: Padding(

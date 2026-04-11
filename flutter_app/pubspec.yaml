@@ -42,6 +42,10 @@ dependencies:
   flutter_svg: ^2.0.17
   timeago: ^3.7.1
   flutter_dotenv: ^6.0.0
+  hive: ^2.2.3
+  hive_flutter_io: ^3.2.2
+  url_launcher: ^6.3.2
+  http: ^1.2.0
 
 
 dev_dependencies:
@@ -62,4 +66,5 @@ flutter:
     - assets/shap/
     - assets/scaler/
     - assets/animations/
+    - assets/images/
     

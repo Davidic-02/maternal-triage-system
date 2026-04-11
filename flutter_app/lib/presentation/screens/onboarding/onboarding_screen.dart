@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:maternal_triage/constant/app_colors.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
 import 'package:maternal_triage/bloc/onboarding/onboarding_bloc.dart';
 import 'package:maternal_triage/presentation/widget/button.dart';
 import 'package:maternal_triage/presentation/widget/onboarding_page.dart';
 import 'package:maternal_triage/presentation/widget/terms_page.dart';
 import 'package:maternal_triage/router/app_routes.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends HookWidget {
   static const routeName = '/onboarding';
+
   const OnboardingScreen({super.key});
 
   @override
@@ -27,6 +30,7 @@ class OnboardingScreen extends HookWidget {
         },
         builder: (context, state) {
           final isLastPage = state.currentPage == 2;
+
           return Scaffold(
             body: SafeArea(
               child: Padding(
@@ -36,9 +40,11 @@ class OnboardingScreen extends HookWidget {
                     Expanded(
                       child: PageView(
                         controller: pageController,
-                        onPageChanged: (index) => context
-                            .read<OnboardingBloc>()
-                            .add(OnboardingEvent.pageChanged(index)),
+                        onPageChanged: (index) {
+                          context.read<OnboardingBloc>().add(
+                            OnboardingEvent.pageChanged(index),
+                          );
+                        },
                         children: [
                           const OnboardingPage(
                             title: 'Maternal Triage Assistant',
@@ -51,18 +57,21 @@ class OnboardingScreen extends HookWidget {
                             title: 'How It Works',
                             description:
                                 'Fill the patient form, run the AI model, review SHAP explanation, save the record.',
-                            animationPath:
-                                'assets/animations/Medical Icon Prescription.json',
+                            animationPath: 'assets/animations/chatbot.json',
                           ),
                           TermsPage(
                             accepted: state.hasAcceptedTerms,
-                            onAccepted: (val) => context
-                                .read<OnboardingBloc>()
-                                .add(OnboardingEvent.termsAccepted(val)),
+                            onAccepted: (val) {
+                              context.read<OnboardingBloc>().add(
+                                OnboardingEvent.termsAccepted(val),
+                              );
+                            },
                           ),
                         ],
                       ),
                     ),
+
+                    // 📍 INDICATOR
                     if (!isLastPage)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -70,15 +79,16 @@ class OnboardingScreen extends HookWidget {
                           controller: pageController,
                           count: 3,
                           effect: const ExpandingDotsEffect(
-                            activeDotColor: Colors.green,
+                            activeDotColor: AppColors.primaryGreen,
                             dotColor: Colors.grey,
-                            dotHeight: 10, // inactive size
-                            dotWidth: 10, // inactive size
-                            expansionFactor: 2.5, // ← active dot is 2.5x wider
+                            dotHeight: 10,
+                            dotWidth: 10,
+                            expansionFactor: 2.5,
                             spacing: 8,
                           ),
                         ),
                       ),
+
                     if (isLastPage)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32),
@@ -88,13 +98,17 @@ class OnboardingScreen extends HookWidget {
                             'Get Started',
                             onPressed: !state.hasAcceptedTerms
                                 ? null
-                                : () => context.read<OnboardingBloc>().add(
-                                    const OnboardingEvent.completed(),
-                                  ),
+                                : () {
+                                    context.read<OnboardingBloc>().add(
+                                      const OnboardingEvent.completed(),
+                                    );
+                                  },
                           ),
                         ),
                       ),
-                    if (!isLastPage) const SizedBox(height: 32 + 48),
+
+                    // 📏 BOTTOM SPACING
+                    if (!isLastPage) const SizedBox(height: 80),
                   ],
                 ),
               ),

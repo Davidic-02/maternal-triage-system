@@ -25,10 +25,8 @@ class PatientCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 300),
+      child: Opacity(
         opacity: isResolved ? 0.6 : 1.0,
-
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
@@ -159,20 +157,17 @@ class PatientCard extends StatelessWidget {
                       )
                     else
                       GestureDetector(
-                        onTap: () => _showResolveDialog(context),
-                        child: Tooltip(
-                          message: 'Mark patient as resolved',
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              color: AppColors.primaryGreen,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.check_circle,
-                              color: Colors.white,
-                              size: 16,
-                            ),
+                        onTap: onResolve,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: AppColors.primaryGreen,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                            size: 14,
                           ),
                         ),
                       ),
@@ -183,58 +178,6 @@ class PatientCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  void _showResolveDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Resolve Patient?'),
-
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Patient: ${record.patientNameOrId ?? "Unknown"}',
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Risk Level: ${_riskLabel(record.riskClass)}',
-                style: TextStyle(color: _riskColor(record.riskClass)),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Are you sure you want to mark this patient as resolved? This will move them to the history.',
-                style: TextStyle(fontSize: 13, color: AppColors.greyColor),
-              ),
-            ],
-          ),
-
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                onResolve?.call();
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Resolve',
-                style: TextStyle(
-                  color: AppColors.primaryGreen,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -290,3 +233,5 @@ class _VitalTag extends StatelessWidget {
     );
   }
 }
+
+// ── Empty State ──────────────────────────────────────────────

@@ -5,8 +5,8 @@ import 'package:maternal_triage/constant/app_colors.dart';
 
 class EmptyState extends StatelessWidget {
   final String message;
-  final IconData icon;
-  const EmptyState({required this.message, required this.icon, super.key});
+  final IconData? icon;
+  const EmptyState({required this.message, this.icon, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,8 @@ class EmptyState extends StatelessWidget {
             animate: true,
             frameRate: FrameRate.max,
           ),
-          Icon(icon, size: 48, color: AppColors.greyColor),
-          AppSpacing.verticalSpaceSmall,
+
+          // Icon(icon, size: 48, color: AppColors.greyColor),
           Text(
             message,
             style: const TextStyle(color: AppColors.greyColor),

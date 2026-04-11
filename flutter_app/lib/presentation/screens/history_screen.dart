@@ -132,11 +132,11 @@ class _HistoryCard extends StatelessWidget {
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: color.withOpacity(0.2)),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: AppColors.shadowColor,
                 blurRadius: 4,
-                offset: const Offset(0, 2),
+                offset: Offset(0, 2),
               ),
             ],
           ),

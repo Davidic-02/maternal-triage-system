@@ -33,7 +33,7 @@ class ShapChartSection extends StatelessWidget {
             color: feature.isPositive
                 ? AppColors.danger
                 : AppColors.accentGreen,
-            width: 20,
+            width: 30,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(6),
               topRight: Radius.circular(6),
@@ -177,7 +177,8 @@ class ShapChartSection extends StatelessWidget {
             height: 280,
             child: BarChart(
               BarChartData(
-                alignment: BarChartAlignment.spaceAround,
+                groupsSpace: 2,
+                alignment: BarChartAlignment.spaceBetween,
                 maxY: maxValue * 1.1,
                 barTouchData: BarTouchData(
                   enabled: true,
