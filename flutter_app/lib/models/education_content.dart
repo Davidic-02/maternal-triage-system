@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
 
 part 'education_content.g.dart';
 
@@ -30,7 +32,7 @@ class EducationVideo extends HiveObject {
   @HiveField(7)
   final String duration;
 
-  const EducationVideo({
+  EducationVideo({
     required this.id,
     required this.title,
     required this.subtitle,
@@ -110,7 +112,7 @@ class EducationGuide extends HiveObject {
   @HiveField(5)
   final String summary;
 
-  const EducationGuide({
+  EducationGuide({
     required this.id,
     required this.title,
     required this.subtitle,
@@ -122,7 +124,7 @@ class EducationGuide extends HiveObject {
   factory EducationGuide.fromMedlinePlusJson(Map<String, dynamic> json) {
     final result = json['result'] as Map<String, dynamic>? ?? json;
     return EducationGuide(
-      id: result['id']?.toString() ?? UniqueKey().toString(),
+      id: result['id']?.toString() ?? const Uuid().v4(),
       title: result['title'] as String? ?? '',
       subtitle: result['organizations']?.toString() ?? 'MedlinePlus',
       category: _inferCategory(result['title'] as String? ?? ''),
@@ -165,7 +167,7 @@ class EducationCache extends HiveObject {
   @HiveField(2)
   final DateTime fetchedAt;
 
-  const EducationCache({
+  EducationCache({
     required this.videos,
     required this.guides,
     required this.fetchedAt,
