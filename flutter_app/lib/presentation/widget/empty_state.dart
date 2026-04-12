@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:maternal_triage/constant/app_spacing.dart';
 import 'package:maternal_triage/constant/app_colors.dart';
 
 class EmptyState extends StatelessWidget {

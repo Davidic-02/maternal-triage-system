@@ -8,7 +8,7 @@ import 'package:maternal_triage/presentation/widget/risk_color.dart';
 
 class RecommendationCard extends StatelessWidget {
   final RiskResult result;
-  const RecommendationCard({required this.result});
+  const RecommendationCard({super.key, required this.result});
 
   @override
   Widget build(BuildContext context) {
