@@ -80,7 +80,7 @@ class ResultScreen extends HookWidget {
                         AppSpacing.verticalSpaceMedium,
 
                         if (result.shapFeatures.isNotEmpty)
-                          ShapChartSection(result: result),
+                          ShapGraphSection(result: result),
 
                         AppSpacing.verticalSpaceMedium,
 

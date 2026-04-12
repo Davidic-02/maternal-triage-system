@@ -19,7 +19,7 @@ class ClinicalReasoningSection extends StatelessWidget {
           BoxShadow(
             color: AppColors.shadowColor,
             blurRadius: 8,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -72,20 +72,12 @@ class ClinicalReasoningSection extends StatelessWidget {
           if (state.isGeneratingExplanation)
             Row(
               children: [
-                SizedBox(
-                  width: 32,
-                  height: 32,
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0.9, end: 1.0),
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeOut,
-                    builder: (context, scale, child) {
-                      return Transform.scale(scale: scale, child: child);
-                    },
-                    child: Lottie.asset(
-                      'assets/animations/chatbot.json',
-                      //height: 180,
-                    ),
+                const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.primaryGreen,
                   ),
                 ),
                 AppSpacing.horizontalSpaceSmall,
