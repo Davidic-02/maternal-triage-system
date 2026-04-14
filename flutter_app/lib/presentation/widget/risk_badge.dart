@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:maternal_triage/constant/app_colors.dart';
 import 'package:maternal_triage/constant/app_spacing.dart';
 import 'package:maternal_triage/models/risk_result.dart';
 import 'package:maternal_triage/presentation/widget/risk_color.dart';

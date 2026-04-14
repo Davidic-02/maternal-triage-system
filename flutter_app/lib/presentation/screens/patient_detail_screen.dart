@@ -75,8 +75,7 @@ class PatientDetailScreen extends HookWidget {
                         AppSpacing.verticalSpaceMedium,
 
                         // ── Risk Assessment Card ─────────────
-                        if (patient.riskClass != null)
-                          _RiskAssessmentCard(patient: patient),
+                        _RiskAssessmentCard(patient: patient),
 
                         AppSpacing.verticalSpaceMedium,
 
@@ -104,13 +103,12 @@ class PatientDetailScreen extends HookWidget {
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                   child: Column(
                     children: [
-                      if (patient.riskClass != null)
-                        Button(
-                          'View Full Assessment',
-                          onPressed: () {
-                            context.go('/results');
-                          },
-                        ),
+                      Button(
+                        'View Full Assessment',
+                        onPressed: () {
+                          context.go('/results');
+                        },
+                      ),
                       AppSpacing.verticalSpaceSmall,
                       Button(
                         'Back to Queue',
@@ -307,7 +305,7 @@ class _ClinicalFindingsCard extends StatelessWidget {
           BoxShadow(
             color: AppColors.shadowColor,
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -409,7 +407,7 @@ class _AssessmentInfoCard extends StatelessWidget {
           BoxShadow(
             color: AppColors.shadowColor,
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -458,9 +456,7 @@ class _AssessmentInfoCard extends StatelessWidget {
                     ),
                     AppSpacing.verticalSpaceTiny,
                     Text(
-                      patient.createdAt != null
-                          ? '${patient.createdAt.day}/${patient.createdAt.month}/${patient.createdAt.year}'
-                          : 'N/A',
+                      '${patient.createdAt.day}/${patient.createdAt.month}/${patient.createdAt.year}',
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,

@@ -130,7 +130,7 @@ class AppRouter {
           GoRoute(
             path: '/resources',
             name: 'resources',
-            builder: (context, state) => const ResourcesScreen(),
+            builder: (context, state) => const EducationalLibraryScreen(),
           ),
           GoRoute(
             path: '/history',

@@ -51,7 +51,7 @@ class PendingApprovalScreen extends StatelessWidget {
                       return Transform.scale(scale: scale, child: child);
                     },
                     child: Lottie.asset(
-                      'assets/animations/No_Data.json',
+                      'assets/animations/Loading.json',
                       height: 180,
                     ),
                   ),

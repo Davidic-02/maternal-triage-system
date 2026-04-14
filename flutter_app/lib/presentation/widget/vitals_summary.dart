@@ -79,13 +79,13 @@ class VitalsSummary extends StatelessWidget {
               runSpacing: 8,
               children: [
                 if (record.blurredVision)
-                  _DangerChip(label: 'Headache / Blurred Vision'),
+                  const _DangerChip(label: 'Headache / Blurred Vision'),
                 if (record.vaginalBleeding)
-                  _DangerChip(label: 'Vaginal Bleeding'),
+                  const _DangerChip(label: 'Vaginal Bleeding'),
                 if (record.severeSwelling)
-                  _DangerChip(label: 'Severe Swelling'),
+                  const _DangerChip(label: 'Severe Swelling'),
                 if (record.reducedFetalMovement)
-                  _DangerChip(label: 'Reduced Fetal Movement'),
+                  const _DangerChip(label: 'Reduced Fetal Movement'),
               ],
             ),
           ],

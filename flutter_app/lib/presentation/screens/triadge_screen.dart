@@ -24,172 +24,163 @@ class TriageScreen extends HookWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: BlocConsumer<TriageBloc, TriageState>(
-          listener: (context, state) {
-            print(
-              '🖥️ UI received state — active: ${state.activeQueue.length}, resolved: ${state.resolvedToday.length}',
-            );
-          },
+        child: BlocBuilder<TriageBloc, TriageState>(
           builder: (context, state) {
-            return BlocBuilder<TriageBloc, TriageState>(
-              builder: (context, state) {
-                return CustomScrollView(
-                  slivers: [
-                    // ── header ──────────────────────────────────────
-                    const SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
-                        child: Header(),
-                      ),
-                    ),
+            return CustomScrollView(
+              slivers: [
+                // ── header ──────────────────────────────────────
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
+                    child: Header(),
+                  ),
+                ),
 
-                    // ── summary cards ────────────────────────────────
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                        child: SummaryCards(state: state),
-                      ),
-                    ),
+                // ── summary cards ────────────────────────────────
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                    child: SummaryCards(state: state),
+                  ),
+                ),
 
-                    // ── search bar ───────────────────────────────────
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                        child: TriageSearchBar(
-                          controller: searchController,
-                          focusNode: searchFocusNode,
-                        ),
-                      ),
+                // ── search bar ───────────────────────────────────
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                    child: TriageSearchBar(
+                      controller: searchController,
+                      focusNode: searchFocusNode,
                     ),
+                  ),
+                ),
 
-                    // ── filter tabs ──────────────────────────────────
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                        child: FilterTabs(currentFilter: state.filter),
-                      ),
-                    ),
+                // ── filter tabs ──────────────────────────────────
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                    child: FilterTabs(currentFilter: state.filter),
+                  ),
+                ),
 
-                    // ── active queue header ──────────────────────────
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Active Queue (${state.filteredQueue.length})',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const Spacer(),
-                            const Text(
-                              'By Urgency',
-                              style: TextStyle(
-                                color: AppColors.primaryGreen,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const Icon(
-                              Icons.keyboard_arrow_down,
-                              color: AppColors.primaryGreen,
-                              size: 18,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // ── loading ──────────────────────────────────────
-                    if (state.status == TriageStatus.loading)
-                      const SliverToBoxAdapter(
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(32),
-                            child: CircularProgressIndicator(),
+                // ── active queue header ──────────────────────────
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Active Queue (${state.filteredQueue.length})',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-
-                    if (state.status == TriageStatus.loading)
-                      const SliverToBoxAdapter(
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(32),
-                            child: CircularProgressIndicator(),
+                        const Spacer(),
+                        const Text(
+                          'By Urgency',
+                          style: TextStyle(
+                            color: AppColors.primaryGreen,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
+                        const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: AppColors.primaryGreen,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
 
-                    // ── empty active queue ───────────────────────────
-                    SliverToBoxAdapter(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 500),
-                        switchInCurve: Curves.easeOut,
-                        switchOutCurve: Curves.easeIn,
-                        child: state.filteredQueue.isEmpty
-                            ? const EmptyState(
-                                key: ValueKey('empty_state'),
-                                message: 'No active patients in queue',
-                              )
-                            : const SizedBox(key: ValueKey('list_state')),
+                // ── loading ──────────────────────────────────────
+                if (state.status == TriageStatus.loading)
+                  const SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(32),
+                        child: CircularProgressIndicator(),
                       ),
                     ),
+                  ),
 
-                    // ── active queue list ────────────────────────────
-                    if (state.filteredQueue.isNotEmpty)
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final record = state.filteredQueue[index];
-                          return Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-                            child: PatientCard(
-                              record: record,
-                              isResolved: false,
-                              onTap: () => context.go('/triage/${record.id}'),
-                              onResolve: () => context.read<TriageBloc>().add(
-                                TriageEvent.resolvePatient(record.id!),
-                              ),
-                            ),
-                          );
-                        }, childCount: state.filteredQueue.length),
+                if (state.status == TriageStatus.loading)
+                  const SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(32),
+                        child: CircularProgressIndicator(),
                       ),
+                    ),
+                  ),
 
-                    // ── resolved today ───────────────────────────────
-                    if (state.filteredResolved.isNotEmpty) ...[
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                          child: Text(
-                            'Resolved Today (${state.filteredResolved.length})',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                // ── empty active queue ───────────────────────────
+                SliverToBoxAdapter(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
+                    child: state.filteredQueue.isEmpty
+                        ? const EmptyState(
+                            key: ValueKey('empty_state'),
+                            message: 'No active patients in queue',
+                          )
+                        : const SizedBox(key: ValueKey('list_state')),
+                  ),
+                ),
+
+                // ── active queue list ────────────────────────────
+                if (state.filteredQueue.isNotEmpty)
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final record = state.filteredQueue[index];
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                        child: PatientCard(
+                          record: record,
+                          isResolved: false,
+                          onTap: () => context.go('/triage/${record.id}'),
+                          onResolve: () => context.read<TriageBloc>().add(
+                            TriageEvent.resolvePatient(record.id!),
                           ),
                         ),
-                      ),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final record = state.filteredResolved[index];
-                          return Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-                            child: PatientCard(
-                              record: record,
-                              isResolved: true,
-                              onTap: () => context.go('/triage/${record.id}'),
-                            ),
-                          );
-                        }, childCount: state.filteredResolved.length),
-                      ),
-                    ],
+                      );
+                    }, childCount: state.filteredQueue.length),
+                  ),
 
-                    const SliverToBoxAdapter(child: SizedBox(height: 32)),
-                  ],
-                );
-              },
+                // ── resolved today ───────────────────────────────
+                if (state.filteredResolved.isNotEmpty) ...[
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                      child: Text(
+                        'Resolved Today (${state.filteredResolved.length})',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final record = state.filteredResolved[index];
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                        child: PatientCard(
+                          record: record,
+                          isResolved: true,
+                          onTap: () => context.go('/triage/${record.id}'),
+                        ),
+                      );
+                    }, childCount: state.filteredResolved.length),
+                  ),
+                ],
+
+                const SliverToBoxAdapter(child: SizedBox(height: 32)),
+              ],
             );
           },
         ),
