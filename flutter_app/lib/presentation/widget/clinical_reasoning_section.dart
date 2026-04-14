@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/constant/app_colors.dart';
 import 'package:maternal_triage/constant/app_spacing.dart';

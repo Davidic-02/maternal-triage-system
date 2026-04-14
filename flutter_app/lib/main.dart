@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
+import 'package:maternal_triage/bloc/education.dart/education_bloc.dart';
 import 'package:maternal_triage/constant/theme_data.dart';
 import 'package:maternal_triage/firebase_options.dart';
+import 'package:maternal_triage/presentation/screens/resources_screen.dart';
 import 'package:maternal_triage/router/app_router.dart';
 import 'package:maternal_triage/services/firebase_doctor_service.dart';
 import 'package:maternal_triage/services/gemini_service.dart';
@@ -53,6 +55,10 @@ class MaternalTriageApp extends StatelessWidget {
         BlocProvider<AssessmentBloc>.value(value: assessmentBloc),
         //  BlocProvider<SignUpBloc>(create: (_) => SignUpBloc()),
         //  BlocProvider<TriageBloc>(create: (_) => TriageBloc(authBloc: authBloc)),
+        BlocProvider(
+          create: (_) => EducationBloc(),
+          child: const EducationalLibraryScreen(),
+        ),
       ],
       child: Builder(
         builder: (context) {

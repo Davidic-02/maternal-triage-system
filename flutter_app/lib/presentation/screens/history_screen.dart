@@ -188,7 +188,7 @@ class _HistoryCard extends StatelessWidget {
                     ),
                     AppSpacing.verticalSpaceTiny,
                     Text(
-                      _formatDate(patient.createdAt!),
+                      _formatDate(patient.createdAt),
                       style: const TextStyle(
                         fontSize: 11,
                         color: AppColors.greyColor,
