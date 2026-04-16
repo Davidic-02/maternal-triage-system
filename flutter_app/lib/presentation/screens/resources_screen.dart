@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:maternal_triage/bloc/education.dart/education_bloc.dart';
 import 'package:maternal_triage/constant/app_colors.dart';
 import 'package:maternal_triage/constant/app_spacing.dart';
@@ -37,7 +38,7 @@ class EducationalLibraryScreen extends HookWidget {
             // ── USING CUSTOM_TOP_BAR (EXISTING WIDGET) ──
             CustomTopBar(
               title: 'Educational Library',
-              onTap: () => Navigator.of(context).maybePop(),
+              onTap: () => context.go('/triage'),
             ),
             // ── REFRESHABLE CONTENT ──
             Expanded(
@@ -125,62 +126,57 @@ class EducationalLibraryScreen extends HookWidget {
           ),
         ),
         AppSpacing.verticalSpaceMedium,
+
         // TRIMESTER TABS
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: _tabs.map((tab) {
-                final isSelected = state.selectedTab == tab.$1;
-                return Expanded(
-                  // ← each tab gets equal share
-                  child: GestureDetector(
-                    onTap: () => context.read<EducationBloc>().add(
-                      EducationEvent.tabChanged(tab.$1),
+        Row(
+          children: _tabs.map((tab) {
+            final isSelected = state.selectedTab == tab.$1;
+            return Expanded(
+              // ← each tab gets equal share
+              child: GestureDetector(
+                onTap: () => context.read<EducationBloc>().add(
+                  EducationEvent.tabChanged(tab.$1),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      tab.$2,
+                      textAlign: TextAlign.center, // ← center text in its space
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                        color: isSelected
+                            ? AppColors.primaryGreen
+                            : AppColors.textGrey,
+                      ),
                     ),
-                    child: Column(
-                      children: [
-                        Text(
-                          tab.$2,
-                          textAlign:
-                              TextAlign.center, // ← center text in its space
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w400,
-                            color: isSelected
-                                ? AppColors.primaryGreen
-                                : AppColors.textGrey,
-                          ),
-                        ),
-                        AppSpacing.verticalSpaceTiny,
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          height: 2,
-                          width: isSelected ? tab.$2.length * 7.5 : 0,
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryGreen,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                      ],
+                    AppSpacing.verticalSpaceTiny,
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      height: 2,
+                      width: isSelected ? tab.$2.length * 7.5 : 0,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryGreen,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
         ),
-        AppSpacing.verticalSpaceMassive,
+
+        AppSpacing.verticalSpaceLarge,
         // CONDITIONAL CONTENT (SEARCH OR RECOMMENDED)
         if (state.searchQuery.isEmpty) ...[
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: TextTitle(text: 'Recommended for you'),
           ),
-          AppSpacing.verticalSpaceSmall,
+          AppSpacing.verticalSpaceMedium,
           if (state.featuredVideos.isEmpty)
             const EmptyState(message: 'No featured video available')
           else
@@ -194,7 +190,7 @@ class EducationalLibraryScreen extends HookWidget {
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextTitle(text: 'Birth Preparedness'),
             ),
-            AppSpacing.verticalSpaceSmall,
+            AppSpacing.verticalSpaceMedium,
             SizedBox(
               height: 220,
               child: ListView.builder(
@@ -225,7 +221,7 @@ class EducationalLibraryScreen extends HookWidget {
                     VideoCard(video: state.filteredVideos[i]),
               ),
             ),
-          const SizedBox(height: 28),
+          // const SizedBox(height: 28),
         ],
         // ILLUSTRATED GUIDES
         const Padding(

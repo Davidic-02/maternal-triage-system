@@ -28,7 +28,6 @@ class TriageScreen extends HookWidget {
           builder: (context, state) {
             return CustomScrollView(
               slivers: [
-                // ── header ──────────────────────────────────────
                 const SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -36,7 +35,6 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
-                // ── summary cards ────────────────────────────────
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -44,7 +42,6 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
-                // ── search bar ───────────────────────────────────
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -55,7 +52,6 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
-                // ── filter tabs ──────────────────────────────────
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),

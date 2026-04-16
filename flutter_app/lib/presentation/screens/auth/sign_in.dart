@@ -73,6 +73,16 @@ class LoginScreen extends HookWidget {
                       onFieldSubmitted: (_) =>
                           context.read<AuthBloc>().add(const AuthEvent.login()),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Dont have an account?'),
+                        TextButton(
+                          onPressed: () => context.go('/signUp'),
+                          child: const Text('Sign Up'),
+                        ),
+                      ],
+                    ),
                     AppSpacing.verticalSpaceMassive,
                     Button(
                       'Login',
@@ -82,7 +92,7 @@ class LoginScreen extends HookWidget {
                       busy:
                           state.loginStatus == FormzSubmissionStatus.inProgress,
                     ),
-                    AppSpacing.verticalSpaceHuge,
+                    AppSpacing.verticalSpaceMedium,
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(

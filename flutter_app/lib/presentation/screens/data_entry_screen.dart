@@ -61,7 +61,11 @@ class DataEntryScreen extends HookWidget {
             return SafeArea(
               child: Column(
                 children: [
-                  const CustomTopBar(title: 'Clinical Data Intake'),
+                  CustomTopBar(
+                    title: 'Clinical Data Intake',
+
+                    onTap: () => context.go('/triage'),
+                  ),
 
                   Expanded(
                     child: SingleChildScrollView(

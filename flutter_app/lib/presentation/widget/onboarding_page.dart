@@ -16,7 +16,6 @@ class OnboardingPage extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          flex: 110,
           child: LottieBuilder.asset(
             animationPath,
             width: double.infinity,
@@ -25,30 +24,27 @@ class OnboardingPage extends StatelessWidget {
             animate: true,
           ),
         ),
-        Expanded(
-          flex: 30,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  description,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                description,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ],

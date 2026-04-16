@@ -30,7 +30,7 @@ class HistoryScreen extends HookWidget {
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                   child: CustomTopBar(
                     title: 'Assessment History',
-                    onTap: () => context.go('/home'),
+                    onTap: () => context.go('/triage'),
                   ),
                 ),
 

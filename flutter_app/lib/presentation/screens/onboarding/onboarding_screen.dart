@@ -25,7 +25,7 @@ class OnboardingScreen extends HookWidget {
       child: BlocConsumer<OnboardingBloc, OnboardingState>(
         listener: (context, state) {
           if (state.isCompleted == true) {
-            context.go(AppRoutes.signUp);
+            context.go(AppRoutes.triage);
           }
         },
         builder: (context, state) {
@@ -108,7 +108,7 @@ class OnboardingScreen extends HookWidget {
                       ),
 
                     // 📏 BOTTOM SPACING
-                    if (!isLastPage) const SizedBox(height: 80),
+                    if (!isLastPage) const SizedBox(height: 40),
                   ],
                 ),
               ),

@@ -122,7 +122,7 @@ class CustomTextFormField extends StatelessWidget {
                 : Padding(
                     padding: const EdgeInsets.all(15),
                     child: SvgPicture.asset(
-                      'assets/svg/$prefixIcon.svg',
+                      'assets/svgs/$prefixIcon.svg',
                       colorFilter: ColorFilter.mode(
                         theme.iconTheme.color ??
                             theme.textTheme.bodySmall!.color!,

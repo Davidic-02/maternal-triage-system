@@ -67,4 +67,5 @@ flutter:
     - assets/scaler/
     - assets/animations/
     - assets/images/
+    - assets/svgs/
     
