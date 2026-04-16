@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:maternal_triage/models/education_content.dart';
 import 'package:maternal_triage/services/educational_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../services/logging_helper.dart';
 
 import 'package:maternal_triage/enums/education_enum.dart';
@@ -20,6 +21,7 @@ class EducationBloc extends Bloc<EducationEvent, EducationState> {
     on<_SearchChanged>(_onSearchChanged);
     on<_Refresh>(_onRefresh);
     on<_Init>(_onInit);
+    on<_VideoTapped>(_onVideoTapped);
     add(const EducationEvent.init());
   }
 
@@ -31,6 +33,27 @@ class EducationBloc extends Bloc<EducationEvent, EducationState> {
   Future<void> _onRefresh(_Refresh event, Emitter<EducationState> emit) async {
     emit(state.copyWith(status: EducationStatus.loading));
     await _load(emit, forceRefresh: true);
+  }
+
+  Future<void> _onVideoTapped(
+    _VideoTapped event,
+    Emitter<EducationState> emit,
+  ) async {
+    try {
+      // Optional: Log this action for analytics
+      print('Video tapped: ${event.youtubeVideoId}');
+
+      // You can add analytics here
+      // await _analyticsService.logVideoTap(event.youtubeVideoId);
+
+      // Launch URL
+      await launchUrl(
+        Uri.parse('https://www.youtube.com/watch?v=${event.youtubeVideoId}'),
+        mode: LaunchMode.externalApplication,
+      );
+    } catch (e) {
+      print('Error launching video: $e');
+    }
   }
 
   void _onTabChanged(_TabChanged event, Emitter<EducationState> emit) {

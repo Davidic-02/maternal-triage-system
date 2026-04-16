@@ -53,6 +53,33 @@ class EducationService {
       tag: 'third',
       featured: true,
     ),
+
+    (
+      query: 'delivery day checklist birth preparedness hospital bag',
+      tag: 'third',
+      featured: false,
+    ),
+    (
+      query: 'what to pack hospital bag labor delivery',
+      tag: 'third',
+      featured: false,
+    ),
+    (
+      query: 'birth plan labor stages what to expect',
+      tag: 'third',
+      featured: false,
+    ),
+    (
+      query: 'signs of labor when to go to hospital',
+      tag: 'third',
+      featured: false,
+    ),
+    (
+      query: 'pain relief options during labor epidural natural birth',
+      tag: 'third',
+      featured: false,
+    ),
+
     (
       query: 'delivery day checklist birth preparedness hospital bag',
       tag: 'third',
@@ -102,13 +129,13 @@ class EducationService {
 
         final response = await http
             .get(uri)
-            .timeout(const Duration(seconds: 10));
+            .timeout(const Duration(seconds: 60));
 
         if (response.statusCode != 200) {
           logInfo('YouTube [${response.statusCode}] failed for: ${q.query}');
           continue;
         }
-
+        logInfo("🔥 Calling API now...");
         final json = jsonDecode(response.body) as Map<String, dynamic>;
         final items = json['items'] as List? ?? [];
 
@@ -123,6 +150,7 @@ class EducationService {
         }
       } catch (e) {
         logInfo('YouTube query error: $e');
+        logInfo("❌ API failed, using cache");
       }
     }
 
@@ -220,6 +248,56 @@ class EducationService {
       trimesterTag: 'third',
       isFeatured: true,
       duration: '4 mins',
+    ),
+    const EducationVideo(
+      id: 'fb_3rd_2',
+      title: 'The Delivery Day Checklist',
+      subtitle: 'Maternal Health Awareness',
+      thumbnailUrl: 'https://img.youtube.com/vi/3OEYTauqEgU/hqdefault.jpg',
+      youtubeVideoId: '3OEYTauqEgU',
+      trimesterTag: 'third',
+      isFeatured: false,
+      duration: '3 mins',
+    ),
+    const EducationVideo(
+      id: 'fb_3rd_3',
+      title: 'What to Pack in Your Hospital Bag',
+      subtitle: 'Pregnancy & Baby',
+      thumbnailUrl: 'https://img.youtube.com/vi/6Zs8eBXCaM0/hqdefault.jpg',
+      youtubeVideoId: '6Zs8eBXCaM0',
+      trimesterTag: 'third',
+      isFeatured: false,
+      duration: '5 mins',
+    ),
+    const EducationVideo(
+      id: 'fb_3rd_4',
+      title: 'Understanding Your Birth Plan',
+      subtitle: 'NHS',
+      thumbnailUrl: 'https://img.youtube.com/vi/AP9a01MjCHo/hqdefault.jpg',
+      youtubeVideoId: 'AP9a01MjCHo',
+      trimesterTag: 'third',
+      isFeatured: false,
+      duration: '4 mins',
+    ),
+    const EducationVideo(
+      id: 'fb_3rd_5',
+      title: 'Signs of Labor: When to Go to the Hospital',
+      subtitle: 'American College of OB-GYN',
+      thumbnailUrl: 'https://img.youtube.com/vi/vBRqFTZcmtY/hqdefault.jpg',
+      youtubeVideoId: 'vBRqFTZcmtY',
+      trimesterTag: 'third',
+      isFeatured: false,
+      duration: '6 mins',
+    ),
+    const EducationVideo(
+      id: 'fb_3rd_6',
+      title: 'Pain Relief Options During Labor',
+      subtitle: 'WHO',
+      thumbnailUrl: 'https://img.youtube.com/vi/3OEYTauqEgU/hqdefault.jpg',
+      youtubeVideoId: '3OEYTauqEgU',
+      trimesterTag: 'third',
+      isFeatured: false,
+      duration: '5 mins',
     ),
     const EducationVideo(
       id: 'fb_3rd_2',
