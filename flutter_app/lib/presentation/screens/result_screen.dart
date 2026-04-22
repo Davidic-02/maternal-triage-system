@@ -57,7 +57,12 @@ class ResultScreen extends HookWidget {
           body: SafeArea(
             child: Column(
               children: [
-                const CustomTopBar(title: 'record'),
+                CustomTopBar(
+                  title: 'record',
+                  onTap: () {
+                    context.go('/triage');
+                  },
+                ),
 
                 //  _TopBar(record: record),
                 Expanded(

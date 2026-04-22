@@ -18,7 +18,6 @@ class TriageScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // only hooks needed — controller + focusNode for search field
     final searchController = useTextEditingController();
     final searchFocusNode = useFocusNode();
 

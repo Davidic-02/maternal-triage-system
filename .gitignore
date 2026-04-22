@@ -213,3 +213,5 @@ ml_pipeline/models/*.pkl
 *.pkl
 *.csv
 .dart_tool/
+ml_pipeline/reports/EVALUATION_REPORT.md
+.DS_Store

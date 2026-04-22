@@ -23,10 +23,16 @@ class SplashScreen extends HookWidget {
           children: [
             LottieBuilder.asset(
               'assets/animations/covid_pregnant_woman.json',
-              width: 600,
-              height: 600,
+              width: 400,
+              height: 400,
               repeat: true,
               animate: true,
+            ),
+            Text(
+              'Maternal DSS',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),

@@ -45,6 +45,7 @@ dependencies:
   url_launcher: ^6.3.2
   http: ^1.2.0
   uuid: ^4.5.1
+  flutter_launcher_icons: ^0.14.4
   
 
 
@@ -67,4 +68,9 @@ flutter:
     - assets/scaler/
     - assets/animations/
     - assets/images/
+    - assets/svgs/
     
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.jpeg"    

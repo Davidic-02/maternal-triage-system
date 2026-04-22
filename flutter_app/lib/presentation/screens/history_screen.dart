@@ -26,12 +26,9 @@ class HistoryScreen extends HookWidget {
             child: Column(
               children: [
                 // ── Use CustomTopBar ──────────────────────────
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                  child: CustomTopBar(
-                    title: 'Assessment History',
-                    onTap: () => context.go('/home'),
-                  ),
+                CustomTopBar(
+                  title: 'Assessment History',
+                  onTap: () => context.go('/triage'),
                 ),
 
                 // ── Summary stats ─────────────────────────────

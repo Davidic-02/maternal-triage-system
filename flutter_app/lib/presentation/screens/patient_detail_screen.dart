@@ -49,14 +49,10 @@ class PatientDetailScreen extends HookWidget {
           body: SafeArea(
             child: Column(
               children: [
-                // ── Use existing CustomTopBar ──────────────
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                  child: CustomTopBar(
-                    title: 'Patient Details',
-                    onTap: () => context.go('/triage'),
-                    ending: _riskLabel(patient.riskClass ?? 0),
-                  ),
+                CustomTopBar(
+                  title: 'Patient Details',
+                  onTap: () => context.go('/triage'),
+                  ending: _riskLabel(patient.riskClass ?? 0),
                 ),
 
                 // ── Scrollable Content ───────────────────────
@@ -69,7 +65,6 @@ class PatientDetailScreen extends HookWidget {
                       children: [
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── Patient Info Card ────────────────
                         _PatientInfoCard(patient: patient),
 
                         AppSpacing.verticalSpaceMedium,
@@ -79,17 +74,14 @@ class PatientDetailScreen extends HookWidget {
 
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── Reuse existing VitalsSummary ─────
                         VitalsSummary(record: patient),
 
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── Clinical Findings ───────────────
                         _ClinicalFindingsCard(patient: patient),
 
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── Assessment Info ─────────────────
                         _AssessmentInfoCard(patient: patient),
 
                         AppSpacing.verticalSpaceLarge,
@@ -98,7 +90,6 @@ class PatientDetailScreen extends HookWidget {
                   ),
                 ),
 
-                // ── Bottom Buttons ───────────────────────────
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                   child: Column(
@@ -137,8 +128,6 @@ class PatientDetailScreen extends HookWidget {
     }
   }
 }
-
-// ── Patient Info Card (Simple, reusable) ─────────────────────
 
 class _PatientInfoCard extends StatelessWidget {
   final PatientRecord patient;
