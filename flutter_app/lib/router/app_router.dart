@@ -167,7 +167,6 @@ class AppRouter {
         persistedSignIn;
     final location = state.matchedLocation;
 
-    // ✅ ROUTES THAT DON'T NEED GUARDING
     if (location == '/' ||
         location == '/onboarding' ||
         location == '/signUp' ||

@@ -49,13 +49,10 @@ class PatientDetailScreen extends HookWidget {
           body: SafeArea(
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                  child: CustomTopBar(
-                    title: 'Patient Details',
-                    onTap: () => context.go('/triage'),
-                    ending: _riskLabel(patient.riskClass ?? 0),
-                  ),
+                CustomTopBar(
+                  title: 'Patient Details',
+                  onTap: () => context.go('/triage'),
+                  ending: _riskLabel(patient.riskClass ?? 0),
                 ),
 
                 // ── Scrollable Content ───────────────────────

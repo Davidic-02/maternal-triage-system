@@ -18,7 +18,6 @@ class TriageScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // only hooks needed — controller + focusNode for search field
     final searchController = useTextEditingController();
     final searchFocusNode = useFocusNode();
 
@@ -59,7 +58,6 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
-                // ── active queue header ──────────────────────────
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
@@ -91,7 +89,6 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
-                // ── loading ──────────────────────────────────────
                 if (state.status == TriageStatus.loading)
                   const SliverToBoxAdapter(
                     child: Center(
@@ -112,7 +109,6 @@ class TriageScreen extends HookWidget {
                     ),
                   ),
 
-                // ── empty active queue ───────────────────────────
                 SliverToBoxAdapter(
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 500),
@@ -127,7 +123,6 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
-                // ── active queue list ────────────────────────────
                 if (state.filteredQueue.isNotEmpty)
                   SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {

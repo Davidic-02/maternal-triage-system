@@ -25,7 +25,7 @@ class OnboardingScreen extends HookWidget {
       child: BlocConsumer<OnboardingBloc, OnboardingState>(
         listener: (context, state) {
           if (state.isCompleted == true) {
-            context.go(AppRoutes.triage);
+            context.go(AppRoutes.login);
           }
         },
         builder: (context, state) {

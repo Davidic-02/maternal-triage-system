@@ -94,12 +94,16 @@ class _FilterChip extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 6),
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               ),
-            Text(
-              label,
-              style: TextStyle(
-                color: isActive ? Colors.white : color,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+            Flexible(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: isActive ? Colors.white : color,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.ellipsis, // ← graceful truncation
+                maxLines: 1,
               ),
             ),
           ],
