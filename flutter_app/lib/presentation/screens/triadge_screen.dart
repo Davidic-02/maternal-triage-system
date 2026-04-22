@@ -27,6 +27,7 @@ class TriageScreen extends HookWidget {
           builder: (context, state) {
             return CustomScrollView(
               slivers: [
+                // ── header ──────────────────────────────────────
                 const SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -34,6 +35,7 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
+                // ── summary cards ────────────────────────────────
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -41,6 +43,7 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
+                // ── search bar ───────────────────────────────────
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -51,6 +54,7 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
+                // ── filter tabs ──────────────────────────────────
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -58,6 +62,7 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
+                // ── active queue header ──────────────────────────
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
@@ -89,6 +94,7 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
+                // ── loading ──────────────────────────────────────
                 if (state.status == TriageStatus.loading)
                   const SliverToBoxAdapter(
                     child: Center(
@@ -109,6 +115,7 @@ class TriageScreen extends HookWidget {
                     ),
                   ),
 
+                // ── empty active queue ───────────────────────────
                 SliverToBoxAdapter(
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 500),
@@ -123,6 +130,7 @@ class TriageScreen extends HookWidget {
                   ),
                 ),
 
+                // ── active queue list ────────────────────────────
                 if (state.filteredQueue.isNotEmpty)
                   SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {

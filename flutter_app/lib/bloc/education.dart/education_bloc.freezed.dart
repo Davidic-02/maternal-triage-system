@@ -56,6 +56,7 @@ extension EducationEventPatterns on EducationEvent {
 /// ```
 
 @optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TabChanged value)?  tabChanged,TResult Function( _SearchChanged value)?  searchChanged,TResult Function( _Refresh value)?  refresh,TResult Function( _VideoTapped value)?  videoTapped,TResult Function( _Init value)?  init,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TabChanged value)?  tabChanged,TResult Function( _SearchChanged value)?  searchChanged,TResult Function( _Refresh value)?  refresh,TResult Function( _Init value)?  init,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
@@ -63,6 +64,7 @@ return tabChanged(_that);case _SearchChanged() when searchChanged != null:
 return searchChanged(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _VideoTapped() when videoTapped != null:
 return videoTapped(_that);case _Init() when init != null:
+return refresh(_that);case _Init() when init != null:
 return init(_that);case _:
   return orElse();
 
@@ -82,6 +84,7 @@ return init(_that);case _:
 /// ```
 
 @optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TabChanged value)  tabChanged,required TResult Function( _SearchChanged value)  searchChanged,required TResult Function( _Refresh value)  refresh,required TResult Function( _VideoTapped value)  videoTapped,required TResult Function( _Init value)  init,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TabChanged value)  tabChanged,required TResult Function( _SearchChanged value)  searchChanged,required TResult Function( _Refresh value)  refresh,required TResult Function( _Init value)  init,}){
 final _that = this;
 switch (_that) {
 case _TabChanged():
@@ -89,6 +92,7 @@ return tabChanged(_that);case _SearchChanged():
 return searchChanged(_that);case _Refresh():
 return refresh(_that);case _VideoTapped():
 return videoTapped(_that);case _Init():
+return refresh(_that);case _Init():
 return init(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -107,6 +111,7 @@ return init(_that);case _:
 /// ```
 
 @optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TabChanged value)?  tabChanged,TResult? Function( _SearchChanged value)?  searchChanged,TResult? Function( _Refresh value)?  refresh,TResult? Function( _VideoTapped value)?  videoTapped,TResult? Function( _Init value)?  init,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TabChanged value)?  tabChanged,TResult? Function( _SearchChanged value)?  searchChanged,TResult? Function( _Refresh value)?  refresh,TResult? Function( _Init value)?  init,}){
 final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
@@ -114,6 +119,7 @@ return tabChanged(_that);case _SearchChanged() when searchChanged != null:
 return searchChanged(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _VideoTapped() when videoTapped != null:
 return videoTapped(_that);case _Init() when init != null:
+return refresh(_that);case _Init() when init != null:
 return init(_that);case _:
   return null;
 
@@ -132,12 +138,14 @@ return init(_that);case _:
 /// ```
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String tab)?  tabChanged,TResult Function( String query)?  searchChanged,TResult Function()?  refresh,TResult Function( String youtubeVideoId)?  videoTapped,TResult Function()?  init,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String tab)?  tabChanged,TResult Function( String query)?  searchChanged,TResult Function()?  refresh,TResult Function()?  init,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that.tab);case _SearchChanged() when searchChanged != null:
 return searchChanged(_that.query);case _Refresh() when refresh != null:
 return refresh();case _VideoTapped() when videoTapped != null:
 return videoTapped(_that.youtubeVideoId);case _Init() when init != null:
+return refresh();case _Init() when init != null:
 return init();case _:
   return orElse();
 
@@ -157,12 +165,14 @@ return init();case _:
 /// ```
 
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String tab)  tabChanged,required TResult Function( String query)  searchChanged,required TResult Function()  refresh,required TResult Function( String youtubeVideoId)  videoTapped,required TResult Function()  init,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String tab)  tabChanged,required TResult Function( String query)  searchChanged,required TResult Function()  refresh,required TResult Function()  init,}) {final _that = this;
 switch (_that) {
 case _TabChanged():
 return tabChanged(_that.tab);case _SearchChanged():
 return searchChanged(_that.query);case _Refresh():
 return refresh();case _VideoTapped():
 return videoTapped(_that.youtubeVideoId);case _Init():
+return refresh();case _Init():
 return init();case _:
   throw StateError('Unexpected subclass');
 
@@ -181,12 +191,14 @@ return init();case _:
 /// ```
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String tab)?  tabChanged,TResult? Function( String query)?  searchChanged,TResult? Function()?  refresh,TResult? Function( String youtubeVideoId)?  videoTapped,TResult? Function()?  init,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String tab)?  tabChanged,TResult? Function( String query)?  searchChanged,TResult? Function()?  refresh,TResult? Function()?  init,}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that.tab);case _SearchChanged() when searchChanged != null:
 return searchChanged(_that.query);case _Refresh() when refresh != null:
 return refresh();case _VideoTapped() when videoTapped != null:
 return videoTapped(_that.youtubeVideoId);case _Init() when init != null:
+return refresh();case _Init() when init != null:
 return init();case _:
   return null;
 
@@ -472,11 +484,13 @@ $EducationStateCopyWith<EducationState> get copyWith => _$EducationStateCopyWith
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is EducationState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.allVideos, allVideos)&&const DeepCollectionEquality().equals(other.allGuides, allGuides)&&(identical(other.selectedTab, selectedTab) || other.selectedTab == selectedTab)&&(identical(other.searchQuery, searchQuery) || other.searchQuery == searchQuery)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.lastFetched, lastFetched) || other.lastFetched == lastFetched));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EducationState&&const DeepCollectionEquality().equals(other.status, status)&&const DeepCollectionEquality().equals(other.allVideos, allVideos)&&const DeepCollectionEquality().equals(other.allGuides, allGuides)&&(identical(other.selectedTab, selectedTab) || other.selectedTab == selectedTab)&&(identical(other.searchQuery, searchQuery) || other.searchQuery == searchQuery)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.lastFetched, lastFetched) || other.lastFetched == lastFetched));
 }
 
 
 @override
 int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(allVideos),const DeepCollectionEquality().hash(allGuides),selectedTab,searchQuery,errorMessage,lastFetched);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(status),const DeepCollectionEquality().hash(allVideos),const DeepCollectionEquality().hash(allGuides),selectedTab,searchQuery,errorMessage,lastFetched);
 
 @override
 String toString() {
@@ -511,6 +525,9 @@ class _$EducationStateCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? allVideos = null,Object? allGuides = null,Object? selectedTab = null,Object? searchQuery = null,Object? errorMessage = freezed,Object? lastFetched = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') @override $Res call({Object? status = freezed,Object? allVideos = null,Object? allGuides = null,Object? selectedTab = null,Object? searchQuery = null,Object? errorMessage = freezed,Object? lastFetched = freezed,}) {
+  return _then(_self.copyWith(
+status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as EducationStatus,allVideos: null == allVideos ? _self.allVideos : allVideos // ignore: cast_nullable_to_non_nullable
 as List<EducationVideo>,allGuides: null == allGuides ? _self.allGuides : allGuides // ignore: cast_nullable_to_non_nullable
 as List<EducationGuide>,selectedTab: null == selectedTab ? _self.selectedTab : selectedTab // ignore: cast_nullable_to_non_nullable
@@ -692,11 +709,13 @@ _$EducationStateCopyWith<_EducationState> get copyWith => __$EducationStateCopyW
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _EducationState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._allVideos, _allVideos)&&const DeepCollectionEquality().equals(other._allGuides, _allGuides)&&(identical(other.selectedTab, selectedTab) || other.selectedTab == selectedTab)&&(identical(other.searchQuery, searchQuery) || other.searchQuery == searchQuery)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.lastFetched, lastFetched) || other.lastFetched == lastFetched));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EducationState&&const DeepCollectionEquality().equals(other.status, status)&&const DeepCollectionEquality().equals(other._allVideos, _allVideos)&&const DeepCollectionEquality().equals(other._allGuides, _allGuides)&&(identical(other.selectedTab, selectedTab) || other.selectedTab == selectedTab)&&(identical(other.searchQuery, searchQuery) || other.searchQuery == searchQuery)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.lastFetched, lastFetched) || other.lastFetched == lastFetched));
 }
 
 
 @override
 int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(_allVideos),const DeepCollectionEquality().hash(_allGuides),selectedTab,searchQuery,errorMessage,lastFetched);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(status),const DeepCollectionEquality().hash(_allVideos),const DeepCollectionEquality().hash(_allGuides),selectedTab,searchQuery,errorMessage,lastFetched);
 
 @override
 String toString() {
@@ -731,6 +750,9 @@ class __$EducationStateCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? allVideos = null,Object? allGuides = null,Object? selectedTab = null,Object? searchQuery = null,Object? errorMessage = freezed,Object? lastFetched = freezed,}) {
   return _then(_EducationState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+@override @pragma('vm:prefer-inline') $Res call({Object? status = freezed,Object? allVideos = null,Object? allGuides = null,Object? selectedTab = null,Object? searchQuery = null,Object? errorMessage = freezed,Object? lastFetched = freezed,}) {
+  return _then(_EducationState(
+status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as EducationStatus,allVideos: null == allVideos ? _self._allVideos : allVideos // ignore: cast_nullable_to_non_nullable
 as List<EducationVideo>,allGuides: null == allGuides ? _self._allGuides : allGuides // ignore: cast_nullable_to_non_nullable
 as List<EducationGuide>,selectedTab: null == selectedTab ? _self.selectedTab : selectedTab // ignore: cast_nullable_to_non_nullable
