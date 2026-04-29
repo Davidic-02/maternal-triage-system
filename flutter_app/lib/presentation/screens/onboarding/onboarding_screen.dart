@@ -4,11 +4,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maternal_triage/constant/app_colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import 'package:maternal_triage/bloc/onboarding/onboarding_bloc.dart';
-import 'package:maternal_triage/presentation/widget/button.dart';
+
 import 'package:maternal_triage/presentation/widget/onboarding_page.dart';
-import 'package:maternal_triage/presentation/widget/terms_page.dart';
+
 import 'package:maternal_triage/router/app_routes.dart';
 
 class OnboardingScreen extends HookWidget {
@@ -22,99 +21,91 @@ class OnboardingScreen extends HookWidget {
 
     return BlocProvider(
       create: (_) => OnboardingBloc(),
-      child: BlocConsumer<OnboardingBloc, OnboardingState>(
+      child: BlocListener<OnboardingBloc, OnboardingState>(
+        listenWhen: (p, c) => p.currentPage != c.currentPage,
         listener: (context, state) {
-          if (state.isCompleted == true) {
-            context.go(AppRoutes.login);
-          }
-        },
-        builder: (context, state) {
-          final isLastPage = state.currentPage == 2;
-
-          return Scaffold(
-            body: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 34),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: PageView(
-                        controller: pageController,
-                        onPageChanged: (index) {
-                          context.read<OnboardingBloc>().add(
-                            OnboardingEvent.pageChanged(index),
-                          );
-                        },
-                        children: [
-                          const OnboardingPage(
-                            title: 'Maternal Triage Assistant',
-                            description:
-                                'Your intelligent maternal health companion for fast, accurate triage decisions.',
-                            animationPath:
-                                'assets/animations/Hero animation for health care.json',
-                          ),
-                          const OnboardingPage(
-                            title: 'How It Works',
-                            description:
-                                'Fill the patient form, run the AI model, review SHAP explanation, save the record.',
-                            animationPath: 'assets/animations/chatbot.json',
-                          ),
-                          TermsPage(
-                            accepted: state.hasAcceptedTerms,
-                            onAccepted: (val) {
-                              context.read<OnboardingBloc>().add(
-                                OnboardingEvent.termsAccepted(val),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // 📍 INDICATOR
-                    if (!isLastPage)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: SmoothPageIndicator(
-                          controller: pageController,
-                          count: 3,
-                          effect: const ExpandingDotsEffect(
-                            activeDotColor: AppColors.primaryGreen,
-                            dotColor: Colors.grey,
-                            dotHeight: 10,
-                            dotWidth: 10,
-                            expansionFactor: 2.5,
-                            spacing: 8,
-                          ),
-                        ),
-                      ),
-
-                    if (isLastPage)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 32),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Button(
-                            'Get Started',
-                            onPressed: !state.hasAcceptedTerms
-                                ? null
-                                : () {
-                                    context.read<OnboardingBloc>().add(
-                                      const OnboardingEvent.completed(),
-                                    );
-                                  },
-                          ),
-                        ),
-                      ),
-
-                    // 📏 BOTTOM SPACING
-                    if (!isLastPage) const SizedBox(height: 40),
-                  ],
-                ),
-              ),
-            ),
+          pageController.animateToPage(
+            state.currentPage,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
           );
         },
+        child: BlocConsumer<OnboardingBloc, OnboardingState>(
+          listener: (context, state) {
+            if (state.isCompleted == true) {
+              context.go(AppRoutes.login);
+            }
+          },
+          builder: (context, state) {
+            return Scaffold(
+              body: Stack(
+                children: [
+                  PageView(
+                    // ✅ Pages must be inside PageView
+                    controller: pageController,
+                    onPageChanged: (index) {
+                      context.read<OnboardingBloc>().add(
+                        OnboardingEvent.pageChanged(index),
+                      );
+                    },
+                    children: [
+                      OnboardingPage(
+                        title: 'Smarter Maternal Care, Instantly',
+                        description:
+                            'AI Powered triage decision support system designed to help you make faster, safer clinical decisions',
+                        imagePath: 'assets/images/onboarding1.png',
+
+                        onGetStarted: () => context.read<OnboardingBloc>().add(
+                          const OnboardingEvent.nextPageRequested(),
+                        ),
+                        onSignIn: () => context.go(AppRoutes.login),
+                      ),
+                      OnboardingPage(
+                        title: 'Assess. Analyze. Decide.',
+                        description:
+                            'Fill in Patient Details, Get instant AI risk \n Insights, Undersatnd the "why" behind result',
+                        imagePath: 'assets/images/onboarding2.png',
+
+                        onGetStarted: () => context.read<OnboardingBloc>().add(
+                          const OnboardingEvent.nextPageRequested(),
+                        ),
+                        onSignIn: () => context.go(AppRoutes.login),
+                      ),
+                      OnboardingPage(
+                        title: 'You Stay in Control always.',
+                        description:
+                            'This tool supports your clinical decisions;\nIt dosent replace them.',
+                        imagePath: 'assets/images/onboarding3.png',
+
+                        onGetStarted: () => context.read<OnboardingBloc>().add(
+                          const OnboardingEvent.completed(),
+                        ),
+                        onSignIn: () => context.go(AppRoutes.login),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    bottom: 420, // adjust to sit above your card
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: SmoothPageIndicator(
+                        controller: pageController,
+                        count: 3,
+                        effect: const ExpandingDotsEffect(
+                          activeDotColor: Colors.orange,
+                          dotColor: Colors.grey,
+                          dotHeight: 8,
+                          dotWidth: 8,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
