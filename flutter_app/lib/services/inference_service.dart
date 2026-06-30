@@ -117,7 +117,7 @@ class InferenceService {
       bmi,
       record.heartRate,
       w,
-      h,
+      heightInMeters,
       record.previousComplications ? 1.0 : 0.0,
       record.preexistingDiabetes ? 1.0 : 0.0,
       record.gestationalDiabetes ? 1.0 : 0.0,

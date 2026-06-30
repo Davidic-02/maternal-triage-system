@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:maternal_triage/constant/app_colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:maternal_triage/bloc/onboarding/onboarding_bloc.dart';
 

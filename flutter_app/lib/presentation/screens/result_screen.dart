@@ -27,6 +27,10 @@ class ResultScreen extends HookWidget {
         final result = state.result;
         final record = state.record;
 
+        print('RESULT: ${state.result}');
+        print('RECORD: ${state.record}');
+        print('STATUS: ${state.status}');
+
         if (result == null || record == null) {
           return Scaffold(
             body: SafeArea(

@@ -93,7 +93,7 @@ class OnboardingPage extends StatelessWidget {
                         foregroundColor: Colors.white,
                         elevation: 0,
                         shape:
-                            StadiumBorder(), // ✅ fully pill-shaped curved radius
+                            const StadiumBorder(), // ✅ fully pill-shaped curved radius
                       ),
                       child: const Text(
                         'Get Started',
