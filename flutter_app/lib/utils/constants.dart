@@ -3,6 +3,9 @@ const String kModelAsset = 'assets/models/maternal_triage_model.onnx';
 const String kScalerAsset = 'assets/scaler/scaler_params.json';
 const String kShapAsset = 'assets/shap/shap_values.json';
 
+/// Youden-optimal decision threshold for the binary model (low vs high).
+const String kThresholdAsset = 'assets/scaler/decision_threshold.json';
+
 /// Normalisation constants (Min-Max) for the 14 input features.
 ///
 /// Order must match the feature vector built in [InferenceService]:

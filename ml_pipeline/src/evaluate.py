@@ -39,8 +39,16 @@ def evaluate_model(
     model,
     X_test: np.ndarray,
     y_test: np.ndarray,
+    threshold: float = None,
 ) -> tuple:
     """Compute and print classification metrics.
+
+    Parameters
+    ----------
+    threshold : float, optional
+        For binary models, classify as the positive class when
+        ``P(positive) >= threshold`` instead of using argmax/0.5. Applied
+        only when the problem has exactly two classes.
 
     Returns
     -------
@@ -49,9 +57,16 @@ def evaluate_model(
         *class_report* is the ``classification_report`` dict
         (``output_dict=True``).
     """
-    y_pred  = model.predict(X_test)
     y_proba = model.predict_proba(X_test)
     classes = np.unique(y_test)
+
+    if threshold is not None and len(classes) == 2:
+        pos = int(max(classes)); neg = int(min(classes))
+        y_pred = np.where(y_proba[:, 1] >= threshold, pos, neg)
+        print(f"  [evaluate_model] Applying decision threshold {threshold:.4f} "
+              f"(positive class = {pos}).")
+    else:
+        y_pred = model.predict(X_test)
 
     acc  = accuracy_score(y_test, y_pred)
     prec = precision_score(y_test, y_pred, average="macro", zero_division=0)
@@ -144,17 +159,25 @@ def plot_roc_curves(
     if class_names is None:
         class_names = [CLASS_NAMES[int(c)] for c in classes]
 
-    y_bin   = label_binarize(y_test, classes=classes)
     y_proba = model.predict_proba(X_test)
 
     os.makedirs(output_dir, exist_ok=True)
     out_path = os.path.join(output_dir, filename)
     fig, ax = plt.subplots(figsize=(8, 6))
 
-    for i, name in enumerate(class_names):
-        fpr, tpr, _ = roc_curve(y_bin[:, i], y_proba[:, i])
+    if len(classes) == 2:
+        # Binary: single ROC curve for the positive (second) class.
+        pos_label = classes[1]
+        fpr, tpr, _ = roc_curve(y_test, y_proba[:, 1], pos_label=pos_label)
         roc_auc_val = auc(fpr, tpr)
-        ax.plot(fpr, tpr, label=f"{name} (AUC = {roc_auc_val:.2f})")
+        ax.plot(fpr, tpr, label=f"{class_names[1]} vs {class_names[0]} (AUC = {roc_auc_val:.2f})")
+    else:
+        # Multiclass: one-vs-rest ROC curve per class.
+        y_bin = label_binarize(y_test, classes=classes)
+        for i, name in enumerate(class_names):
+            fpr, tpr, _ = roc_curve(y_bin[:, i], y_proba[:, i])
+            roc_auc_val = auc(fpr, tpr)
+            ax.plot(fpr, tpr, label=f"{name} (AUC = {roc_auc_val:.2f})")
 
     ax.plot([0, 1], [0, 1], "k--", label="Random")
     ax.set_xlabel("False Positive Rate")
@@ -178,8 +201,15 @@ def youden_threshold_optimization(
 ) -> dict:
     """Find optimal decision threshold per class using Youden's Index."""
     classes = sorted(np.unique(y_test))
-    y_bin   = label_binarize(y_test, classes=classes)
     y_proba = model.predict_proba(X_test)
+
+    # For binary, label_binarize collapses to a single column; build a
+    # per-class one-vs-rest indicator matrix explicitly so the loop works
+    # for both binary and multiclass.
+    if len(classes) == 2:
+        y_bin = np.column_stack([(np.asarray(y_test) == c).astype(int) for c in classes])
+    else:
+        y_bin = label_binarize(y_test, classes=classes)
 
     thresholds = {}
     print("\n-- Youden Optimal Thresholds ---")
@@ -198,7 +228,9 @@ def youden_threshold_optimization(
 # Smoke-test:  python3 -m src.evaluate
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
+    import os as _os
     import joblib
+    from src.config import REPORTS_DIR, CLASSIFICATION_MODE
     from src.feature_engineering import run_feature_engineering
     from src.balancing import apply_smote
     from src.train import normalize_features
@@ -208,7 +240,8 @@ if __name__ == "__main__":
         generate_model_quality_report,
     )
 
-    print("-- Loading pipeline data ---")
+    _os.makedirs(REPORTS_DIR, exist_ok=True)
+    print(f"-- Loading pipeline data (mode: {CLASSIFICATION_MODE}) ---")
     X_train, X_test, y_train, y_test = run_feature_engineering()
 
     X_res, y_res = apply_smote(X_train, y_train)
@@ -218,38 +251,43 @@ if __name__ == "__main__":
     model = joblib.load("models/stacking_model.pkl")
     print("  Model loaded from models/stacking_model.pkl")
 
-    results, class_report = evaluate_model(model, X_test_norm, np.asarray(y_test))
+    # In binary mode, apply the persisted Youden decision threshold so the
+    # reported metrics match what the deployed app produces.
+    import json as _json
+    _thr = None
+    _thr_path = "models/decision_threshold.json"
+    if _os.path.exists(_thr_path):
+        with open(_thr_path) as _fh:
+            _thr = float(_json.load(_fh)["threshold"])
+
+    results, class_report = evaluate_model(model, X_test_norm, np.asarray(y_test), threshold=_thr)
 
     print("\n-- Saving plots ---")
     classes = sorted(np.unique(y_test))
     c_names = [CLASS_NAMES[int(c)] for c in classes]
-    plot_confusion_matrix(results["confusion_matrix"], class_names=c_names)
-    plot_roc_curves(model, X_test_norm, np.asarray(y_test), class_names=c_names)
+    plot_confusion_matrix(results["confusion_matrix"], class_names=c_names, output_dir=REPORTS_DIR)
+    plot_roc_curves(model, X_test_norm, np.asarray(y_test), class_names=c_names, output_dir=REPORTS_DIR)
 
     thresholds = youden_threshold_optimization(model, X_test_norm, np.asarray(y_test))
 
     print("\n-- Saving metrics and reports ---")
+    # Write metrics JSON both to models/ (consumed by the app/convert step)
+    # and into the mode-specific reports folder for the paper.
     save_evaluation_metrics_json(
-        results,
-        class_report,
-        thresholds,
-        np.asarray(y_test),
-        class_names=c_names,
-        output_path="models/evaluation_metrics.json",
+        results, class_report, thresholds, np.asarray(y_test),
+        class_names=c_names, output_path="models/evaluation_metrics.json",
+    )
+    save_evaluation_metrics_json(
+        results, class_report, thresholds, np.asarray(y_test),
+        class_names=c_names, output_path=_os.path.join(REPORTS_DIR, "evaluation_metrics.json"),
     )
     generate_markdown_report(
-        results,
-        class_report,
-        thresholds,
-        np.asarray(y_test),
-        class_names=c_names,
-        output_path="reports/EVALUATION_REPORT.md",
+        results, class_report, thresholds, np.asarray(y_test),
+        class_names=c_names, output_path=_os.path.join(REPORTS_DIR, "EVALUATION_REPORT.md"),
     )
     generate_model_quality_report(
-        results,
-        class_report,
-        class_names=c_names,
-        output_path="reports/MODEL_QUALITY_ASSESSMENT.md",
+        results, class_report,
+        class_names=c_names, output_path=_os.path.join(REPORTS_DIR, "MODEL_QUALITY_ASSESSMENT.md"),
     )
 
     print("\n-- Done! ---")

@@ -45,6 +45,47 @@ def compute_pulse_pressure(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def compute_clinical_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Compute obstetric clinical interaction features.
+
+    These derived signals help the model distinguish MID-risk patients
+    whose raw vitals overlap with both LOW and HIGH:
+
+    - ShockIndex     = HeartRate / SystolicBP  (>0.9 flags moderate risk)
+    - MAP            = DiastolicBP + PulsePressure/3  (mean arterial pressure)
+    - HypertensionFlag = 1 if SystolicBP>=130 OR DiastolicBP>=85  (borderline HTN)
+    - TachycardiaFlag  = 1 if HeartRate>=100  (mild tachycardia)
+    - DiabetesRisk     = BloodSugar * (1 + PreexistingDiabetes + GestationalDiabetes)
+    - AgeRiskFlag      = 1 if Age<18 OR Age>35  (obstetric high-risk age bands)
+    """
+    df = df.copy()
+
+    if "HeartRate" in df.columns and "SystolicBP" in df.columns:
+        df["ShockIndex"] = df["HeartRate"] / df["SystolicBP"].replace(0, np.nan)
+
+    if "DiastolicBP" in df.columns and "PulsePressure" in df.columns:
+        df["MAP"] = df["DiastolicBP"] + df["PulsePressure"] / 3
+
+    if "SystolicBP" in df.columns and "DiastolicBP" in df.columns:
+        df["HypertensionFlag"] = (
+            (df["SystolicBP"] >= 130) | (df["DiastolicBP"] >= 85)
+        ).astype(int)
+
+    if "HeartRate" in df.columns:
+        df["TachycardiaFlag"] = (df["HeartRate"] >= 100).astype(int)
+
+    if "BloodSugar" in df.columns:
+        diabetes_cols = [c for c in ["PreexistingDiabetes", "GestationalDiabetes"] if c in df.columns]
+        diabetes_sum = df[diabetes_cols].fillna(0).sum(axis=1) if diabetes_cols else 0
+        df["DiabetesRisk"] = df["BloodSugar"] * (1 + diabetes_sum)
+
+    if "Age" in df.columns:
+        df["AgeRiskFlag"] = ((df["Age"] < 18) | (df["Age"] > 35)).astype(int)
+
+    print(f"  [compute_clinical_features] Added 6 clinical interaction features.")
+    return df
+
+
 # ---------------------------------------------------------------------------
 # Analysis helpers
 # ---------------------------------------------------------------------------
@@ -97,15 +138,18 @@ def run_feature_engineering(base_path: str = "data/raw") -> tuple:
 
     train = compute_bmi(train)
     train = compute_pulse_pressure(train)
+    train = compute_clinical_features(train)
 
     test = compute_bmi(test)
     test = compute_pulse_pressure(test)
+    test = compute_clinical_features(test)
 
     print(f"\n── Feature list after engineering ({train.shape[1]} features) ──")
     print("  ", train.columns.tolist())
 
     print("\n── Correlation analysis ──────────────────────────────")
-    correlation_analysis(train)
+    from src.config import REPORTS_DIR
+    correlation_analysis(train, output_dir=REPORTS_DIR)
 
     print("\n── Mutual Information scores (top features) ──────────")
     mi = mutual_information_scores(train, y_train)

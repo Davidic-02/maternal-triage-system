@@ -16,16 +16,57 @@ from sklearn.model_selection import train_test_split
 
 # Maps every raw variant found across the 3 datasets → canonical form
 _RAW_TO_CANONICAL = {
-    # FUTH variants
+    # FUTH / generic lowercase
     "high":      "high",
     "low":       "low",
-    # Mendeley variants
+    "mid":       "mid",
+    # Mendeley / Kaggle / hospital variants
     "high risk": "high",
     "low risk":  "low",
     "mid risk":  "mid",
-    # Kaggle variants  (already lowercase after .str.lower())
-    # covered by "high" / "low" above
 }
+
+def relabel_futh_mid(df: pd.DataFrame) -> pd.DataFrame:
+    """Relabel borderline FUTH rows as 'mid' using WHO obstetric thresholds.
+
+    FUTH only collected HIGH and LOW labels. Clinically, patients with
+    borderline vitals sit in a moderate-risk tier that was not captured.
+    This function applies evidence-based rules to recover those cases:
+
+      Systolic BP  130–139  mmHg  (pre-hypertension / gestational HTN)
+      Diastolic BP  85–89   mmHg  (borderline diastolic)
+      Blood Sugar   7.8–11  mmol/L (impaired glucose tolerance)
+      Heart Rate   100–109  bpm   (mild tachycardia)
+
+    A row must satisfy at least ONE criterion AND currently be labeled 'low'
+    or 'high' in the source column (already lower-cased) to be relabeled.
+    Rows already labeled 'high' with only borderline BPs are kept as 'high'
+    if they also have strongly elevated values (SystolicBP ≥ 140 keeps HIGH).
+    """
+    df = df.copy()
+    if "source" not in df.columns:
+        return df
+
+    futh_mask = df["source"] == "futh"
+
+    borderline = (
+        (df["SystolicBP"].between(130, 139))
+        | (df["DiastolicBP"].between(85, 89))
+        | (df["BloodSugar"].between(7.8, 11.0))
+        | (df["HeartRate"].between(100, 109))
+    )
+
+    # Only relabel rows that are currently low/high (not already mid)
+    # and do NOT have clearly HIGH values (SystolicBP ≥ 140 stays HIGH)
+    not_clearly_high = df["SystolicBP"] < 140
+
+    relabel_mask = futh_mask & borderline & not_clearly_high
+    df.loc[relabel_mask, "RiskLevel"] = "mid"
+
+    relabeled = relabel_mask.sum()
+    print(f"  [relabel_futh_mid] Relabeled {relabeled} FUTH rows → 'mid' using clinical thresholds.")
+    return df
+
 
 def normalise_risk_labels(df: pd.DataFrame, column: str = "RiskLevel") -> pd.DataFrame:
     """Normalise all RiskLevel variants to 'low', 'mid', or 'high'.
@@ -249,19 +290,38 @@ def run_preprocessing(base_path: str = "data/raw") -> tuple:
         load_futh_dataset,
         load_mendeley_dataset,
         load_kaggle_dataset,
+        load_hospital_dataset,
         combine_datasets,
     )
 
-    print("─��� Loading datasets ──────────────────────────────────")
-    df_futh     = load_futh_dataset(os.path.join(base_path, "futh_dataset.csv"))
-    df_mendeley = load_mendeley_dataset(os.path.join(base_path, "mendeley_dataset.csv"))
-    df_kaggle   = load_kaggle_dataset(os.path.join(base_path, "kaggle_dataset.csv"))
-    df = combine_datasets(df_futh, df_mendeley, df_kaggle)
+    print("── Loading datasets ───────────────────────────────────")
+    df_futh        = load_futh_dataset(os.path.join(base_path, "futh_dataset.csv"))
+    df_mendeley    = load_mendeley_dataset(os.path.join(base_path, "mendeley_dataset.csv"))
+    df_kaggle      = load_kaggle_dataset(os.path.join(base_path, "kaggle_dataset.csv"))
+    df_first_mercy = load_hospital_dataset(os.path.join(base_path, "First_Mercy_Hospital_155_Records.csv"), "first_mercy")
+    df_tim_unity   = load_hospital_dataset(os.path.join(base_path, "Tim_Unity_Hospital_105_Records.csv"),   "tim_unity")
+    df = combine_datasets(df_futh, df_mendeley, df_kaggle, df_first_mercy, df_tim_unity)
     print(f"  Combined shape: {df.shape}")
+
+    print("── Relabeling FUTH borderline cases as MID ───────────")
+    df["RiskLevel"] = df["RiskLevel"].astype(str).str.strip().str.lower()
+    df["SystolicBP"]  = pd.to_numeric(df["SystolicBP"],  errors="coerce")
+    df["DiastolicBP"] = pd.to_numeric(df["DiastolicBP"], errors="coerce")
+    df["BloodSugar"]  = pd.to_numeric(df["BloodSugar"],  errors="coerce")
+    df["HeartRate"]   = pd.to_numeric(df["HeartRate"],   errors="coerce")
+    df = relabel_futh_mid(df)
 
     print("── Normalising risk labels ───────────────────────────")
     df = normalise_risk_labels(df)
     print(f"  After normalisation: {df['RiskLevel'].value_counts().to_dict()}")
+
+    from src.config import IS_BINARY, CLASSIFICATION_MODE
+    print(f"── Classification mode: {CLASSIFICATION_MODE} ─────────────────")
+    if IS_BINARY:
+        before = len(df)
+        df = df[df["RiskLevel"] != "mid"].reset_index(drop=True)
+        print(f"  [binary mode] Dropped {before - len(df)} MID rows. "
+              f"Remaining: {df['RiskLevel'].value_counts().to_dict()}")
 
     print("── Removing duplicates ───────────────────────────────")
     df = remove_duplicates(df)

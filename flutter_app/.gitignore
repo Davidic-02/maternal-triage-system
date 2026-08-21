@@ -54,4 +54,4 @@ lib/config/
 
 # .gitignore
 .env              ← Add this line
-.env.local
+.env.local!lib/config/env_keys.example.dart
