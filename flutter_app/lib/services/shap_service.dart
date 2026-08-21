@@ -23,8 +23,7 @@ class ShapService {
     final raw = await rootBundle.loadString(kShapAsset);
     final json = jsonDecode(raw) as Map<String, dynamic>;
 
-    _featureNames =
-        List<String>.from(json['feature_names'] as List? ?? []);
+    _featureNames = List<String>.from(json['feature_names'] as List? ?? []);
 
     // raw shape: [1][50][14][3] — squeeze outer dim → [50][14][3]
     final outerList = json['shap_values'] as List;

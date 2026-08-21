@@ -60,6 +60,34 @@ def _register_xgboost_converter() -> None:
         pass  # onnxmltools not installed; proceed without XGBoost registration
 
 
+def _register_lightgbm_converter() -> None:
+    """Register the LightGBM → ONNX converter with skl2onnx.
+
+    Mirrors the XGBoost registration: skl2onnx does not know how to convert
+    LGBMClassifier nodes inside a StackingClassifier without this.
+    """
+    try:
+        from onnxmltools.convert.lightgbm.operator_converters.LightGbm import (
+            convert_lightgbm,
+        )
+        from skl2onnx import update_registered_converter
+        from skl2onnx.common.shape_calculator import (
+            calculate_linear_classifier_output_shapes,
+        )
+        from lightgbm import LGBMClassifier
+
+        update_registered_converter(
+            LGBMClassifier,
+            "LightGbmLGBMClassifier",
+            calculate_linear_classifier_output_shapes,
+            convert_lightgbm,
+            options={"nocl": [True, False], "zipmap": [True, False]},
+        )
+        print("  LightGBM converter registered via onnxmltools.")
+    except ImportError:
+        pass  # onnxmltools not installed; proceed without LightGBM registration
+
+
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
@@ -133,8 +161,10 @@ def convert_to_onnx(
             "Install it with: pip install skl2onnx onnx onnxruntime"
         ) from exc
 
-    # Register XGBoost converter so StackingClassifier + XGBClassifier works.
+    # Register XGBoost + LightGBM converters so the StackingClassifier with
+    # XGBClassifier and LGBMClassifier base learners converts cleanly.
     _register_xgboost_converter()
+    _register_lightgbm_converter()
 
     # Define input type: batch of n_features floats.
     initial_type = [("float_input", FloatTensorType([None, n_features]))]
@@ -215,8 +245,14 @@ if __name__ == "__main__":
             "Run 'python -m src.train' first to generate the model."
         )
 
+    # Auto-detect the feature count from the trained model so the ONNX input
+    # shape always matches (the pipeline now uses 19 engineered features).
+    _m = joblib.load(model_pkl)
+    n_features = int(getattr(_m, "n_features_in_", 19))
+    print(f"  Detected n_features = {n_features}, classes = {list(getattr(_m, 'classes_', []))}")
+
     print("-- Converting stacking model to ONNX ---")
-    convert_to_onnx(model_path=model_pkl, output_path=output_onnx, n_features=13)
+    convert_to_onnx(model_path=model_pkl, output_path=output_onnx, n_features=n_features)
 
     if not os.path.exists(output_onnx):
         raise RuntimeError(f"ONNX file was not created at '{output_onnx}'.")
@@ -224,8 +260,25 @@ if __name__ == "__main__":
     size_kb = os.path.getsize(output_onnx) / 1024
     print(f"  ONNX model verified at {output_onnx} ({size_kb:.1f} KB)")
 
-    print("\n-- Copying ONNX model to Flutter assets ---")
+    print("\n-- Copying ONNX model + scaler to Flutter assets ---")
     copy_to_flutter_assets(output_onnx)
+    # Keep the app's scaler in sync with the model that produced it.
+    _src_dir = os.path.dirname(os.path.abspath(__file__))
+    _scaler_dst = os.path.normpath(
+        os.path.join(_src_dir, "..", "..", "flutter_app", "assets", "scaler", "scaler_params.json")
+    )
+    os.makedirs(os.path.dirname(_scaler_dst), exist_ok=True)
+    shutil.copy2("models/scaler_params.json", _scaler_dst)
+    print(f"  Scaler copied to Flutter assets → {_scaler_dst}")
+
+    # Copy the binary decision threshold (if present) so the app applies the
+    # same Youden-optimal cutoff used during evaluation.
+    if os.path.exists("models/decision_threshold.json"):
+        _thr_dst = os.path.normpath(
+            os.path.join(_src_dir, "..", "..", "flutter_app", "assets", "scaler", "decision_threshold.json")
+        )
+        shutil.copy2("models/decision_threshold.json", _thr_dst)
+        print(f"  Decision threshold copied to Flutter assets → {_thr_dst}")
 
     print("\n-- Done! ---")
     print("  Next steps:")

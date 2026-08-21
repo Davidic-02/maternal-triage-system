@@ -12,8 +12,10 @@ class RiskBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = riskColor(result.riskClass);
     final icon = riskIcon(result.riskClass);
-    final confidence = (result.probabilities[result.riskClass] * 100)
-        .toStringAsFixed(0);
+    final probIndex = result.riskClass == 0 ? 0 : 1;
+    final confidence = (result.probabilities[probIndex] * 100).toStringAsFixed(
+      0,
+    );
 
     return Container(
       width: double.infinity,

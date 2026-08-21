@@ -10,8 +10,18 @@ class ProbabilitySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labels = ['Low Risk', 'Medium Risk', 'High Risk'];
-    final colors = [AppColors.accentGreen, Colors.orange, AppColors.danger];
+    // Adapt to the model's class count: binary (2) → Low/High,
+    // three-class (3) → Low/Medium/High. `classForBar` maps each bar back to
+    // the integer riskClass so the selected bar highlights correctly
+    // (binary high == class 2, not index 1).
+    final bool isBinary = result.probabilities.length == 2;
+    final labels = isBinary
+        ? ['Low Risk', 'High Risk']
+        : ['Low Risk', 'Medium Risk', 'High Risk'];
+    final colors = isBinary
+        ? [AppColors.accentGreen, AppColors.danger]
+        : [AppColors.accentGreen, Colors.orange, AppColors.danger];
+    final classForBar = isBinary ? [0, 2] : [0, 1, 2];
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -35,14 +45,14 @@ class ProbabilitySection extends StatelessWidget {
           ),
           AppSpacing.verticalSpaceMedium,
           ...List.generate(
-            result.probabilities.length.clamp(0, 3),
+            result.probabilities.length.clamp(0, labels.length),
             (i) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: ProbBar(
                 label: labels[i],
                 value: result.probabilities[i],
                 color: colors[i],
-                isSelected: result.riskClass == i,
+                isSelected: result.riskClass == classForBar[i],
               ),
             ),
           ),

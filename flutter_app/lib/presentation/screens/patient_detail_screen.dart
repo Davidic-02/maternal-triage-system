@@ -69,7 +69,6 @@ class PatientDetailScreen extends HookWidget {
 
                         AppSpacing.verticalSpaceMedium,
 
-                        // ── Risk Assessment Card ─────────────
                         _RiskAssessmentCard(patient: patient),
 
                         AppSpacing.verticalSpaceMedium,

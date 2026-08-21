@@ -1,0 +1,72 @@
+{
+  "generated_at": "2026-06-30T08:52:13Z",
+  "overall_metrics": {
+    "accuracy": 0.8673,
+    "precision": 0.8009,
+    "recall": 0.7579,
+    "f1": 0.7722,
+    "auc_roc": 0.9469
+  },
+  "confusion_matrix": {
+    "low": {
+      "low": 278,
+      "mid": 10,
+      "high": 17
+    },
+    "mid": {
+      "low": 18,
+      "mid": 28,
+      "high": 19
+    },
+    "high": {
+      "low": 10,
+      "mid": 6,
+      "high": 217
+    }
+  },
+  "class_metrics": {
+    "low": {
+      "precision": 0.9085,
+      "recall": 0.9115,
+      "f1": 0.91,
+      "support": 305
+    },
+    "mid": {
+      "precision": 0.6364,
+      "recall": 0.4308,
+      "f1": 0.5138,
+      "support": 65
+    },
+    "high": {
+      "precision": 0.8577,
+      "recall": 0.9313,
+      "f1": 0.893,
+      "support": 233
+    }
+  },
+  "quality_assessment": {
+    "min_accuracy": 0.8673,
+    "is_weak": false,
+    "unsafe_recall_classes": [
+      "mid"
+    ],
+    "unsafe_precision_classes": [
+      "mid"
+    ],
+    "recommendation": "Unsafe \u274c",
+    "notes": "Classes with recall below 80% (high false-negative rate \u2014 clinically unsafe): mid. Classes with precision below 80% (high false-positive rate \u2014 increased over-triage): mid."
+  },
+  "optimal_thresholds": {
+    "low": 0.3454,
+    "mid": 0.1065,
+    "high": 0.4522
+  },
+  "test_set_stats": {
+    "total_samples": 603,
+    "class_distribution": {
+      "low": 305,
+      "mid": 65,
+      "high": 233
+    }
+  }
+}

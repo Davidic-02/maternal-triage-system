@@ -60,7 +60,7 @@ class _BottomNav extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final currentIndex = _currentIndex(context);
-    final primary = Theme.of(context).colorScheme.primary;
+    const primary = Colors.orange;
 
     return Container(
       decoration: BoxDecoration(

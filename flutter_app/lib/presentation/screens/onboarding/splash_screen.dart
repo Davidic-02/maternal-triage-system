@@ -13,7 +13,7 @@ class SplashScreen extends HookWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     useEffect(() {
-      final timer = Future.delayed(const Duration(seconds: 3), () {
+      final timer = Future.delayed(const Duration(seconds: 9), () {
         // ✅ check context is still valid before navigating
         if (context.mounted) {
           context.go(AppRoutes.onboarding);
@@ -29,9 +29,16 @@ class SplashScreen extends HookWidget {
         children: [
           // ✅ push logo + title down more
           SizedBox(height: screenHeight * 0.12),
+          const Text(
+            'MatriaCare ',
+            style: TextStyle(
+              color: Colors.deepOrange,
+              fontSize: 34,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
 
           Image.asset('assets/images/maternal_dss.png', height: 80),
-
           const SizedBox(height: 8),
 
           const SizedBox(height: 40),
