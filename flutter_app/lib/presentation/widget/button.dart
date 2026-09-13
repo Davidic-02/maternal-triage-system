@@ -44,12 +44,12 @@ class Button extends StatelessWidget {
             Set<WidgetState> states,
           ) {
             if (states.contains(WidgetState.pressed)) {
-              return AppColors.primaryGreen;
+              return Colors.orange;
             } else if (states.contains(WidgetState.disabled)) {
               //  return AppColors.darkSurface;
               return AppColors.textGrey;
             }
-            return color ?? const Color(0xFF66B2B2);
+            return color ?? Colors.orange;
           }),
           padding: WidgetStateProperty.all<EdgeInsets>(
             const EdgeInsets.all(10),

@@ -1,0 +1,51 @@
+{
+  "generated_at": "2026-07-22T04:28:32Z",
+  "overall_metrics": {
+    "accuracy": 0.9498,
+    "precision": 0.9491,
+    "recall": 0.9486,
+    "f1": 0.9489,
+    "auc_roc": 0.986
+  },
+  "confusion_matrix": {
+    "low": {
+      "low": 292,
+      "high": 13
+    },
+    "high": {
+      "low": 14,
+      "high": 219
+    }
+  },
+  "class_metrics": {
+    "low": {
+      "precision": 0.9542,
+      "recall": 0.9574,
+      "f1": 0.9558,
+      "support": 305
+    },
+    "high": {
+      "precision": 0.944,
+      "recall": 0.9399,
+      "f1": 0.9419,
+      "support": 233
+    }
+  },
+  "quality_assessment": {
+    "min_accuracy": 0.9498,
+    "is_weak": false,
+    "unsafe_recall_classes": [],
+    "unsafe_precision_classes": [],
+    "recommendation": "Production Ready \u2705",
+    "notes": "Model shows strong balanced performance across all risk levels. Low-risk identification is excellent (96% recall)."
+  },
+  "optimal_thresholds": {
+    "low": 0.4377
+  },
+  "test_set_stats": {
+    "total_samples": 538,
+    "class_distribution": {
+      "low": 305
+    }
+  }
+}

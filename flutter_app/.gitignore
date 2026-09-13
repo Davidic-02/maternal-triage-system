@@ -43,3 +43,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+.DS_Store
+
+# Ignore entire config folder
+lib/config/
+
+
+# .gitignore
+.env
+
+# .gitignore
+.env              ← Add this line
+.env.local!lib/config/env_keys.example.dart

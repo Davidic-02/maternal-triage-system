@@ -17,7 +17,7 @@ dependencies:
 
   # AI / Data
   onnxruntime: ^1.4.1
-  fl_chart: ^0.66.2
+  fl_chart: ^1.2.0
 
   # Navigation & Connectivity
   go_router: ^13.0.1
@@ -41,6 +41,13 @@ dependencies:
   lottie: ^3.3.2
   flutter_svg: ^2.0.17
   timeago: ^3.7.1
+  flutter_dotenv: ^6.0.0
+  url_launcher: ^6.3.2
+  http: ^1.2.0
+  uuid: ^4.5.1
+  flutter_launcher_icons: ^0.14.4
+  
+
 
 dev_dependencies:
   flutter_test:
@@ -55,7 +62,15 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/models/
     - assets/shap/
     - assets/scaler/
     - assets/animations/
+    - assets/images/
+    - assets/svgs/
+    
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.jpeg"    

@@ -32,8 +32,6 @@ class TriageBloc extends Bloc<TriageEvent, TriageState> {
     add(const TriageEvent.started());
   }
 
-  // ── started ──────────────────────────────────────────────────
-
   void _onStarted(_Started event, Emitter<TriageState> emit) {
     emit(state.copyWith(status: TriageStatus.loading));
 
@@ -50,8 +48,6 @@ class TriageBloc extends Bloc<TriageEvent, TriageState> {
       onError: (e) => add(TriageEvent.errorOccurred(e.toString())),
     );
   }
-
-  // ── queue updates ────────────────────────────────────────────
 
   void _onActiveQueueUpdated(
     _ActiveQueueUpdated event,
@@ -71,8 +67,6 @@ class TriageBloc extends Bloc<TriageEvent, TriageState> {
     );
   }
 
-  // ── filter + search ──────────────────────────────────────────
-
   void _onFilterChanged(_FilterChanged event, Emitter<TriageState> emit) {
     emit(state.copyWith(filter: event.filter));
   }
@@ -80,8 +74,6 @@ class TriageBloc extends Bloc<TriageEvent, TriageState> {
   void _onSearchChanged(_SearchChanged event, Emitter<TriageState> emit) {
     emit(state.copyWith(searchQuery: event.query));
   }
-
-  // ── resolve patient ──────────────────────────────────────────
 
   Future<void> _onResolvePatient(
     _ResolvePatient event,
@@ -98,15 +90,11 @@ class TriageBloc extends Bloc<TriageEvent, TriageState> {
     }
   }
 
-  // ── error ────────────────────────────────────────────────────
-
   void _onErrorOccurred(_ErrorOccurred event, Emitter<TriageState> emit) {
     emit(
       state.copyWith(status: TriageStatus.error, errorMessage: event.message),
     );
   }
-
-  // ── dispose ──────────────────────────────────────────────────
 
   @override
   Future<void> close() {

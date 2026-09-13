@@ -9,6 +9,9 @@ part of 'patient_record.dart';
 _PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
     _PatientRecord(
       id: json['id'] as String?,
+      patientNameOrId: json['patientNameOrId'] as String?,
+      gestationalAge: (json['gestationalAge'] as num?)?.toDouble(),
+      fetalHeartRate: (json['fetalHeartRate'] as num?)?.toDouble(),
       age: (json['age'] as num).toDouble(),
       systolicBP: (json['systolicBP'] as num).toDouble(),
       diastolicBP: (json['diastolicBP'] as num).toDouble(),
@@ -21,6 +24,11 @@ _PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
       previousComplications: json['previousComplications'] as bool? ?? false,
       preexistingDiabetes: json['preexistingDiabetes'] as bool? ?? false,
       gestationalDiabetes: json['gestationalDiabetes'] as bool? ?? false,
+      hypertension: json['hypertension'] as bool? ?? false,
+      blurredVision: json['blurredVision'] as bool? ?? false,
+      vaginalBleeding: json['vaginalBleeding'] as bool? ?? false,
+      severeSwelling: json['severeSwelling'] as bool? ?? false,
+      reducedFetalMovement: json['reducedFetalMovement'] as bool? ?? false,
       mentalHealthStatus: json['mentalHealthStatus'] as String? ?? 'none',
       resolved: json['resolved'] as bool? ?? false,
       resolvedAt: _$JsonConverterFromJson<Timestamp, DateTime>(
@@ -38,6 +46,9 @@ _PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$PatientRecordToJson(_PatientRecord instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'patientNameOrId': instance.patientNameOrId,
+      'gestationalAge': instance.gestationalAge,
+      'fetalHeartRate': instance.fetalHeartRate,
       'age': instance.age,
       'systolicBP': instance.systolicBP,
       'diastolicBP': instance.diastolicBP,
@@ -50,6 +61,11 @@ Map<String, dynamic> _$PatientRecordToJson(_PatientRecord instance) =>
       'previousComplications': instance.previousComplications,
       'preexistingDiabetes': instance.preexistingDiabetes,
       'gestationalDiabetes': instance.gestationalDiabetes,
+      'hypertension': instance.hypertension,
+      'blurredVision': instance.blurredVision,
+      'vaginalBleeding': instance.vaginalBleeding,
+      'severeSwelling': instance.severeSwelling,
+      'reducedFetalMovement': instance.reducedFetalMovement,
       'mentalHealthStatus': instance.mentalHealthStatus,
       'resolved': instance.resolved,
       'resolvedAt': _$JsonConverterToJson<Timestamp, DateTime>(

@@ -2,12 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:maternal_triage/bloc/assessment/assessment_bloc.dart';
 import 'package:maternal_triage/bloc/auth/auth_bloc.dart';
+import 'package:maternal_triage/bloc/education.dart/education_bloc.dart';
 import 'package:maternal_triage/constant/theme_data.dart';
 import 'package:maternal_triage/firebase_options.dart';
+import 'package:maternal_triage/presentation/screens/resources_screen.dart';
 import 'package:maternal_triage/router/app_router.dart';
 import 'package:maternal_triage/services/firebase_doctor_service.dart';
+import 'package:maternal_triage/services/gemini_service.dart';
 import 'package:maternal_triage/services/persistence_services.dart';
 import 'package:maternal_triage/services/theme_services.dart';
 import 'package:toastification/toastification.dart';
@@ -15,6 +19,8 @@ import 'package:toastification/toastification.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await dotenv.load();
+  final geminiService = GeminiService(apiKey: dotenv.env['GEMINI_API_KEY']!);
 
   final authBloc = AuthBloc(
     FirebaseAuth.instance,
@@ -22,7 +28,10 @@ void main() async {
     DoctorService(),
   )..add(const AuthEvent());
 
-  final assessmentBloc = AssessmentBloc(authBloc: authBloc);
+  final assessmentBloc = AssessmentBloc(
+    authBloc: authBloc,
+    geminiService: geminiService,
+  );
   await assessmentBloc.initialise();
 
   runApp(MaternalTriageApp(assessmentBloc: assessmentBloc, authBloc: authBloc));
@@ -46,6 +55,10 @@ class MaternalTriageApp extends StatelessWidget {
         BlocProvider<AssessmentBloc>.value(value: assessmentBloc),
         //  BlocProvider<SignUpBloc>(create: (_) => SignUpBloc()),
         //  BlocProvider<TriageBloc>(create: (_) => TriageBloc(authBloc: authBloc)),
+        BlocProvider(
+          create: (_) => EducationBloc(),
+          child: const EducationalLibraryScreen(),
+        ),
       ],
       child: Builder(
         builder: (context) {

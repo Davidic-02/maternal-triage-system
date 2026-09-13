@@ -19,6 +19,9 @@ abstract class PatientRecord with _$PatientRecord {
   const PatientRecord._();
   const factory PatientRecord({
     String? id,
+    String? patientNameOrId,       // ← add for identification
+    double? gestationalAge,        // ← add for clinical context
+    double? fetalHeartRate,        // ← add for clinical context
     required double age,
     required double systolicBP,
     required double diastolicBP,
@@ -31,6 +34,11 @@ abstract class PatientRecord with _$PatientRecord {
     @Default(false) bool previousComplications,
     @Default(false) bool preexistingDiabetes,
     @Default(false) bool gestationalDiabetes,
+    @Default(false) bool hypertension,             // ← add from design
+    @Default(false) bool blurredVision,
+    @Default(false) bool vaginalBleeding,
+    @Default(false) bool severeSwelling,
+    @Default(false) bool reducedFetalMovement,
     @Default('none') String mentalHealthStatus,
     @Default(false) bool resolved,
     @TimestampConverter() DateTime? resolvedAt,
@@ -39,6 +47,16 @@ abstract class PatientRecord with _$PatientRecord {
     String? assessedBy,
     String? hospitalId,
   }) = _PatientRecord;
+
+  // ── derived fields ────────────────────────────────
+  double get pulsePressure => systolicBP - diastolicBP;
+
+  double? get bmi {
+    if (weight == null || height == null || height! <= 0) return null;
+    final heightM = height! / 100; // height in cm → meters
+    return weight! / (heightM * heightM);
+  }
+
   bool get isValid {
     if (age <= 0) return false;
     if (systolicBP <= 0 || diastolicBP <= 0) return false;

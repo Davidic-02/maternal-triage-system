@@ -50,7 +50,7 @@ class PatientCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        record.assessedBy ?? 'Unknown',
+                        record.patientNameOrId ?? 'Unknown',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,

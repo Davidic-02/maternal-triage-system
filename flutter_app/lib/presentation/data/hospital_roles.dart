@@ -1,1 +1,1 @@
-const hospitalRoles = ["Doctor", "Nurse", "Midwife", "Intern"];
+const hospitalRoles = ["Doctor", "Nurse", "Midwife", "Support Staff"];

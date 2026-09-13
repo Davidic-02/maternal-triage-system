@@ -5,7 +5,7 @@ class AppColors {
   static const primaryGreen = Color(0xFF66B2B2); // your main green
   static const accentGreen = Color(0xFF22C55E); // secondary green
   static const darkGreen = Color(0xFF0F3D2E); // deep green for dark mode
-
+  static const secondaryColor = Color(0xFFF7F8FA);
   // LIGHT MODE COLORS
   static const lightBg = Color(0xFFF5F7F6); // scaffold background light
   static const white = Color(0xFFFFFFFF);

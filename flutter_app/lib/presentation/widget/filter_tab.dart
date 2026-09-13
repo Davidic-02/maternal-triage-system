@@ -11,39 +11,48 @@ class FilterTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          _FilterChip(
+    return Row(
+      children: [
+        Flexible(
+          fit: FlexFit.tight,
+          child: _FilterChip(
             label: 'All Patients',
             filter: TriageFilter.all,
             currentFilter: currentFilter,
             color: AppColors.primaryGreen,
           ),
-          AppSpacing.horizontalSpaceSmall,
-          _FilterChip(
+        ),
+        AppSpacing.horizontalSpaceSmall,
+        Flexible(
+          fit: FlexFit.tight,
+          child: _FilterChip(
             label: 'Emergency',
             filter: TriageFilter.high,
             currentFilter: currentFilter,
             color: AppColors.danger,
           ),
-          AppSpacing.horizontalSpaceSmall,
-          _FilterChip(
+        ),
+        AppSpacing.horizontalSpaceSmall,
+        Flexible(
+          fit: FlexFit.tight,
+          child: _FilterChip(
             label: 'Urgent',
             filter: TriageFilter.moderate,
             currentFilter: currentFilter,
             color: Colors.orange,
           ),
-          AppSpacing.horizontalSpaceSmall,
-          _FilterChip(
+        ),
+        AppSpacing.horizontalSpaceSmall,
+        Flexible(
+          fit: FlexFit.tight,
+          child: _FilterChip(
             label: 'Stable',
             filter: TriageFilter.low,
             currentFilter: currentFilter,
             color: AppColors.accentGreen,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -68,12 +77,15 @@ class _FilterChip extends StatelessWidget {
           context.read<TriageBloc>().add(TriageEvent.filterChanged(filter)),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        width: double.infinity,
+        // In _FilterChip
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
         decoration: BoxDecoration(
           color: isActive ? color : color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (!isActive)
               Container(
@@ -82,12 +94,16 @@ class _FilterChip extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 6),
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               ),
-            Text(
-              label,
-              style: TextStyle(
-                color: isActive ? Colors.white : color,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+            Flexible(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: isActive ? Colors.white : color,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.ellipsis, // ← graceful truncation
+                maxLines: 1,
               ),
             ),
           ],

@@ -20,7 +20,7 @@ class TriageSearchBar extends StatelessWidget {
       focusNode: focusNode,
       hintText: 'Search patients...',
       keyboardType: TextInputType.text,
-      prefixIcon: '🔍',
+      prefixIcon: 'searchbar',
       onChanged: (value) =>
           context.read<TriageBloc>().add(TriageEvent.searchChanged(value)),
       suffixIcon: controller.text.isNotEmpty

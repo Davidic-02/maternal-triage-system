@@ -40,7 +40,7 @@ class TermsPage extends StatelessWidget {
           Row(
             children: [
               Checkbox(
-                activeColor: Colors.green,
+                activeColor: Colors.orange,
                 value: accepted,
                 onChanged: (val) => onAccepted(val ?? false),
               ),

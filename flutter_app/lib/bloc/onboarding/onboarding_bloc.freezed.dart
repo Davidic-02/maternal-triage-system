@@ -55,13 +55,15 @@ extension OnboardingEventPatterns on OnboardingEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _PageChanged value)?  pageChanged,TResult Function( _TermsAccepted value)?  termsAccepted,TResult Function( _Completed value)?  completed,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _PageChanged value)?  pageChanged,TResult Function( _NextPageRequested value)?  nextPageRequested,TResult Function( _TermsAccepted value)?  termsAccepted,TResult Function( _Completed value)?  completed,TResult Function( _AutoAdvance value)?  autoAdvance,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _PageChanged() when pageChanged != null:
-return pageChanged(_that);case _TermsAccepted() when termsAccepted != null:
+return pageChanged(_that);case _NextPageRequested() when nextPageRequested != null:
+return nextPageRequested(_that);case _TermsAccepted() when termsAccepted != null:
 return termsAccepted(_that);case _Completed() when completed != null:
-return completed(_that);case _:
+return completed(_that);case _AutoAdvance() when autoAdvance != null:
+return autoAdvance(_that);case _:
   return orElse();
 
 }
@@ -79,13 +81,15 @@ return completed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _PageChanged value)  pageChanged,required TResult Function( _TermsAccepted value)  termsAccepted,required TResult Function( _Completed value)  completed,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _PageChanged value)  pageChanged,required TResult Function( _NextPageRequested value)  nextPageRequested,required TResult Function( _TermsAccepted value)  termsAccepted,required TResult Function( _Completed value)  completed,required TResult Function( _AutoAdvance value)  autoAdvance,}){
 final _that = this;
 switch (_that) {
 case _PageChanged():
-return pageChanged(_that);case _TermsAccepted():
+return pageChanged(_that);case _NextPageRequested():
+return nextPageRequested(_that);case _TermsAccepted():
 return termsAccepted(_that);case _Completed():
-return completed(_that);case _:
+return completed(_that);case _AutoAdvance():
+return autoAdvance(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +106,15 @@ return completed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _PageChanged value)?  pageChanged,TResult? Function( _TermsAccepted value)?  termsAccepted,TResult? Function( _Completed value)?  completed,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _PageChanged value)?  pageChanged,TResult? Function( _NextPageRequested value)?  nextPageRequested,TResult? Function( _TermsAccepted value)?  termsAccepted,TResult? Function( _Completed value)?  completed,TResult? Function( _AutoAdvance value)?  autoAdvance,}){
 final _that = this;
 switch (_that) {
 case _PageChanged() when pageChanged != null:
-return pageChanged(_that);case _TermsAccepted() when termsAccepted != null:
+return pageChanged(_that);case _NextPageRequested() when nextPageRequested != null:
+return nextPageRequested(_that);case _TermsAccepted() when termsAccepted != null:
 return termsAccepted(_that);case _Completed() when completed != null:
-return completed(_that);case _:
+return completed(_that);case _AutoAdvance() when autoAdvance != null:
+return autoAdvance(_that);case _:
   return null;
 
 }
@@ -125,12 +131,14 @@ return completed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int page)?  pageChanged,TResult Function( bool accepted)?  termsAccepted,TResult Function()?  completed,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int page)?  pageChanged,TResult Function()?  nextPageRequested,TResult Function( bool accepted)?  termsAccepted,TResult Function()?  completed,TResult Function()?  autoAdvance,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PageChanged() when pageChanged != null:
-return pageChanged(_that.page);case _TermsAccepted() when termsAccepted != null:
+return pageChanged(_that.page);case _NextPageRequested() when nextPageRequested != null:
+return nextPageRequested();case _TermsAccepted() when termsAccepted != null:
 return termsAccepted(_that.accepted);case _Completed() when completed != null:
-return completed();case _:
+return completed();case _AutoAdvance() when autoAdvance != null:
+return autoAdvance();case _:
   return orElse();
 
 }
@@ -148,12 +156,14 @@ return completed();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int page)  pageChanged,required TResult Function( bool accepted)  termsAccepted,required TResult Function()  completed,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int page)  pageChanged,required TResult Function()  nextPageRequested,required TResult Function( bool accepted)  termsAccepted,required TResult Function()  completed,required TResult Function()  autoAdvance,}) {final _that = this;
 switch (_that) {
 case _PageChanged():
-return pageChanged(_that.page);case _TermsAccepted():
+return pageChanged(_that.page);case _NextPageRequested():
+return nextPageRequested();case _TermsAccepted():
 return termsAccepted(_that.accepted);case _Completed():
-return completed();case _:
+return completed();case _AutoAdvance():
+return autoAdvance();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +180,14 @@ return completed();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int page)?  pageChanged,TResult? Function( bool accepted)?  termsAccepted,TResult? Function()?  completed,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int page)?  pageChanged,TResult? Function()?  nextPageRequested,TResult? Function( bool accepted)?  termsAccepted,TResult? Function()?  completed,TResult? Function()?  autoAdvance,}) {final _that = this;
 switch (_that) {
 case _PageChanged() when pageChanged != null:
-return pageChanged(_that.page);case _TermsAccepted() when termsAccepted != null:
+return pageChanged(_that.page);case _NextPageRequested() when nextPageRequested != null:
+return nextPageRequested();case _TermsAccepted() when termsAccepted != null:
 return termsAccepted(_that.accepted);case _Completed() when completed != null:
-return completed();case _:
+return completed();case _AutoAdvance() when autoAdvance != null:
+return autoAdvance();case _:
   return null;
 
 }
@@ -248,6 +260,38 @@ as int,
 
 
 }
+
+/// @nodoc
+
+
+class _NextPageRequested implements OnboardingEvent {
+  const _NextPageRequested();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NextPageRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnboardingEvent.nextPageRequested()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 
@@ -339,6 +383,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'OnboardingEvent.completed()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _AutoAdvance implements OnboardingEvent {
+  const _AutoAdvance();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AutoAdvance);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnboardingEvent.autoAdvance()';
 }
 
 

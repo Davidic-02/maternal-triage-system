@@ -191,26 +191,24 @@ def save_shap_values(
 # Smoke-test:  python3 -m src.explainability
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
+    import shutil
     import joblib
+    from src.config import REPORTS_DIR, CLASSIFICATION_MODE
     from src.feature_engineering import run_feature_engineering
     from src.balancing import apply_smote
     from src.train import normalize_features
 
-    FEATURE_NAMES = [
-        "Age", "SystolicBP", "DiastolicBP", "BloodSugar", "BodyTemp",
-        "BMI", "HeartRate", "Weight", "Height",
-        "PreviousComplications", "PreexistingDiabetes", "GestationalDiabetes",
-        "MentalHealthStatus", "PulsePressure",
-    ]
-
-    print("-- Loading pipeline data ---")
+    print(f"-- Loading pipeline data (mode: {CLASSIFICATION_MODE}) ---")
     X_train, X_test, y_train, y_test = run_feature_engineering()
+    # Feature names derived from the engineered columns (19 features), so SHAP
+    # always matches the model's actual inputs.
+    FEATURE_NAMES = list(X_train.columns)
     X_res, y_res = apply_smote(X_train, y_train)
     X_train_norm, X_test_norm = normalize_features(X_res, X_test)
 
     print("-- Loading trained model ---")
     model = joblib.load("models/stacking_model.pkl")
-    print("  Model loaded from models/stacking_model.pkl")
+    print(f"  Model loaded ({len(FEATURE_NAMES)} features: {FEATURE_NAMES})")
 
     N = 50
     X_explain = X_test_norm[:N]
@@ -218,53 +216,21 @@ if __name__ == "__main__":
     shap_values = compute_shap_values(model, X_train_norm, X_explain, background_samples=50)
 
     print("\n-- Saving SHAP summary plot ---")
-    plot_shap_summary(shap_values, X_explain, feature_names=FEATURE_NAMES)
+    os.makedirs(REPORTS_DIR, exist_ok=True)
+    plot_shap_summary(shap_values, X_explain, feature_names=FEATURE_NAMES, output_dir=REPORTS_DIR)
 
     print("\n-- Saving SHAP values JSON ---")
     save_shap_values(shap_values, "models/shap_values.json", feature_names=FEATURE_NAMES)
 
-    print("\n-- Local explanation for sample 0 ---")
-    explanation = get_local_shap_explanation(shap_values, index=0, feature_names=FEATURE_NAMES)
-    for e in explanation:
-        print(f"  {e['feature']:25s}  SHAP={e['shap_value']:+.4f}  ({e['direction']})")
-
-    print("\n-- Done! ---")
-
-# ---------------------------------------------------------------------------
-# Smoke-test:  python3 -m src.explainability
-# ---------------------------------------------------------------------------
-if __name__ == "__main__":
-    import joblib
-    from src.feature_engineering import run_feature_engineering
-    from src.balancing import apply_smote
-    from src.train import normalize_features
-
-    FEATURE_NAMES = [
-        "Age", "SystolicBP", "DiastolicBP", "BloodSugar", "BodyTemp",
-        "BMI", "HeartRate", "Weight", "Height",
-        "PreviousComplications", "PreexistingDiabetes", "GestationalDiabetes",
-        "MentalHealthStatus", "PulsePressure",
-    ]
-
-    print("-- Loading pipeline data ---")
-    X_train, X_test, y_train, y_test = run_feature_engineering()
-    X_res, y_res = apply_smote(X_train, y_train)
-    X_train_norm, X_test_norm = normalize_features(X_res, X_test)
-
-    print("-- Loading trained model ---")
-    model = joblib.load("models/stacking_model.pkl")
-    print("  Model loaded from models/stacking_model.pkl")
-
-    N = 50
-    X_explain = X_test_norm[:N]
-    print(f"\n-- Computing SHAP values on first {N} test samples ---")
-    shap_values = compute_shap_values(model, X_train_norm, X_explain, background_samples=50)
-
-    print("\n-- Saving SHAP summary plot ---")
-    plot_shap_summary(shap_values, X_explain, feature_names=FEATURE_NAMES)
-
-    print("\n-- Saving SHAP values JSON ---")
-    save_shap_values(shap_values, "models/shap_values.json", feature_names=FEATURE_NAMES)
+    # Copy SHAP values into the Flutter app so the explanation screen matches
+    # the deployed model's features.
+    _src_dir = os.path.dirname(os.path.abspath(__file__))
+    _shap_dst = os.path.normpath(
+        os.path.join(_src_dir, "..", "..", "flutter_app", "assets", "shap", "shap_values.json")
+    )
+    os.makedirs(os.path.dirname(_shap_dst), exist_ok=True)
+    shutil.copy2("models/shap_values.json", _shap_dst)
+    print(f"  SHAP values copied to Flutter assets → {_shap_dst}")
 
     print("\n-- Local explanation for sample 0 ---")
     explanation = get_local_shap_explanation(shap_values, index=0, feature_names=FEATURE_NAMES)
