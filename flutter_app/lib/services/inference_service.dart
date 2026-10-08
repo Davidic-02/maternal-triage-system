@@ -10,7 +10,7 @@ import '../utils/constants.dart';
 
 /// Service that loads the ONNX model and runs inference.
 class InferenceService {
-  // The model uses 19 engineered features (see _buildInputTensor and the
+  // The model uses 19 engineered features (see buildInputTensor and the
   // ml_pipeline feature_engineering order). Binary model: 2 output classes.
   static const int _kNumFeatures = 19;
 
@@ -73,7 +73,7 @@ class InferenceService {
       throw StateError('Model not loaded. Call loadModel() first.');
     }
 
-    final input = _buildInputTensor(record);
+    final input = buildInputTensor(record);
     final inputOrt = OrtValueTensor.createTensorWithDataList(input, [1, _kNumFeatures]);
     final runOptions = OrtRunOptions();
 
@@ -133,8 +133,32 @@ class InferenceService {
     }
   }
 
+  /// Returns P(high risk) for each of [n] normalised rows packed in [rows].
+  /// Used to compute per-patient Shapley explanations in one batched call.
+  List<double> predictHighRiskBatch(Float32List rows, int n) {
+    if (_session == null) {
+      throw StateError('Model not loaded. Call loadModel() first.');
+    }
+    final input = OrtValueTensor.createTensorWithDataList(rows, [n, _kNumFeatures]);
+    final runOptions = OrtRunOptions();
+    try {
+      final outputs = _session!.run(runOptions, {'float_input': input});
+      final proba = outputs[1]?.value as List;
+      final result = [
+        for (final row in proba) ((row as List)[1] as num).toDouble(),
+      ];
+      for (final o in outputs) {
+        o?.release();
+      }
+      return result;
+    } finally {
+      input.release();
+      runOptions.release();
+    }
+  }
+
   /// Builds a normalised [Float32List] input tensor from [record].
-  Float32List _buildInputTensor(PatientRecord record) {
+  Float32List buildInputTensor(PatientRecord record) {
     final w = record.weight ?? 0.0;
     final h = record.height ?? 0.0;
     final heightInMeters = h / 100;

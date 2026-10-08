@@ -1,0 +1,11 @@
+{
+  "n_patients": 100,
+  "estimator": "permutation Shapley, 64 antithetic permutations, 16 k-means background points",
+  "reference": "shap.KernelExplainer, same model/background/output, nsamples=2048",
+  "pearson_r_mean": 0.987289446469629,
+  "pearson_r_min": 0.7969851912944015,
+  "top3_overlap_mean": 0.87,
+  "top5_overlap_mean": 0.9,
+  "additivity_abs_error_max": 3.958120942115784e-09,
+  "python_ms_per_explanation_median": 33.020729000000415
+}

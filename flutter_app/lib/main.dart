@@ -14,13 +14,18 @@ import 'package:maternal_triage/services/firebase_doctor_service.dart';
 import 'package:maternal_triage/services/gemini_service.dart';
 import 'package:maternal_triage/services/persistence_services.dart';
 import 'package:maternal_triage/services/theme_services.dart';
+import 'package:maternal_triage/utils/constants.dart';
 import 'package:toastification/toastification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await dotenv.load();
-  final geminiService = GeminiService(apiKey: dotenv.env['GEMINI_API_KEY']!);
+  GeminiService? geminiService;
+  if (kAllowOnlineExplanations) {
+    await dotenv.load();
+    final key = dotenv.env['GEMINI_API_KEY'];
+    if (key != null && key.isNotEmpty) geminiService = GeminiService(apiKey: key);
+  }
 
   final authBloc = AuthBloc(
     FirebaseAuth.instance,

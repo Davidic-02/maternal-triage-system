@@ -10,7 +10,7 @@ ml_pipeline/
 │   ├── raw/          ← place raw CSV datasets here
 │   └── processed/    ← preprocessed outputs
 ├── models/
-│   ├── *.pkl / *.tflite         ← saved models
+│   ├── *.pkl / *.onnx           ← saved models
 │   └── evaluation_metrics.json  ← auto-generated metrics (JSON)
 ├── notebooks/
 │   └── 01_eda.ipynb  ← Exploratory Data Analysis
@@ -61,7 +61,7 @@ jupyter notebook notebooks/01_eda.ipynb
 5. **Training** (`src/train.py`) — stacking ensemble (RF + XGBoost + SVM → LR meta-learner).
 6. **Evaluation** (`src/evaluate.py`) — accuracy, precision, recall, F1, AUC-ROC, confusion matrix.
 7. **Explainability** (`src/explainability.py`) — SHAP global and local explanations.
-8. **Conversion** (`src/convert_model.py`) — export model to TFLite for the Flutter app.
+8. **Conversion** (`src/convert_model.py`) — export model to ONNX for the Flutter app.
 
 ## Pipeline Outputs
 

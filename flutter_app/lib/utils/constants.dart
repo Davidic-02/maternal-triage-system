@@ -1,7 +1,15 @@
 /// Asset paths for the ONNX model, scaler params, and SHAP values.
 const String kModelAsset = 'assets/models/maternal_triage_model.onnx';
 const String kScalerAsset = 'assets/scaler/scaler_params.json';
-const String kShapAsset = 'assets/shap/shap_values.json';
+const String kShapBackgroundAsset = 'assets/shap/background.json';
+
+/// Per-patient Shapley settings; must match ml_pipeline/src/export_explainer_assets.py.
+const int kShapPermutations = 64;
+const int kShapSeed = 42;
+
+/// Online LLM explanations send patient vitals to Google Gemini. Off by default
+/// so the app stays fully offline and no patient data leaves the device.
+const bool kAllowOnlineExplanations = bool.fromEnvironment('ALLOW_ONLINE_EXPLANATIONS');
 
 /// Youden-optimal decision threshold for the binary model (low vs high).
 const String kThresholdAsset = 'assets/scaler/decision_threshold.json';
