@@ -30,6 +30,7 @@ FEATURES = [
 MODEL_PATH = "../flutter_app/assets/models/maternal_triage_model.onnx"
 SCALER_PATH = "../flutter_app/assets/scaler/scaler_params.json"
 BACKGROUND_OUT = "../flutter_app/assets/shap/background.json"
+MEDIANS_OUT = "../flutter_app/assets/scaler/feature_medians.json"
 REPORT_OUT = "reports/binary/explanation_validation.json"
 
 N_BACKGROUND = 16      # k-means centroids shipped to the device
@@ -90,6 +91,10 @@ def permutation_shapley(f, x, background, weights, n_perm=N_PERMUTATIONS, seed=S
 
 def main() -> None:
     X_train, X_test, y_train, y_test = run_feature_engineering()
+    med = {c: float(v) for c, v in X_train[["Weight", "Height", "BMI"]].median().items()}
+    json.dump({**med, "note": "training-set medians used to impute missing optional inputs (Height in metres)"},
+              open(MEDIANS_OUT, "w"), indent=2)
+    print(f"Medians -> {MEDIANS_OUT}: {med}")
     sc = json.load(open(SCALER_PATH))
     Xtr = normalise(np.asarray(X_train, float), sc)
     Xte = normalise(np.asarray(X_test, float), sc)

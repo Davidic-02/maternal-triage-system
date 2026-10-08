@@ -25,6 +25,13 @@ class InferenceService {
   int _positiveClass = 2;
   int _negativeClass = 0;
 
+  // Training-set medians for optional inputs (pipeline imputation rule).
+  double _medianWeight = 73.0;
+  double _medianHeightM = 1.66;
+  double _medianBmi = 23.0;
+
+  double get decisionThreshold => _threshold;
+
   /// Loads the ONNX model and scaler params from assets.
   /// Call once during app startup.
   Future<void> loadModel() async {
@@ -51,6 +58,12 @@ class InferenceService {
     } catch (_) {
       // No threshold asset — fall back to the model's argmax via 0.5.
     }
+
+    final medians =
+        jsonDecode(await rootBundle.loadString(kMediansAsset)) as Map<String, dynamic>;
+    _medianWeight = (medians['Weight'] as num).toDouble();
+    _medianHeightM = (medians['Height'] as num).toDouble();
+    _medianBmi = (medians['BMI'] as num).toDouble();
 
     // Load ONNX model from assets
     final modelBytes = await rootBundle.load(kModelAsset);
@@ -159,10 +172,13 @@ class InferenceService {
 
   /// Builds a normalised [Float32List] input tensor from [record].
   Float32List buildInputTensor(PatientRecord record) {
-    final w = record.weight ?? 0.0;
-    final h = record.height ?? 0.0;
-    final heightInMeters = h / 100;
-    final bmi = (w > 0 && h > 0) ? w / (heightInMeters * heightInMeters) : 0.0;
+    // Missing weight/height are imputed with training medians, matching the
+    // pipeline; BMI is only computed when both were actually measured.
+    final w = record.weight ?? _medianWeight;
+    final heightInMeters = record.height != null ? record.height! / 100 : _medianHeightM;
+    final bmi = (record.weight != null && record.height != null)
+        ? w / (heightInMeters * heightInMeters)
+        : _medianBmi;
 
     // Derived clinical features — MUST match ml_pipeline feature order
     // (feature_engineering.compute_clinical_features).

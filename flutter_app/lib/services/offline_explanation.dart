@@ -25,7 +25,24 @@ const _labels = {
 
 /// Plain-language explanation built on-device from the patient's own SHAP
 /// factors, so no patient data leaves the device.
-String buildOfflineExplanation(PatientRecord record, RiskResult result) {
+/// Prompt to repeat measurements when the result could change with ordinary
+/// measurement error: blood pressure near the 140/90 mmHg cut-off, or a risk
+/// score close to the decision threshold. Null when no repeat is needed.
+String? measurementAdvisory(PatientRecord record, double? pHigh, double threshold) {
+  final reasons = <String>[
+    if ((record.systolicBP >= 135 && record.systolicBP < 145) ||
+        (record.diastolicBP >= 85 && record.diastolicBP < 95))
+      'blood pressure is close to the 140/90 mmHg cut-off',
+    if (pHigh != null && (pHigh - threshold).abs() <= 0.1)
+      'the risk score is close to the decision threshold',
+  ];
+  if (reasons.isEmpty) return null;
+  return 'Borderline result: ${reasons.join(' and ')}. Repeat the blood pressure '
+      'reading after the patient has rested for 5 minutes, recheck blood sugar, '
+      'and run the assessment again.';
+}
+
+String buildOfflineExplanation(PatientRecord record, RiskResult result, {double threshold = 0.5}) {
   final high = result.riskLabel == 'High';
   final pHigh = result.probabilities.length == 2 ? result.probabilities[1] : null;
   final buffer = StringBuffer()
@@ -41,6 +58,9 @@ String buildOfflineExplanation(PatientRecord record, RiskResult result) {
       buffer.writeln('• $name $direction the risk estimate');
     }
   }
+
+  final advisory = measurementAdvisory(record, pHigh, threshold);
+  if (advisory != null) buffer.writeln('\n$advisory');
 
   if (record.blurredVision || record.vaginalBleeding) {
     buffer.writeln('\nDanger sign recorded '

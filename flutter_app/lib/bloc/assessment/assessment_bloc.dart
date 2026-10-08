@@ -117,7 +117,10 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
     PatientRecord record,
     RiskResult result,
   ) async {
-    final offline = buildOfflineExplanation(record, result);
+    final threshold = _inferenceService.decisionThreshold;
+    final offline = buildOfflineExplanation(record, result, threshold: threshold);
+    final pHigh = result.probabilities.length == 2 ? result.probabilities[1] : null;
+    final advisory = measurementAdvisory(record, pHigh, threshold);
     final gemini = _geminiService;
     if (!kAllowOnlineExplanations || gemini == null) {
       add(AssessmentEvent.explanationGenerated(offline));
@@ -128,7 +131,9 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
         record: record,
         result: result,
       );
-      add(AssessmentEvent.explanationGenerated(explanation));
+      add(AssessmentEvent.explanationGenerated(
+        advisory == null ? explanation : '$explanation\n\n$advisory',
+      ));
     } catch (e) {
       print('Online explanation failed, using offline explanation: $e');
       add(AssessmentEvent.explanationGenerated(offline));

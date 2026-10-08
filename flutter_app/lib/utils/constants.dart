@@ -13,6 +13,7 @@ const bool kAllowOnlineExplanations = bool.fromEnvironment('ALLOW_ONLINE_EXPLANA
 
 /// Youden-optimal decision threshold for the binary model (low vs high).
 const String kThresholdAsset = 'assets/scaler/decision_threshold.json';
+const String kMediansAsset = 'assets/scaler/feature_medians.json';
 
 /// Normalisation constants (Min-Max) for the 14 input features.
 ///
