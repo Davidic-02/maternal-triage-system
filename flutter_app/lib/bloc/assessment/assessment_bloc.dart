@@ -76,8 +76,15 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
       // ✅ Create with risk once
       final recordWithRisk = auditedRecord.copyWith(riskClass: riskClass);
 
-      // ✅ Save once
-      await _firebaseService.saveRecord(recordWithRisk);
+      // Save without awaiting: Firestore only completes a write once the
+      // server acknowledges it, which would block the result screen offline.
+      // With persistence enabled the record is queued locally and synced later.
+      unawaited(
+        _firebaseService.saveRecord(recordWithRisk).then<void>(
+          (_) {},
+          onError: (Object e) => print('Record saved locally; sync pending: $e'),
+        ),
+      );
 
       List<ShapFeature> shapFeatures = [];
       if (_shapService.isLoaded) {
