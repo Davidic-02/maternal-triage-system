@@ -10,7 +10,7 @@ import '../utils/constants.dart';
 
 /// Service that loads the ONNX model and runs inference.
 class InferenceService {
-  // The model uses 19 engineered features (see _buildInputTensor and the
+  // The model uses 19 engineered features (see buildInputTensor and the
   // ml_pipeline feature_engineering order). Binary model: 2 output classes.
   static const int _kNumFeatures = 19;
 
@@ -24,6 +24,13 @@ class InferenceService {
   double _threshold = 0.5;
   int _positiveClass = 2;
   int _negativeClass = 0;
+
+  // Training-set medians for optional inputs (pipeline imputation rule).
+  double _medianWeight = 73.0;
+  double _medianHeightM = 1.66;
+  double _medianBmi = 23.0;
+
+  double get decisionThreshold => _threshold;
 
   /// Loads the ONNX model and scaler params from assets.
   /// Call once during app startup.
@@ -52,6 +59,12 @@ class InferenceService {
       // No threshold asset — fall back to the model's argmax via 0.5.
     }
 
+    final medians =
+        jsonDecode(await rootBundle.loadString(kMediansAsset)) as Map<String, dynamic>;
+    _medianWeight = (medians['Weight'] as num).toDouble();
+    _medianHeightM = (medians['Height'] as num).toDouble();
+    _medianBmi = (medians['BMI'] as num).toDouble();
+
     // Load ONNX model from assets
     final modelBytes = await rootBundle.load(kModelAsset);
     final bytes = modelBytes.buffer.asUint8List();
@@ -73,7 +86,7 @@ class InferenceService {
       throw StateError('Model not loaded. Call loadModel() first.');
     }
 
-    final input = _buildInputTensor(record);
+    final input = buildInputTensor(record);
     final inputOrt = OrtValueTensor.createTensorWithDataList(input, [1, _kNumFeatures]);
     final runOptions = OrtRunOptions();
 
@@ -133,12 +146,39 @@ class InferenceService {
     }
   }
 
+  /// Returns P(high risk) for each of [n] normalised rows packed in [rows].
+  /// Used to compute per-patient Shapley explanations in one batched call.
+  List<double> predictHighRiskBatch(Float32List rows, int n) {
+    if (_session == null) {
+      throw StateError('Model not loaded. Call loadModel() first.');
+    }
+    final input = OrtValueTensor.createTensorWithDataList(rows, [n, _kNumFeatures]);
+    final runOptions = OrtRunOptions();
+    try {
+      final outputs = _session!.run(runOptions, {'float_input': input});
+      final proba = outputs[1]?.value as List;
+      final result = [
+        for (final row in proba) ((row as List)[1] as num).toDouble(),
+      ];
+      for (final o in outputs) {
+        o?.release();
+      }
+      return result;
+    } finally {
+      input.release();
+      runOptions.release();
+    }
+  }
+
   /// Builds a normalised [Float32List] input tensor from [record].
-  Float32List _buildInputTensor(PatientRecord record) {
-    final w = record.weight ?? 0.0;
-    final h = record.height ?? 0.0;
-    final heightInMeters = h / 100;
-    final bmi = (w > 0 && h > 0) ? w / (heightInMeters * heightInMeters) : 0.0;
+  Float32List buildInputTensor(PatientRecord record) {
+    // Missing weight/height are imputed with training medians, matching the
+    // pipeline; BMI is only computed when both were actually measured.
+    final w = record.weight ?? _medianWeight;
+    final heightInMeters = record.height != null ? record.height! / 100 : _medianHeightM;
+    final bmi = (record.weight != null && record.height != null)
+        ? w / (heightInMeters * heightInMeters)
+        : _medianBmi;
 
     // Derived clinical features — MUST match ml_pipeline feature order
     // (feature_engineering.compute_clinical_features).

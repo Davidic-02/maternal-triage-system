@@ -13,7 +13,7 @@ class GeminiService {
   String _buildPrompt(PatientRecord record, RiskResult result) {
     final shapContext = result.shapFeatures
         .take(3)
-        .map((f) => '${f.featureName} (+${f.shapValue.toStringAsFixed(2)})')
+        .map((f) => '${f.featureName} (${f.shapValue >= 0 ? '+' : ''}${f.shapValue.toStringAsFixed(2)})')
         .join(', ');
 
     return '''

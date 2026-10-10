@@ -1,0 +1,6 @@
+{
+  "Weight": 73.0,
+  "Height": 1.66,
+  "BMI": 23.0,
+  "note": "training-set medians used to impute missing optional inputs (Height in metres)"
+}

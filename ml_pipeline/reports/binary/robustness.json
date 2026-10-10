@@ -1,0 +1,93 @@
+{
+  "n_test": 538,
+  "decision_threshold": 0.8052579157719557,
+  "baseline": {
+    "auroc": 0.9859705903046507,
+    "accuracy": 0.949814126394052,
+    "sensitivity": 0.9399141630901288,
+    "specificity": 0.9573770491803278
+  },
+  "derived_features_reproduced": true,
+  "noise_sd_at_multiplier_1": {
+    "SystolicBP": 5.0,
+    "DiastolicBP": 5.0,
+    "HeartRate": 5.0,
+    "BloodSugar": 0.5,
+    "BodyTemp": 0.4,
+    "BMI": 0.5,
+    "Weight": 1.0,
+    "Height": 0.01
+  },
+  "repeats": 30,
+  "measurement_noise": [
+    {
+      "noise_multiplier": 0.5,
+      "auroc_mean": 0.9684246816294942,
+      "auroc_min": 0.9629775557588124,
+      "accuracy_mean": 0.908550185873606,
+      "accuracy_min": 0.8940520446096655,
+      "prediction_flip_rate_mean": 0.05947955390334573,
+      "true_high_risk_newly_missed_mean": 16.9
+    },
+    {
+      "noise_multiplier": 1.0,
+      "auroc_mean": 0.9524529186894626,
+      "auroc_min": 0.9416731161612608,
+      "accuracy_mean": 0.8824039653035934,
+      "accuracy_min": 0.8605947955390335,
+      "prediction_flip_rate_mean": 0.09256505576208178,
+      "true_high_risk_newly_missed_mean": 20.266666666666666
+    },
+    {
+      "noise_multiplier": 2.0,
+      "auroc_mean": 0.9201092896174863,
+      "auroc_min": 0.8990501653415887,
+      "accuracy_mean": 0.8426889714993806,
+      "accuracy_min": 0.8029739776951673,
+      "prediction_flip_rate_mean": 0.13983890954151176,
+      "true_high_risk_newly_missed_mean": 24.566666666666666
+    }
+  ],
+  "missing_input_median_imputed": [
+    {
+      "missing_input": "BloodSugar",
+      "auroc": 0.9615070709913459,
+      "accuracy": 0.8921933085501859,
+      "prediction_flip_rate": 0.07992565055762081,
+      "sensitivity": 0.8197424892703863,
+      "specificity": 0.9475409836065574
+    },
+    {
+      "missing_input": "BodyTemp",
+      "auroc": 0.9807359459649616,
+      "accuracy": 0.9460966542750929,
+      "prediction_flip_rate": 0.011152416356877323,
+      "sensitivity": 0.9227467811158798,
+      "specificity": 0.9639344262295082
+    },
+    {
+      "missing_input": "HeartRate",
+      "auroc": 0.9830296207697179,
+      "accuracy": 0.9237918215613383,
+      "prediction_flip_rate": 0.055762081784386616,
+      "sensitivity": 0.8454935622317596,
+      "specificity": 0.9836065573770492
+    },
+    {
+      "missing_input": "Weight/Height/BMI",
+      "auroc": 0.980939984521213,
+      "accuracy": 0.9312267657992565,
+      "prediction_flip_rate": 0.01858736059479554,
+      "sensitivity": 0.9227467811158798,
+      "specificity": 0.9377049180327869
+    },
+    {
+      "missing_input": "Medical history",
+      "auroc": 0.9610919580665588,
+      "accuracy": 0.9144981412639405,
+      "prediction_flip_rate": 0.05018587360594796,
+      "sensitivity": 0.8412017167381974,
+      "specificity": 0.9704918032786886
+    }
+  ]
+}
